@@ -120,8 +120,8 @@ class AnswerGenerator:
 
         # New medications
         for m in temporal_findings.new_medications:
-            kf = f"New Medication/Dose: {m['name']} ({m.get('dosage') or m.get('new_dosage')}) in {m.get('status')}"
-            key_findings.append(kf)
+            dose_str = f" ({m.get('dosage') or m.get('new_dosage')})" if (m.get('dosage') or m.get('new_dosage')) else ""
+            key_findings.append(f"{m['name']}{dose_str} initiated")
             chronological_changes.append({
                 "type": "medication_introduced",
                 "medication": m["name"],
@@ -132,8 +132,7 @@ class AnswerGenerator:
 
         # Absent medications
         for m in temporal_findings.absent_earlier_medications:
-            kf = f"Medication Absent in Later Records: {m['name']} ({m.get('previous_dosage')})"
-            key_findings.append(kf)
+            key_findings.append(f"{m['name']} discontinued")
             chronological_changes.append({
                 "type": "medication_absent",
                 "medication": m["name"],
@@ -148,8 +147,7 @@ class AnswerGenerator:
 
         # Lab changes
         for l in temporal_findings.lab_comparisons:
-            kf = f"Lab Value Change: {l['test_name']} shifted from {l['previous_value']} to {l['latest_value']} {l['unit']} ({l['direction']})"
-            key_findings.append(kf)
+            key_findings.append(f"{l['test_name']} {l['direction'].lower()}")
             chronological_changes.append({
                 "type": "lab_comparison",
                 "test": l["test_name"],
@@ -182,37 +180,43 @@ class AnswerGenerator:
             if issue not in contradictions:
                 contradictions.append(issue)
 
-        # Direct Answer Formulation
+        # Direct Answer Formulation - Clean ChatGPT-style Paragraphs
         if not key_findings and not admissions:
-            direct_ans = f"No clinical records or hospital admissions were found for patient {patient_id} regarding this query. The system abstains from generating unsupported conclusions."
+            direct_ans = f"No clinical records or hospital admissions were found for patient **{patient_id}** regarding this query."
         elif len(admissions) < 2 and "between" in question.lower():
-            direct_ans = f"Investigation cannot compare two admissions because only {len(admissions)} admission episode(s) exist for patient {patient_id}."
+            direct_ans = f"Only **{len(admissions)} admission episode** is on file for patient **{patient_id}**, which is insufficient to perform a comparative analysis."
             limitations.append("Insufficient admission history to perform longitudinal comparison.")
         else:
-            ans_parts = []
+            paragraphs = []
+            paragraphs.append(f"Based on a longitudinal review of the patient's records across admissions, the key changes are summarized below:")
+
             if temporal_findings.new_medications or temporal_findings.absent_earlier_medications:
-                med_parts = []
+                med_lines = ["**Medication Changes:**"]
                 for m in temporal_findings.new_medications:
-                    med_parts.append(f"{m['name']} ({m.get('status')})")
+                    dose = f" ({m.get('dosage') or m.get('new_dosage')})" if (m.get('dosage') or m.get('new_dosage')) else ""
+                    med_lines.append(f"• **{m['name']}**{dose}: {m.get('status')}")
                 for m in temporal_findings.absent_earlier_medications:
-                    med_parts.append(f"{m['name']} (present earlier, absent later)")
-                ans_parts.append(f"Medication changes identified: {', '.join(med_parts)}.")
+                    dose = f" ({m.get('previous_dosage')})" if m.get('previous_dosage') else ""
+                    med_lines.append(f"• **{m['name']}**{dose}: Discontinued / omitted from active orders")
+                paragraphs.append("\n".join(med_lines))
 
             if temporal_findings.lab_comparisons:
-                lab_parts = [f"{l['test_name']} {l['direction']} ({l['previous_value']} -> {l['latest_value']} {l['unit']})" for l in temporal_findings.lab_comparisons]
-                ans_parts.append(f"Laboratory shifts: {'; '.join(lab_parts)}.")
+                lab_lines = ["**Laboratory Biomarker Shifts:**"]
+                for l in temporal_findings.lab_comparisons:
+                    lab_lines.append(f"• **{l['test_name']}**: {l['direction'].capitalize()} from **{l['previous_value']}** to **{l['latest_value']} {l['unit']}**")
+                paragraphs.append("\n".join(lab_lines))
 
             # Add rationale status
             supported_causals = [cv for cv in causal_verifications if cv.status == "SUPPORTED"]
             if supported_causals:
-                ans_parts.append(f"Clinical documentation establishes the reason: {supported_causals[0].evidence_text}")
+                paragraphs.append(f"**Documented Clinical Rationale:**\n• {supported_causals[0].evidence_text}")
             elif any(cv.status in ("INSUFFICIENT", "NOT_FOUND") for cv in causal_verifications):
-                ans_parts.append("No clinical reason or rationale is documented in the records for these changes.")
+                paragraphs.append("**Clinical Rationale:**\n• The medical records do not contain explicit documentation explaining the reason for the medication change.")
 
             if contradictions:
-                ans_parts.append(f"Caution: {len(contradictions)} conflicting record(s) or timeline discrepancy detected.")
+                paragraphs.append(f"**Documentation Alert:**\n• {len(contradictions)} conflicting clinical record(s) were flagged during verification.")
 
-            direct_ans = " ".join(ans_parts) if ans_parts else f"Clinical investigation completed with {len(verifications)} verified claims."
+            direct_ans = "\n\n".join(paragraphs) if paragraphs else f"Clinical investigation completed with {len(verifications)} verified claims."
 
         # Evidence cards
         evidence_cards = []
