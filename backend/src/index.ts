@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import healthRoutes from './routes/health-routes.js';
 import patientRoutes from './routes/patient-routes.js';
 import graphRoutes from './routes/graph-routes.js';
+import vectorRoutes from './routes/vector-routes.js';
 import { seedKnowledgeGraph } from './ingestion/seed.js';
 import { vectorStore } from './vector/vector-store.js';
 import { graphService } from './graph/graph-service.js';
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use('/api', healthRoutes);
 app.use('/api/patients', patientRoutes);
 app.use('/api/graph', graphRoutes);
+app.use('/api/vector', vectorRoutes);
 
 // Root greeting
 app.get('/', (req, res) => {
