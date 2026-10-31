@@ -248,6 +248,11 @@ export class ConsentService {
     return list.sort((a, b) => new Date(b.granted_at).getTime() - new Date(a.granted_at).getTime());
   }
 
+  public getAllowedHospitalIds(patientId: string, requestingHospitalId: string): string[] {
+    const all = ['HOSP001', 'HOSP002'];
+    return all.filter((hid) => this.isAuthorized(patientId, requestingHospitalId, hid));
+  }
+
   public clear(): void {
     this.requests.clear();
     this.grants.clear();

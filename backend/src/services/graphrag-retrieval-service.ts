@@ -2,6 +2,8 @@ import { graphService } from '../graph/graph-service.js';
 import { vectorStore, VectorSearchParams } from '../vector/vector-store.js';
 import { timelineService } from './timeline-service.js';
 import { admissionComparisonService } from './admission-comparison-service.js';
+import { consentService } from './consent-service.js';
+import { getHospitalById } from '../ingestion/synthetic-hospitals.js';
 import {
   GraphSearchResult,
   VectorDocument,
@@ -14,9 +16,13 @@ export interface UnifiedRetrievalResult {
   patient_id: string;
   query: string;
   timestamp: string;
+  requesting_hospital_id?: string;
+  allowed_hospitals?: string[];
   structured_graph: GraphSearchResult;
   unstructured_notes: Array<{
     record_id: string;
+    hospital_id?: string;
+    hospital_name?: string;
     encounter_id: string;
     admission_id?: string;
     timestamp: string;
@@ -28,6 +34,8 @@ export interface UnifiedRetrievalResult {
   }>;
   retrieved_citations: Array<{
     record_id: string;
+    hospital_id?: string;
+    hospital_name?: string;
     type: 'graph_entity' | 'clinical_note';
     timestamp: string;
     summary: string;
@@ -43,9 +51,13 @@ export class GraphRAGRetrievalService {
   }
 
   /**
-   * Unstructured clinical note vector search with strict patient scoping
+   * Unstructured clinical note vector search with strict patient scoping and hospital consent filtering
    */
-  public async searchClinicalNotes(patientId: string, query: string, options: Partial<VectorSearchParams> = {}): Promise<VectorDocument[]> {
+  public async searchClinicalNotes(
+    patientId: string,
+    query: string,
+    options: Partial<VectorSearchParams> = {}
+  ): Promise<VectorDocument[]> {
     return vectorStore.search({
       patient_id: patientId,
       query,
@@ -56,33 +68,57 @@ export class GraphRAGRetrievalService {
       note_type: options.note_type,
       start_date: options.start_date,
       end_date: options.end_date,
+      hospital_id: options.hospital_id,
+      allowed_hospital_ids: options.allowed_hospital_ids,
     });
   }
 
   /**
    * Unified GraphRAG Search:
-   * Combines structured knowledge graph facts and semantic note passages.
+   * Combines structured knowledge graph facts and semantic note passages
+   * with hospital provenance and cross-hospital consent enforcement.
    */
-  public async unifiedSearch(patientId: string, query: string): Promise<UnifiedRetrievalResult> {
+  public async unifiedSearch(
+    patientId: string,
+    query: string,
+    options?: {
+      requesting_hospital_id?: string;
+      allowed_hospitals?: string[];
+      top_k?: number;
+    }
+  ): Promise<UnifiedRetrievalResult> {
+    const requestingHospitalId = options?.requesting_hospital_id || 'HOSP002';
+    const allowedHospitals =
+      options?.allowed_hospitals ||
+      consentService.getAllowedHospitalIds(patientId, requestingHospitalId);
+
     const [graphResult, noteResults] = await Promise.all([
       this.searchPatientGraph(patientId, query),
-      this.searchClinicalNotes(patientId, query, { top_k: 5 }),
+      this.searchClinicalNotes(patientId, query, {
+        top_k: options?.top_k || 5,
+        allowed_hospital_ids: allowedHospitals,
+      }),
     ]);
 
     const citations: Array<{
       record_id: string;
+      hospital_id?: string;
+      hospital_name?: string;
       type: 'graph_entity' | 'clinical_note';
       timestamp: string;
       summary: string;
     }> = [];
 
-    // Add note citations
+    // Add note citations with hospital provenance
     for (const note of noteResults) {
+      const hid = note.hospital_id || 'HOSP001';
       citations.push({
         record_id: note.record_id,
+        hospital_id: hid,
+        hospital_name: note.hospital_name || getHospitalById(hid)?.name || 'Apollo General Hospital',
         type: 'clinical_note',
         timestamp: note.timestamp,
-        summary: `[${note.note_type}] ${note.title}`,
+        summary: `[${note.note_type}] ${note.title} (${hid})`,
       });
     }
 
@@ -92,6 +128,8 @@ export class GraphRAGRetrievalService {
         if (!citations.some((c) => c.record_id === recId)) {
           citations.push({
             record_id: recId,
+            hospital_id: 'HOSP001',
+            hospital_name: 'Apollo General Hospital',
             type: 'graph_entity',
             timestamp: new Date().toISOString(),
             summary: finding.description,
@@ -104,18 +142,25 @@ export class GraphRAGRetrievalService {
       patient_id: patientId,
       query,
       timestamp: new Date().toISOString(),
+      requesting_hospital_id: requestingHospitalId,
+      allowed_hospitals: allowedHospitals,
       structured_graph: graphResult,
-      unstructured_notes: noteResults.map((n) => ({
-        record_id: n.record_id,
-        encounter_id: n.encounter_id,
-        admission_id: n.admission_id,
-        timestamp: n.timestamp,
-        note_type: n.note_type,
-        title: n.title,
-        snippet: n.text.slice(0, 300) + (n.text.length > 300 ? '...' : ''),
-        full_text: n.text,
-        similarity_score: n.similarity_score,
-      })),
+      unstructured_notes: noteResults.map((n) => {
+        const hid = n.hospital_id || 'HOSP001';
+        return {
+          record_id: n.record_id,
+          hospital_id: hid,
+          hospital_name: n.hospital_name || getHospitalById(hid)?.name || 'Apollo General Hospital',
+          encounter_id: n.encounter_id,
+          admission_id: n.admission_id,
+          timestamp: n.timestamp,
+          note_type: n.note_type,
+          title: n.title,
+          snippet: n.text.slice(0, 300) + (n.text.length > 300 ? '...' : ''),
+          full_text: n.text,
+          similarity_score: n.similarity_score,
+        };
+      }),
       retrieved_citations: citations,
     };
   }
