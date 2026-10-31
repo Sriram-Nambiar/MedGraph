@@ -8,6 +8,8 @@ class GraphRecord(BaseModel):
     patient_id: str = Field(..., description="Patient identifier")
     record_type: str = Field(..., description="admission, medication, lab_result, condition, allergy, encounter")
     timestamp: Optional[str] = Field(None, description="ISO or standardized event timestamp")
+    hospital_id: Optional[str] = Field(None, description="Originating hospital ID (e.g. HOSP001, HOSP002)")
+    hospital_name: Optional[str] = Field(None, description="Originating hospital display name")
     details: Dict[str, Any] = Field(default_factory=dict, description="Attributes like medication name, dosage, lab test, value")
     relationships: List[Dict[str, str]] = Field(default_factory=list, description="Graph links to encounters, providers, orders")
     source: str = Field("graph", description="Data provenance source")
@@ -17,6 +19,8 @@ class ClinicalNote(BaseModel):
     """Unstructured clinical note retrieved via vector semantic search."""
     record_id: str = Field(..., description="Unique note identifier, e.g. NOTE-101")
     patient_id: str = Field(..., description="Patient identifier")
+    hospital_id: Optional[str] = Field(None, description="Originating hospital ID (e.g. HOSP001, HOSP002)")
+    hospital_name: Optional[str] = Field(None, description="Originating hospital display name")
     timestamp: Optional[str] = Field(None, description="Timestamp note was authored/signed")
     author: Optional[str] = Field(None, description="Authoring physician or clinician")
     note_type: Optional[str] = Field(None, description="Type: consultation, progress_note, discharge_summary")
@@ -29,6 +33,8 @@ class AdmissionRecord(BaseModel):
     """Structured hospital admission episode."""
     admission_id: str = Field(..., description="Unique encounter/admission ID, e.g. ADM-2023-01")
     patient_id: str = Field(..., description="Patient identifier")
+    hospital_id: Optional[str] = Field(None, description="Originating hospital ID (e.g. HOSP001, HOSP002)")
+    hospital_name: Optional[str] = Field(None, description="Originating hospital display name")
     admission_date: str = Field(..., description="Admission date / start timestamp")
     discharge_date: Optional[str] = Field(None, description="Discharge date / end timestamp")
     reason: Optional[str] = Field(None, description="Admitting diagnosis or chief complaint")
@@ -40,6 +46,8 @@ class MergedEvent(BaseModel):
     """Unified and deduplicated event combining graph entities and clinical notes."""
     event_id: str = Field(..., description="Normalized composite event ID")
     patient_id: str = Field(..., description="Patient identifier")
+    hospital_id: Optional[str] = Field(None, description="Originating hospital ID")
+    hospital_name: Optional[str] = Field(None, description="Originating hospital display name")
     encounter_id: Optional[str] = Field(None, description="Associated admission or encounter ID")
     normalized_timestamp: Optional[str] = Field(None, description="ISO-8601 formatted date or datetime")
     original_timestamps: List[str] = Field(default_factory=list, description="Original raw timestamps from source records")
@@ -81,6 +89,7 @@ class ClaimVerification(BaseModel):
     status: ClaimVerificationStatus = Field(..., description="SUPPORTED, CONTRADICTED, INSUFFICIENT, or NOT_FOUND")
     supporting_record_ids: List[str] = Field(default_factory=list, description="Traceable record IDs directly supporting the claim")
     contradicting_record_ids: List[str] = Field(default_factory=list, description="Traceable record IDs conflicting with the claim")
+    hospital_ids: List[str] = Field(default_factory=list, description="Originating hospital IDs of supporting evidence")
     timestamps: List[str] = Field(default_factory=list, description="Timestamps associated with the evidence")
     evidence_text: str = Field("", description="Exact quotes or record excerpts backing the status")
     explanation: str = Field("", description="Clinical rationale for the verification classification")
