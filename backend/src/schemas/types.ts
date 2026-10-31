@@ -279,3 +279,95 @@ export interface InvestigationResponse {
   verifier_checks?: VerifierCheck[];
   raw_engine_output?: any;
 }
+
+
+// ==========================================
+// Cross-Hospital Interoperability & Consent
+// ==========================================
+
+export interface Hospital {
+  id: string; // 'HOSP001' | 'HOSP002'
+  name: string; // 'Apollo General Hospital' | 'Bengaluru City Medical Center'
+  code: string; // 'AGH' | 'BCMC'
+  city: string;
+  state: string;
+  type: string;
+  connectedStatus: 'CONNECTED' | 'DISCONNECTED';
+  activeRecordsCount: number;
+  contactEmail: string;
+}
+
+export interface ConsentRequest {
+  request_id: string;
+  patient_id: string;
+  patient_name: string;
+  requesting_hospital_id: string;
+  requesting_hospital_name: string;
+  source_hospital_id: string;
+  source_hospital_name: string;
+  purpose: string;
+  requested_categories: string[];
+  created_at: string;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'REVOKED';
+}
+
+export interface ConsentGrant {
+  grant_id: string;
+  request_id: string;
+  patient_id: string;
+  requesting_hospital_id: string;
+  source_hospital_id: string;
+  permitted_categories: string[];
+  granted_at: string;
+  expires_at: string;
+  status: 'ACTIVE' | 'REVOKED' | 'EXPIRED';
+}
+
+export interface AuditLog {
+  id: string;
+  timestamp: string;
+  actor_id: string;
+  actor_name: string;
+  actor_hospital_id: string;
+  action:
+    | 'CONSENT_REQUEST_CREATED'
+    | 'CONSENT_APPROVED'
+    | 'CONSENT_REJECTED'
+    | 'CONSENT_REVOKED'
+    | 'RECORDS_ACCESSED'
+    | 'CROSS_HOSPITAL_INVESTIGATION';
+  patient_id: string;
+  source_hospital_id: string;
+  details: string;
+  status: 'SUCCESS' | 'DENIED';
+}
+
+export interface CrossHospitalRecord {
+  record_id: string;
+  patient_id: string;
+  hospital_id: string;
+  hospital_name: string;
+  encounter_id: string;
+  record_type: 'admission' | 'encounter' | 'prescription' | 'lab_result' | 'clinical_note' | 'condition';
+  created_at: string;
+  source: string;
+  summary: string;
+  content: Record<string, any>;
+}
+
+export interface CrossHospitalPatientHistory {
+  patient_id: string;
+  patient_name: string;
+  requesting_hospital_id: string;
+  requesting_hospital_name: string;
+  is_cross_hospital_authorized: boolean;
+  active_consent?: ConsentGrant;
+  hospitals_involved: Array<{
+    id: string;
+    name: string;
+    record_count: number;
+    access_status: 'LOCAL' | 'CONSENT_GRANTED' | 'CONSENT_REQUIRED' | 'CONSENT_REVOKED';
+  }>;
+  total_records: number;
+  records: CrossHospitalRecord[];
+}
