@@ -1,5 +1,7 @@
 import { graphService } from '../graph/graph-service.js';
 import { vectorStore, VectorSearchParams } from '../vector/vector-store.js';
+import { timelineService } from './timeline-service.js';
+import { admissionComparisonService } from './admission-comparison-service.js';
 import {
   GraphSearchResult,
   VectorDocument,
@@ -123,6 +125,24 @@ export class GraphRAGRetrievalService {
    */
   public async getAdmissionHistory(patientId: string): Promise<Admission[]> {
     return graphService.getPatientAdmissions(patientId);
+  }
+
+  /**
+   * Retrieves chronological patient timeline
+   */
+  public async getPatientTimeline(patientId: string): Promise<TimelineEvent[]> {
+    return timelineService.getPatientTimeline(patientId);
+  }
+
+  /**
+   * Compares two admissions for a patient
+   */
+  public async compareAdmissions(
+    patientId: string,
+    admissionId1: string,
+    admissionId2: string
+  ): Promise<AdmissionComparisonResult> {
+    return admissionComparisonService.compareAdmissions(patientId, admissionId1, admissionId2);
   }
 }
 
