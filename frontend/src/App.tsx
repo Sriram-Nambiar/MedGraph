@@ -154,6 +154,8 @@ export function App() {
               <ClinicalTimeline
                 timeline={timeline}
                 onOpenEvidence={handleOpenEvidence}
+                patientName={selectedPatient?.name}
+                patientId={selectedPatient?.id}
               />
             )}
 
