@@ -4,6 +4,7 @@ import { inMemoryGraph } from '../graph/in-memory-graph.js';
 import { testNeo4jConnection, getNeo4jSession } from '../database/neo4j-connection.js';
 import { setupNeo4jSchema } from '../database/neo4j-schema.js';
 import { generateSyntheticDataset, writeDatasetToDisk } from './synthetic-data-generator.js';
+import { DEMO_HOSPITALS } from './synthetic-hospitals.js';
 import {
   Patient,
   Doctor,
@@ -58,6 +59,11 @@ export async function seedKnowledgeGraph(dataPath?: string): Promise<{
 
   // 1. Populate In-Memory Graph
   inMemoryGraph.clear();
+
+  // Add Hospitals
+  for (const hosp of DEMO_HOSPITALS) {
+    inMemoryGraph.addNode(hosp.id, 'Hospital', hosp);
+  }
 
   // Add Doctors
   for (const doc of dataset.doctors) {
@@ -194,6 +200,14 @@ export async function seedKnowledgeGraph(dataPath?: string): Promise<{
     const session = getNeo4jSession();
     if (session) {
       try {
+        // Ingest Hospitals
+        await session.run(
+          `UNWIND $hospitals AS h
+           MERGE (node:Hospital {id: h.id})
+           SET node += h`,
+          { hospitals: DEMO_HOSPITALS }
+        );
+
         // Ingest Patients
         await session.run(
           `UNWIND $patients AS p
