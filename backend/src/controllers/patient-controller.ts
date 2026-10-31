@@ -86,6 +86,25 @@ export class PatientController {
     }
   }
 
+  public async getPatientAdmissions(req: Request, res: Response): Promise<void> {
+    try {
+      const { patientId } = req.params;
+      if (!patientId) {
+        res.status(400).json({ error: 'patientId parameter is required' });
+        return;
+      }
+
+      const admissions = await graphService.getPatientAdmissions(patientId);
+      res.json({
+        patient_id: patientId,
+        count: admissions.length,
+        admissions,
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: `Failed to retrieve admissions: ${err.message}` });
+    }
+  }
+
   public async getPatientGraph(req: Request, res: Response): Promise<void> {
     try {
       const { patientId } = req.params;
