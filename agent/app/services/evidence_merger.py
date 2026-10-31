@@ -11,8 +11,7 @@ from app.schemas.evidence import (
 
 class EvidenceMerger:
     """Combines, normalizes, deduplicates, and resolves conflicts between
-
-    structured graph entities and unstructured clinical notes.
+    structured graph entities and unstructured clinical notes across hospitals.
     """
 
     @classmethod
@@ -21,7 +20,6 @@ class EvidenceMerger:
         if not ts:
             return None
         ts = ts.strip()
-        # Handle ISO with Z or offset
         for fmt in (
             "%Y-%m-%dT%H:%M:%SZ",
             "%Y-%m-%dT%H:%M:%S%z",
@@ -36,7 +34,6 @@ class EvidenceMerger:
             except ValueError:
                 continue
 
-        # Regex fallback for YYYY-MM-DD
         m = re.search(r"\b(\d{4}-\d{2}-\d{2})\b", ts)
         if m:
             return f"{m.group(1)}T00:00:00Z"
@@ -50,7 +47,6 @@ class EvidenceMerger:
         admissions: List[AdmissionRecord]
     ) -> Optional[str]:
         """Associate an event with an encounter either via graph relationship or date overlap."""
-        # 1. Direct relationship target
         for rel in relationships:
             target = rel.get("target", "")
             if target.startswith("ADM-") or "ADMISSION" in rel.get("type", "").upper():
@@ -59,7 +55,6 @@ class EvidenceMerger:
         if not timestamp or not admissions:
             return None
 
-        # 2. Date overlap heuristic
         norm_ts = cls.normalize_timestamp(timestamp)
         if not norm_ts:
             return None
@@ -79,20 +74,20 @@ class EvidenceMerger:
         notes: List[ClinicalNote],
         admissions: List[AdmissionRecord]
     ) -> List[str]:
-        """Identify contradictions between notes, graph records, or admissions."""
         conflicts = []
 
-        # Check for allergy contradictions
+        # Check for allergy contradictions (e.g. Graph record has allergy, but note says NKDA)
         allergy_alerts = []
         for gr in graph_records:
-            if gr.record_type == "allergy":
-                allergen = gr.details.get("allergen", "").lower()
-                allergy_alerts.append((allergen, gr.record_id, gr.details.get("severity", "UNKNOWN")))
+            if gr.record_type in ("allergy", "allergy_intolerance"):
+                allergen = (gr.details.get("allergen") or gr.details.get("name") or "").lower()
+                severity = gr.details.get("severity") or gr.details.get("criticality") or "UNKNOWN"
+                allergy_alerts.append((allergen, gr.record_id, severity))
 
         for note in notes:
             content_lower = note.content.lower()
             for allergen, rec_id, severity in allergy_alerts:
-                if "nkda" in content_lower or "no known drug allergies" in content_lower or f"no known {allergen}" in content_lower:
+                if allergen and ("nkda" in content_lower or "no known drug allergies" in content_lower or f"no known {allergen}" in content_lower or "no known allergies" in content_lower):
                     conflicts.append(
                         f"Allergy Contradiction: Graph record {rec_id} documents '{severity}' allergy to {allergen.title()}, "
                         f"while note {note.record_id} states NKDA or no known allergies."
@@ -118,7 +113,7 @@ class EvidenceMerger:
         notes: List[ClinicalNote],
         admissions: List[AdmissionRecord]
     ) -> List[MergedEvent]:
-        """Merge all records into unified, deduplicated, chronologically-aware MergedEvents."""
+        """Merge all records into unified, deduplicated, chronologically-aware MergedEvents with hospital provenance."""
         merged_events: List[MergedEvent] = []
         seen_record_ids = set()
         global_conflicts = cls.detect_conflicts(graph_records, notes, admissions)
@@ -131,11 +126,15 @@ class EvidenceMerger:
                 continue
             seen_record_ids.add(adm.admission_id)
 
+            hid = adm.hospital_id or "HOSP001"
+            hname = adm.hospital_name or ("Bengaluru City Medical Center" if hid == "HOSP002" else "Apollo General Hospital")
             norm_ts = cls.normalize_timestamp(adm.admission_date)
             merged_events.append(
                 MergedEvent(
                     event_id=f"EVT-ADM-{adm.admission_id}",
                     patient_id=patient_id,
+                    hospital_id=hid,
+                    hospital_name=hname,
                     encounter_id=adm.admission_id,
                     normalized_timestamp=norm_ts,
                     original_timestamps=[adm.admission_date] + ([adm.discharge_date] if adm.discharge_date else []),
@@ -143,6 +142,8 @@ class EvidenceMerger:
                     event_type="admission",
                     data={
                         "admission_id": adm.admission_id,
+                        "hospital_id": hid,
+                        "hospital_name": hname,
                         "reason": adm.reason,
                         "department": adm.department,
                         "attending_physician": adm.attending_physician,
@@ -161,22 +162,25 @@ class EvidenceMerger:
                 continue
             seen_record_ids.add(gr.record_id)
 
+            hid = gr.hospital_id or "HOSP001"
+            hname = gr.hospital_name or ("Bengaluru City Medical Center" if hid == "HOSP002" else "Apollo General Hospital")
             norm_ts = cls.normalize_timestamp(gr.timestamp)
             encounter_id = gr.details.get('admissionId') or cls.match_encounter(gr.timestamp, gr.relationships, admissions)
 
-            # Associate relevant conflicts
             record_conflicts = [c for c in global_conflicts if gr.record_id in c]
 
             merged_events.append(
                 MergedEvent(
                     event_id=f"EVT-GRAPH-{gr.record_id}",
                     patient_id=patient_id,
+                    hospital_id=hid,
+                    hospital_name=hname,
                     encounter_id=encounter_id,
                     normalized_timestamp=norm_ts,
                     original_timestamps=[gr.timestamp] if gr.timestamp else [],
                     source_record_ids=[gr.record_id],
                     event_type=gr.record_type,
-                    data=gr.details,
+                    data=dict(gr.details, hospital_id=hid, hospital_name=hname),
                     conflicts=record_conflicts
                 )
             )
@@ -189,6 +193,8 @@ class EvidenceMerger:
                 continue
             seen_record_ids.add(note.record_id)
 
+            hid = note.hospital_id or "HOSP001"
+            hname = note.hospital_name or ("Bengaluru City Medical Center" if hid == "HOSP002" else "Apollo General Hospital")
             norm_ts = cls.normalize_timestamp(note.timestamp)
             encounter_id = cls.match_encounter(note.timestamp, [], admissions)
             note_conflicts = [c for c in global_conflicts if note.record_id in c]
@@ -197,6 +203,8 @@ class EvidenceMerger:
                 MergedEvent(
                     event_id=f"EVT-NOTE-{note.record_id}",
                     patient_id=patient_id,
+                    hospital_id=hid,
+                    hospital_name=hname,
                     encounter_id=encounter_id,
                     normalized_timestamp=norm_ts,
                     original_timestamps=[note.timestamp] if note.timestamp else [],
@@ -206,7 +214,9 @@ class EvidenceMerger:
                         "author": note.author,
                         "note_type": note.note_type,
                         "content": note.content,
-                        "relevance_score": note.relevance_score
+                        "relevance_score": note.relevance_score,
+                        "hospital_id": hid,
+                        "hospital_name": hname,
                     },
                     conflicts=note_conflicts
                 )

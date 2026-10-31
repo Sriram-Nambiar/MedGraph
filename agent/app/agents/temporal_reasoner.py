@@ -11,8 +11,7 @@ logger = logging.getLogger(__name__)
 
 class TemporalReasoner:
     """Performs rigorous chronological analysis, admission comparison,
-
-    medication delta identification, lab value tracking, and timeline verification.
+    medication delta identification, lab value tracking, and cross-hospital timeline verification.
     """
 
     @classmethod
@@ -33,6 +32,8 @@ class TemporalReasoner:
                 "timestamp": e.normalized_timestamp,
                 "type": e.event_type,
                 "encounter_id": e.encounter_id,
+                "hospital_id": e.hospital_id or "HOSP001",
+                "hospital_name": e.hospital_name or "Apollo General Hospital",
                 "source_record_ids": e.source_record_ids,
                 "data": e.data,
                 "conflicts": e.conflicts
@@ -61,19 +62,29 @@ class TemporalReasoner:
             prev_adm = sorted_admissions[-2]
             latest_adm = sorted_admissions[-1]
 
+            prev_hid = prev_adm.hospital_id or "HOSP001"
+            prev_hname = prev_adm.hospital_name or ("Bengaluru City Medical Center" if prev_hid == "HOSP002" else "Apollo General Hospital")
+            late_hid = latest_adm.hospital_id or "HOSP001"
+            late_hname = latest_adm.hospital_name or ("Bengaluru City Medical Center" if late_hid == "HOSP002" else "Apollo General Hospital")
+
             admissions_comparison = {
                 "previous_admission": {
                     "id": prev_adm.admission_id,
                     "date": prev_adm.admission_date,
                     "reason": prev_adm.reason,
-                    "department": prev_adm.department
+                    "department": prev_adm.department,
+                    "hospital_id": prev_hid,
+                    "hospital_name": prev_hname
                 },
                 "latest_admission": {
                     "id": latest_adm.admission_id,
                     "date": latest_adm.admission_date,
                     "reason": latest_adm.reason,
-                    "department": latest_adm.department
-                }
+                    "department": latest_adm.department,
+                    "hospital_id": late_hid,
+                    "hospital_name": late_hname
+                },
+                "is_cross_hospital": prev_hid != late_hid
             }
 
             # Partition events between previous and latest admissions
@@ -105,6 +116,8 @@ class TemporalReasoner:
                         "frequency": med_data.get("frequency", "Unspecified"),
                         "first_seen_timestamp": med_data.get("timestamp"),
                         "record_id": med_data.get("record_id"),
+                        "hospital_id": med_data.get("hospital_id", "HOSP001"),
+                        "hospital_name": med_data.get("hospital_name", "Apollo General Hospital"),
                         "status": "Newly introduced in latest admission"
                     })
                 else:
@@ -118,6 +131,8 @@ class TemporalReasoner:
                             "new_dosage": new_dose,
                             "first_seen_timestamp": med_data.get("timestamp"),
                             "record_id": med_data.get("record_id"),
+                            "hospital_id": med_data.get("hospital_id", "HOSP001"),
+                            "hospital_name": med_data.get("hospital_name", "Apollo General Hospital"),
                             "status": f"Dose adjusted from {old_dose} to {new_dose}"
                         })
 
@@ -129,6 +144,8 @@ class TemporalReasoner:
                         "previous_dosage": med_data.get("dosage", "Unspecified"),
                         "last_documented_timestamp": med_data.get("timestamp"),
                         "previous_record_id": med_data.get("record_id"),
+                        "hospital_id": med_data.get("hospital_id", "HOSP001"),
+                        "hospital_name": med_data.get("hospital_name", "Apollo General Hospital"),
                         "status": "Absent in latest admission records",
                         "clinical_caveat": (
                             "Absent from subsequent admission records. Note: Absence does NOT automatically confirm "
@@ -169,14 +186,15 @@ class TemporalReasoner:
                 name = raw_name.strip().lower()
                 if not name:
                     continue
-                # Normalize common names (e.g. strip brand/generic parens for matching)
                 base_name = name.split("(")[0].strip()
                 meds[base_name] = {
                     "name": raw_name,
                     "dosage": e.data.get("dosage"),
                     "frequency": e.data.get("frequency"),
                     "timestamp": e.normalized_timestamp,
-                    "record_id": e.source_record_ids[0] if e.source_record_ids else "UNKNOWN"
+                    "record_id": e.source_record_ids[0] if e.source_record_ids else "UNKNOWN",
+                    "hospital_id": e.hospital_id or "HOSP001",
+                    "hospital_name": e.hospital_name or "Apollo General Hospital"
                 }
         return meds
 
@@ -188,7 +206,9 @@ class TemporalReasoner:
                 "unit": e.data.get("unit"),
                 "flag": e.data.get("flag"),
                 "record_id": e.source_record_ids[0] if e.source_record_ids else "UNKNOWN",
-                "timestamp": e.normalized_timestamp
+                "timestamp": e.normalized_timestamp,
+                "hospital_id": e.hospital_id or "HOSP001",
+                "hospital_name": e.hospital_name or "Apollo General Hospital"
             }
             for e in prev_events if e.event_type in ("lab_result", "labresult", "lab") and (e.data.get("testName") or e.data.get("test_name") or e.data.get("name"))
         }
@@ -199,7 +219,9 @@ class TemporalReasoner:
                 "unit": e.data.get("unit"),
                 "flag": e.data.get("flag"),
                 "record_id": e.source_record_ids[0] if e.source_record_ids else "UNKNOWN",
-                "timestamp": e.normalized_timestamp
+                "timestamp": e.normalized_timestamp,
+                "hospital_id": e.hospital_id or "HOSP001",
+                "hospital_name": e.hospital_name or "Apollo General Hospital"
             }
             for e in latest_events if e.event_type in ("lab_result", "labresult", "lab") and (e.data.get("testName") or e.data.get("test_name") or e.data.get("name"))
         }
@@ -229,7 +251,9 @@ class TemporalReasoner:
                     "previous_flag": prev_info.get("flag"),
                     "latest_flag": latest_info.get("flag"),
                     "previous_record_id": prev_info.get("record_id"),
-                    "latest_record_id": latest_info.get("record_id")
+                    "latest_record_id": latest_info.get("record_id"),
+                    "previous_hospital_id": prev_info.get("hospital_id"),
+                    "latest_hospital_id": latest_info.get("hospital_id"),
                 })
         return comparisons
 
@@ -243,6 +267,8 @@ class TemporalReasoner:
                     "status": e.data.get("status"),
                     "icd10": e.data.get("icd10"),
                     "record_id": e.source_record_ids[0] if e.source_record_ids else "UNKNOWN",
-                    "timestamp": e.normalized_timestamp
+                    "timestamp": e.normalized_timestamp,
+                    "hospital_id": e.hospital_id or "HOSP001",
+                    "hospital_name": e.hospital_name or "Apollo General Hospital"
                 })
         return changes

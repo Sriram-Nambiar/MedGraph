@@ -14,8 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 class EvidenceVerifier:
-    """Verifies clinical claims against merged evidence and temporal findings,
-
+    """Verifies clinical claims against merged evidence and temporal findings across hospitals,
     assigning SUPPORTED, CONTRADICTED, INSUFFICIENT, or NOT_FOUND status,
     and preventing unverified causal explanations.
     """
@@ -70,7 +69,6 @@ class EvidenceVerifier:
         # Claims from notes / reasons
         q_lower = question.lower()
         if any(term in q_lower for term in ["reason", "why", "documented", "consultation", "symptom", "note", "rationale"]):
-            # Check if any note gives a reason
             notes = [e for e in events if e.event_type == "clinical_note"]
             found_reason_in_note = False
             for n in notes:
@@ -118,7 +116,7 @@ class EvidenceVerifier:
                 ))
                 claim_idx += 1
 
-        # If no claims extracted yet (e.g. simple or missing records query)
+        # If no claims extracted yet
         if not claims:
             claims.append(Claim(
                 claim_id="CLAIM-01",
@@ -135,11 +133,19 @@ class EvidenceVerifier:
         events: List[MergedEvent],
         temporal_findings: TemporalFindings
     ) -> ClaimVerification:
-        """Verify an individual claim against all merged evidence."""
+        """Verify an individual claim against all merged evidence with hospital tracking."""
         statement_lower = claim.statement.lower()
 
+        def _get_hospitals(rec_ids: List[str]) -> List[str]:
+            h_ids: List[str] = []
+            for r in rec_ids:
+                for ev in events:
+                    if r in ev.source_record_ids and ev.hospital_id:
+                        if ev.hospital_id not in h_ids:
+                            h_ids.append(ev.hospital_id)
+            return h_ids or ["HOSP001"]
+
         # 1. Check for Contradictions
-        # Contradiction: If claim asserts no allergy but allergy record exists
         if "no known" in statement_lower and "allergy" in statement_lower:
             allergy_events = [e for e in events if e.event_type == "allergy"]
             if allergy_events:
@@ -151,6 +157,7 @@ class EvidenceVerifier:
                     status="CONTRADICTED",
                     contradicting_record_ids=rec_ids,
                     supporting_record_ids=[],
+                    hospital_ids=_get_hospitals(rec_ids),
                     timestamps=[e.normalized_timestamp for e in allergy_events if e.normalized_timestamp],
                     evidence_text=f"Graph allergy record {rec_ids} documents severe allergy, directly contradicting NKDA statement.",
                     explanation="Direct contradiction identified between intake note and recorded allergy alerts."
@@ -158,7 +165,6 @@ class EvidenceVerifier:
 
         # Contradiction: If claim documents a conflict
         if claim.category == "conflict":
-            # The existence of the conflict itself is supported by conflicting records
             conflict_events = [e for e in events if e.conflicts]
             all_rec_ids = list({r for e in conflict_events for r in e.source_record_ids})
             return ClaimVerification(
@@ -168,6 +174,7 @@ class EvidenceVerifier:
                 status="SUPPORTED",
                 supporting_record_ids=all_rec_ids,
                 contradicting_record_ids=[],
+                hospital_ids=_get_hospitals(all_rec_ids),
                 timestamps=[e.normalized_timestamp for e in conflict_events if e.normalized_timestamp],
                 evidence_text=claim.statement,
                 explanation="Conflict between multiple records is verified and documented."
@@ -191,6 +198,7 @@ class EvidenceVerifier:
                     category=claim.category,
                     status="SUPPORTED",
                     supporting_record_ids=rec_ids,
+                    hospital_ids=_get_hospitals(rec_ids),
                     timestamps=[n.normalized_timestamp for n in matching_notes if n.normalized_timestamp],
                     evidence_text=evidence_quotes,
                     explanation="Physician note explicitly documents the clinical rationale for medication adjustment.",
@@ -204,6 +212,7 @@ class EvidenceVerifier:
                     status="INSUFFICIENT",
                     supporting_record_ids=[],
                     contradicting_record_ids=[],
+                    hospital_ids=[],
                     timestamps=[],
                     evidence_text="No clinical note or documented provider rationale found in retrieved records.",
                     explanation="The available records do not document why the medication change occurred. No causal explanation can be established.",
@@ -233,6 +242,7 @@ class EvidenceVerifier:
                     category=claim.category,
                     status="SUPPORTED",
                     supporting_record_ids=rec_ids,
+                    hospital_ids=_get_hospitals(rec_ids),
                     timestamps=timestamps,
                     evidence_text=quote_text,
                     explanation="Directly supported by structured prescription records."
@@ -261,6 +271,7 @@ class EvidenceVerifier:
                     category=claim.category,
                     status="SUPPORTED",
                     supporting_record_ids=rec_ids,
+                    hospital_ids=_get_hospitals(rec_ids),
                     timestamps=timestamps,
                     evidence_text=quote_text,
                     explanation="Directly supported by laboratory values across encounters."
@@ -282,12 +293,13 @@ class EvidenceVerifier:
                 category=claim.category,
                 status="SUPPORTED",
                 supporting_record_ids=rec_ids,
+                hospital_ids=_get_hospitals(rec_ids),
                 timestamps=[e.normalized_timestamp for e in supporting_events if e.normalized_timestamp],
                 evidence_text=f"Matching records: {rec_ids}",
                 explanation="Supported by retrieved clinical events."
             )
 
-        # If nothing matches, classify as NOT_FOUND or INSUFFICIENT
+        # If nothing matches, classify as NOT_FOUND
         return ClaimVerification(
             claim_id=claim.claim_id,
             statement=claim.statement,
@@ -295,6 +307,7 @@ class EvidenceVerifier:
             status="NOT_FOUND",
             supporting_record_ids=[],
             contradicting_record_ids=[],
+            hospital_ids=[],
             timestamps=[],
             evidence_text="No supporting records retrieved.",
             explanation="No relevant supporting record was retrieved from graph or clinical notes."
@@ -308,19 +321,15 @@ class EvidenceVerifier:
         max_retries: int = 2
     ) -> Tuple[bool, List[str]]:
         """Assess if the evidence gathered is sufficient to conclude or if targeted
-
         retrieval should be re-triggered.
         """
         missing_queries = []
 
         for v in verifications:
-            # If a factual claim is NOT_FOUND or INSUFFICIENT (and not an intentional abstention on causality)
             if v.status in ("NOT_FOUND", "INSUFFICIENT") and not v.is_unsupported_causal:
                 missing_queries.append(f"retrieve records for: {v.statement}")
 
-        # If there are missing queries and we haven't hit the retry limit
         if missing_queries and retry_count < max_retries:
             return False, missing_queries
 
-        # If no missing factual queries OR retry limit reached
         return True, []
