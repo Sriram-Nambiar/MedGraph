@@ -53,6 +53,41 @@ async def run_investigation(
     return final_answer
 
 
+async def run_investigation_state(
+    patient_id: str,
+    user_question: str,
+    thread_id: Optional[str] = None
+) -> dict:
+    """Entrypoint returning the complete LangGraph state for audit trail inspection."""
+    if not thread_id:
+        thread_id = f"thread_{uuid.uuid4().hex[:8]}"
+
+    config = {"configurable": {"thread_id": thread_id}}
+
+    initial_state = {
+        "patient_id": patient_id,
+        "thread_id": thread_id,
+        "user_question": user_question,
+        "investigation_plan": None,
+        "retrieved_graph_data": [],
+        "retrieved_notes": [],
+        "retrieved_admissions": [],
+        "merged_evidence": [],
+        "temporal_findings": None,
+        "claims": [],
+        "verification_results": [],
+        "retry_count": 0,
+        "is_sufficient": True,
+        "missing_evidence_queries": [],
+        "final_answer": None,
+        "status_log": [f"Investigation initiated for patient {patient_id} on thread {thread_id}."]
+    }
+
+    logger.info(f"Invoking MedGraph workflow with state capture for patient={patient_id}, thread={thread_id}")
+    final_state = await medgraph_workflow.ainvoke(initial_state, config=config)
+    return final_state
+
+
 async def resume_investigation(
     thread_id: str,
     followup_question: Optional[str] = None
