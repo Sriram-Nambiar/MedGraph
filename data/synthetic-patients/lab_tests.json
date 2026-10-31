@@ -1,0 +1,137 @@
+[
+  {
+    "id": "TEST-CREAT",
+    "code": "2160-0",
+    "name": "Serum Creatinine",
+    "category": "Renal",
+    "unit": "mg/dL",
+    "normalRangeLow": 0.6,
+    "normalRangeHigh": 1.2
+  },
+  {
+    "id": "TEST-EGFR",
+    "code": "33914-3",
+    "name": "eGFR (CKD-EPI)",
+    "category": "Renal",
+    "unit": "mL/min/1.73m2",
+    "normalRangeLow": 60,
+    "normalRangeHigh": 120
+  },
+  {
+    "id": "TEST-BUN",
+    "code": "3094-0",
+    "name": "Blood Urea Nitrogen",
+    "category": "Renal",
+    "unit": "mg/dL",
+    "normalRangeLow": 7,
+    "normalRangeHigh": 20
+  },
+  {
+    "id": "TEST-K",
+    "code": "2823-3",
+    "name": "Potassium",
+    "category": "Chemistry",
+    "unit": "mEq/L",
+    "normalRangeLow": 3.5,
+    "normalRangeHigh": 5.1
+  },
+  {
+    "id": "TEST-NA",
+    "code": "2951-2",
+    "name": "Sodium",
+    "category": "Chemistry",
+    "unit": "mEq/L",
+    "normalRangeLow": 135,
+    "normalRangeHigh": 145
+  },
+  {
+    "id": "TEST-BNP",
+    "code": "30934-4",
+    "name": "B-type Natriuretic Peptide (BNP)",
+    "category": "Cardiac",
+    "unit": "pg/mL",
+    "normalRangeLow": 0,
+    "normalRangeHigh": 100
+  },
+  {
+    "id": "TEST-TROP",
+    "code": "49563-0",
+    "name": "Troponin I (High Sensitivity)",
+    "category": "Cardiac",
+    "unit": "ng/L",
+    "normalRangeLow": 0,
+    "normalRangeHigh": 14
+  },
+  {
+    "id": "TEST-INR",
+    "code": "6301-6",
+    "name": "Prothrombin Time / INR",
+    "category": "Coagulation",
+    "unit": "ratio",
+    "normalRangeLow": 0.9,
+    "normalRangeHigh": 1.2
+  },
+  {
+    "id": "TEST-WBC",
+    "code": "6690-2",
+    "name": "White Blood Cell Count",
+    "category": "Hematology",
+    "unit": "x10^9/L",
+    "normalRangeLow": 4.5,
+    "normalRangeHigh": 11
+  },
+  {
+    "id": "TEST-HGB",
+    "code": "718-7",
+    "name": "Hemoglobin",
+    "category": "Hematology",
+    "unit": "g/dL",
+    "normalRangeLow": 12,
+    "normalRangeHigh": 16
+  },
+  {
+    "id": "TEST-PLT",
+    "code": "777-3",
+    "name": "Platelets",
+    "category": "Hematology",
+    "unit": "x10^9/L",
+    "normalRangeLow": 150,
+    "normalRangeHigh": 400
+  },
+  {
+    "id": "TEST-CRP",
+    "code": "1988-5",
+    "name": "C-Reactive Protein",
+    "category": "Chemistry",
+    "unit": "mg/L",
+    "normalRangeLow": 0,
+    "normalRangeHigh": 5
+  },
+  {
+    "id": "TEST-HBA1C",
+    "code": "4548-4",
+    "name": "Hemoglobin A1c",
+    "category": "Endocrine",
+    "unit": "%",
+    "normalRangeLow": 4,
+    "normalRangeHigh": 5.6
+  },
+  {
+    "id": "TEST-TSH",
+    "code": "3016-3",
+    "name": "Thyroid Stimulating Hormone",
+    "category": "Endocrine",
+    "unit": "uIU/mL",
+    "normalRangeLow": 0.45,
+    "normalRangeHigh": 4.5
+  },
+  {
+    "id": "TEST-FT4",
+    "code": "3024-7",
+    "name": "Free T4",
+    "category": "Endocrine",
+    "unit": "ng/dL",
+    "normalRangeLow": 0.82,
+    "normalRangeHigh": 1.77
+  }
+]

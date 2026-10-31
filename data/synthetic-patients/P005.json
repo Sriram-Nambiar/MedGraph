@@ -1,0 +1,355 @@
+{
+  "patient": {
+    "id": "P005",
+    "mrn": "MRN-773012",
+    "name": "Beatrice Kim",
+    "age": 80,
+    "gender": "Female",
+    "dateOfBirth": "1946-06-30",
+    "bloodType": "O-",
+    "primaryDiagnosis": "Femoral Neck Fracture Post-Op Delirium & Anticholinergic Toxicity",
+    "allergies": [
+      "Aspirin (Bronchospasm)"
+    ]
+  },
+  "conditions": [
+    {
+      "id": "COND-501",
+      "patientId": "P005",
+      "code": "S72.001A",
+      "name": "Fracture of unspecified part of neck of right femur (Hip fracture)",
+      "category": "Musculoskeletal",
+      "status": "Resolved",
+      "onsetDate": "2025-08-01"
+    },
+    {
+      "id": "COND-502",
+      "patientId": "P005",
+      "code": "F05",
+      "name": "Delirium due to known physiological condition (Post-op / drug-induced)",
+      "category": "Neurology",
+      "status": "Recurrent",
+      "onsetDate": "2025-08-03"
+    },
+    {
+      "id": "COND-503",
+      "patientId": "P005",
+      "code": "M81.0",
+      "name": "Age-related osteoporosis without current pathological fracture",
+      "category": "Musculoskeletal",
+      "status": "Chronic",
+      "onsetDate": "2017-05-12"
+    }
+  ],
+  "admissions": [
+    {
+      "id": "ADM-501",
+      "patientId": "P005",
+      "admissionDate": "2025-08-01T12:00:00Z",
+      "dischargeDate": "2025-08-07T16:00:00Z",
+      "reason": "Mechanical fall resulting in displaced right femoral neck fracture status post right hemiarthroplasty",
+      "admissionType": "Emergency",
+      "department": "Orthopedic Surgery",
+      "attendingDoctorId": "DOC-107",
+      "dischargeDisposition": "Transferred to Rehab",
+      "primaryConditionId": "COND-501",
+      "dischargeSummaryId": "NOTE-506"
+    },
+    {
+      "id": "ADM-502",
+      "patientId": "P005",
+      "admissionDate": "2026-05-15T10:30:00Z",
+      "dischargeDate": "2026-05-20T11:00:00Z",
+      "reason": "Acute delirium, urinary retention, and severe dry mucous membranes due to OTC diphenhydramine toxicity",
+      "admissionType": "Emergency",
+      "department": "General Medicine",
+      "attendingDoctorId": "DOC-101",
+      "dischargeDisposition": "Discharged Home",
+      "primaryConditionId": "COND-502",
+      "dischargeSummaryId": "NOTE-509"
+    }
+  ],
+  "encounters": [
+    {
+      "id": "ENC-501",
+      "patientId": "P005",
+      "admissionId": "ADM-501",
+      "type": "inpatient_admission",
+      "date": "2025-08-01T12:00:00Z",
+      "department": "Orthopedic Surgery",
+      "doctorId": "DOC-107",
+      "reason": "Trauma admission for surgical repair of right femoral neck fracture"
+    },
+    {
+      "id": "ENC-502",
+      "patientId": "P005",
+      "type": "outpatient_clinic",
+      "date": "2025-10-18T11:00:00Z",
+      "department": "Orthopedic Outpatient",
+      "doctorId": "DOC-107",
+      "reason": "Two-month post-hemiarthroplasty physical rehabilitation review"
+    },
+    {
+      "id": "ENC-503",
+      "patientId": "P005",
+      "admissionId": "ADM-502",
+      "type": "inpatient_admission",
+      "date": "2026-05-15T10:30:00Z",
+      "department": "General Medicine",
+      "doctorId": "DOC-101",
+      "reason": "Admission for acute confusion, urinary retention, and agitation"
+    }
+  ],
+  "prescriptions": [
+    {
+      "id": "RX-501",
+      "patientId": "P005",
+      "encounterId": "ENC-501",
+      "admissionId": "ADM-501",
+      "medicationId": "MED-OXYCODONE",
+      "dosage": "5 - 10 mg",
+      "frequency": "Every 4 Hours PRN Pain",
+      "route": "Oral",
+      "startDate": "2025-08-01",
+      "endDate": "2025-08-04",
+      "status": "Discontinued",
+      "action": "Discontinued",
+      "reason": "Discontinued due to acute severe opioid-induced neurotoxicity, auditory/visual hallucinations, and combativeness",
+      "sourceRecordId": "NOTE-504"
+    },
+    {
+      "id": "RX-502",
+      "patientId": "P005",
+      "encounterId": "ENC-501",
+      "admissionId": "ADM-501",
+      "medicationId": "MED-TRAMADOL",
+      "dosage": "25 mg",
+      "frequency": "Every 6 Hours PRN Pain",
+      "route": "Oral",
+      "startDate": "2025-08-04",
+      "endDate": "2025-08-15",
+      "status": "Completed",
+      "action": "Initiated",
+      "reason": "Substituted for oxycodone at low dose for postoperative orthopedic pain with reduced psychotropic burden",
+      "sourceRecordId": "NOTE-505"
+    },
+    {
+      "id": "RX-503",
+      "patientId": "P005",
+      "encounterId": "ENC-501",
+      "admissionId": "ADM-501",
+      "medicationId": "MED-ACETAMINOPHEN",
+      "dosage": "650 mg",
+      "frequency": "Every 6 Hours Scheduled",
+      "route": "Oral",
+      "startDate": "2025-08-01",
+      "status": "Active",
+      "action": "Maintained",
+      "reason": "Baseline non-opioid multimodal analgesia for joint pain and surgical recovery",
+      "sourceRecordId": "NOTE-501"
+    },
+    {
+      "id": "RX-504",
+      "patientId": "P005",
+      "encounterId": "ENC-503",
+      "admissionId": "ADM-502",
+      "medicationId": "MED-BENADRYL",
+      "dosage": "50 mg",
+      "frequency": "Nightly at bedtime (Self-Administered OTC)",
+      "route": "Oral",
+      "startDate": "2026-05-01",
+      "endDate": "2026-05-15",
+      "status": "Discontinued",
+      "action": "Discontinued",
+      "reason": "Discontinued immediately: OTC anticholinergic toxicity causing urinary retention and acute confusional state",
+      "sourceRecordId": "NOTE-508"
+    },
+    {
+      "id": "RX-505",
+      "patientId": "P005",
+      "encounterId": "ENC-503",
+      "admissionId": "ADM-502",
+      "medicationId": "MED-MELATONIN",
+      "dosage": "3 mg",
+      "frequency": "Nightly at bedtime",
+      "route": "Oral",
+      "startDate": "2026-05-16",
+      "status": "Active",
+      "action": "Initiated",
+      "reason": "Non-pharmacologic sleep architecture support replacing anticholinergic sleep aids in elderly patient",
+      "sourceRecordId": "NOTE-509"
+    }
+  ],
+  "labResults": [
+    {
+      "id": "LAB-501",
+      "patientId": "P005",
+      "encounterId": "ENC-501",
+      "testId": "TEST-HGB",
+      "date": "2025-08-01T13:00:00Z",
+      "value": 11.2,
+      "unit": "g/dL",
+      "flag": "Low",
+      "sourceRecordId": "NOTE-501"
+    },
+    {
+      "id": "LAB-502",
+      "patientId": "P005",
+      "encounterId": "ENC-501",
+      "testId": "TEST-HGB",
+      "date": "2025-08-02T06:00:00Z",
+      "value": 9.1,
+      "unit": "g/dL",
+      "flag": "Low",
+      "sourceRecordId": "NOTE-502"
+    },
+    {
+      "id": "LAB-503",
+      "patientId": "P005",
+      "encounterId": "ENC-503",
+      "testId": "TEST-NA",
+      "date": "2026-05-15T11:15:00Z",
+      "value": 138,
+      "unit": "mEq/L",
+      "flag": "Normal",
+      "sourceRecordId": "NOTE-507"
+    },
+    {
+      "id": "LAB-504",
+      "patientId": "P005",
+      "encounterId": "ENC-503",
+      "testId": "TEST-BUN",
+      "date": "2026-05-15T11:15:00Z",
+      "value": 24,
+      "unit": "mg/dL",
+      "flag": "High",
+      "sourceRecordId": "NOTE-507"
+    },
+    {
+      "id": "LAB-505",
+      "patientId": "P005",
+      "encounterId": "ENC-503",
+      "testId": "TEST-CREAT",
+      "date": "2026-05-15T11:15:00Z",
+      "value": 1.1,
+      "unit": "mg/dL",
+      "flag": "Normal",
+      "sourceRecordId": "NOTE-507"
+    }
+  ],
+  "clinicalNotes": [
+    {
+      "id": "NOTE-501",
+      "patientId": "P005",
+      "encounterId": "ENC-501",
+      "admissionId": "ADM-501",
+      "timestamp": "2025-08-01T13:30:00Z",
+      "noteType": "Admission Note",
+      "title": "Orthopedic Trauma H&P: Right Femoral Neck Fracture",
+      "authorId": "DOC-107",
+      "text": "80-year-old female tripped over a rug sustaining right hip pain and inability to bear weight.\nRadiographs show subcapital displaced right femoral neck fracture.\nScheduled for urgent right cemented hemiarthroplasty. Scheduled Acetaminophen 650 mg q6h. Oxycodone 5-10 mg q4h PRN prescribed for post-op severe breakthrough pain.",
+      "sourceRecordId": "REC-P005-001"
+    },
+    {
+      "id": "NOTE-502",
+      "patientId": "P005",
+      "encounterId": "ENC-501",
+      "admissionId": "ADM-501",
+      "timestamp": "2025-08-02T16:00:00Z",
+      "noteType": "Progress Note",
+      "title": "Operative & Post-Op Day 1 Note",
+      "authorId": "DOC-107",
+      "text": "Right hemiarthroplasty completed without surgical complications. Hemoglobin 9.1 g/dL. Pain controlled with Oxycodone 10 mg every 4 hours.",
+      "sourceRecordId": "REC-P005-002"
+    },
+    {
+      "id": "NOTE-503",
+      "patientId": "P005",
+      "encounterId": "ENC-501",
+      "admissionId": "ADM-501",
+      "timestamp": "2025-08-03T21:00:00Z",
+      "noteType": "Nursing Note",
+      "title": "Nursing Shift Note: Acute Delirium & Agitation",
+      "authorId": "DOC-101",
+      "text": "CONTRADICTORY RECORD:\nNurse reports: \"Patient acutely confused, thrashing in bed, attempting to climb out of bed, pulling at Foley catheter and IV line. Screaming that spiders and insects are crawling across the ceiling. Visual hallucinations present. CAM-ICU positive for delirium.\"",
+      "sourceRecordId": "REC-P005-003",
+      "isContradictoryOrMissing": true,
+      "metaAnnotation": "Contradiction: Nursing documents acute hallucinations and severe delirium."
+    },
+    {
+      "id": "NOTE-504",
+      "patientId": "P005",
+      "encounterId": "ENC-501",
+      "admissionId": "ADM-501",
+      "timestamp": "2025-08-03T21:45:00Z",
+      "noteType": "Progress Note",
+      "title": "Surgical Resident / Physician Cross-Cover Note",
+      "authorId": "DOC-107",
+      "text": "CONTRADICTORY RECORD:\nPhysician writes 45 minutes later: \"Patient is resting quietly in bed, alert and oriented x 3, pleasant and cooperative, answering all questions appropriately with zero evidence of agitation or confusion.\"\n(NOTE: Striking clinical discrepancy with nursing report NOTE-503).",
+      "sourceRecordId": "REC-P005-004",
+      "isContradictoryOrMissing": true,
+      "metaAnnotation": "Severe contradiction: Physician claims patient is alert x3 with zero confusion 45m after nursing reports hallucinations."
+    },
+    {
+      "id": "NOTE-505",
+      "patientId": "P005",
+      "encounterId": "ENC-501",
+      "admissionId": "ADM-501",
+      "timestamp": "2025-08-04T09:00:00Z",
+      "noteType": "Consultation Note",
+      "title": "Geriatric Medicine Consultation: Delirium & Analgesic Adjustment",
+      "authorId": "DOC-101",
+      "text": "Geriatrics consulted for post-operative delirium.\nAssessment: Opioid-induced delirium / hallucinations likely exacerbated by full mu-opioid agonist Oxycodone in an elderly patient with borderline cognitive reserve.\nMEDICATION CHANGE:\n1. Oxycodone is completely DISCONTINUED.\n2. Switched to low-dose Tramadol 25 mg q6h PRN only for severe breakthrough pain.\n3. Maximize scheduled Acetaminophen 650 mg q6h. Implement delirium precautions, daytime sunlight exposure, family presence.",
+      "sourceRecordId": "REC-P005-005",
+      "metaAnnotation": "Explains discontinuation of Oxycodone and switch to low-dose Tramadol."
+    },
+    {
+      "id": "NOTE-506",
+      "patientId": "P005",
+      "encounterId": "ENC-501",
+      "admissionId": "ADM-501",
+      "timestamp": "2025-08-07T14:00:00Z",
+      "noteType": "Discharge Summary",
+      "title": "Discharge Summary - ADM-501 Hip Repair & Rehab Transfer",
+      "authorId": "DOC-107",
+      "text": "Delirium cleared completely following Oxycodone discontinuation. Mentation at baseline.\nTransferred to Subacute Rehabilitation facility for physical therapy.",
+      "sourceRecordId": "REC-P005-006"
+    },
+    {
+      "id": "NOTE-507",
+      "patientId": "P005",
+      "encounterId": "ENC-503",
+      "admissionId": "ADM-502",
+      "timestamp": "2026-05-15T12:00:00Z",
+      "noteType": "Admission Note",
+      "title": "H&P: Acute Anticholinergic Toxicity & Urinary Retention",
+      "authorId": "DOC-101",
+      "text": "Patient brought to emergency department by daughter for acute confusion, speech stumbling, dilated pupils, dry flushed skin, and lower abdominal distension.\nBladder scan reveals 850 mL acute urinary retention. Foley catheter placed with immediate relief.\nMedication reconciliation reveals patient was self-administering over-the-counter Diphenhydramine (Benadryl) 50 mg every night for severe insomnia over the past 2 weeks.\nDiagnosis: Anticholinergic toxidrome and urinary retention secondary to Diphenhydramine in high-risk elderly patient.",
+      "sourceRecordId": "REC-P005-007"
+    },
+    {
+      "id": "NOTE-508",
+      "patientId": "P005",
+      "encounterId": "ENC-503",
+      "admissionId": "ADM-502",
+      "timestamp": "2026-05-16T10:00:00Z",
+      "noteType": "Progress Note",
+      "title": "Medicine Progress Note: Anticholinergic Washout",
+      "authorId": "DOC-101",
+      "text": "Benadryl discontinued immediately. Cognitive symptoms and confusion resolving rapidly as anticholinergic clears. Foley removed, voiding spontaneously. Initiated Melatonin 3 mg at bedtime for non-anticholinergic insomnia management.",
+      "sourceRecordId": "REC-P005-008"
+    },
+    {
+      "id": "NOTE-509",
+      "patientId": "P005",
+      "encounterId": "ENC-503",
+      "admissionId": "ADM-502",
+      "timestamp": "2026-05-20T10:30:00Z",
+      "noteType": "Discharge Summary",
+      "title": "Discharge Summary - ADM-502 Benadryl Discontinuation",
+      "authorId": "DOC-101",
+      "text": "Patient discharged home in stable condition. Daughter educated on Beers Criteria medications and dangerous anticholinergics (Benadryl, dimenhydrinate) to strictly avoid in elderly patients.",
+      "sourceRecordId": "REC-P005-009"
+    }
+  ]
+}

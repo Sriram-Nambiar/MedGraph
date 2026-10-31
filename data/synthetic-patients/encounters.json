@@ -1,0 +1,203 @@
+[
+  {
+    "id": "ENC-101",
+    "patientId": "P001",
+    "admissionId": "ADM-101",
+    "type": "inpatient_admission",
+    "date": "2025-09-12T08:30:00Z",
+    "department": "Cardiovascular Care",
+    "doctorId": "DOC-102",
+    "reason": "Initial admission for acute heart failure decompensation"
+  },
+  {
+    "id": "ENC-102",
+    "patientId": "P001",
+    "type": "outpatient_clinic",
+    "date": "2025-11-20T14:00:00Z",
+    "department": "Cardiology Outpatient",
+    "doctorId": "DOC-102",
+    "reason": "Routine 2-month post-discharge heart failure follow-up"
+  },
+  {
+    "id": "ENC-103",
+    "patientId": "P001",
+    "admissionId": "ADM-102",
+    "type": "inpatient_admission",
+    "date": "2026-02-05T10:15:00Z",
+    "department": "Cardiovascular Care",
+    "doctorId": "DOC-102",
+    "reason": "Admission for severe hyperkalemia and renal decompensation"
+  },
+  {
+    "id": "ENC-104",
+    "patientId": "P001",
+    "type": "specialist_consult",
+    "date": "2026-04-14T09:30:00Z",
+    "department": "Nephrology Outpatient",
+    "doctorId": "DOC-101",
+    "reason": "Renal function stabilization check post-Entresto initiation"
+  },
+  {
+    "id": "ENC-105",
+    "patientId": "P001",
+    "admissionId": "ADM-103",
+    "type": "inpatient_admission",
+    "date": "2026-08-18T11:45:00Z",
+    "department": "Cardiovascular Care",
+    "doctorId": "DOC-102",
+    "reason": "Admission for GDMT step-up and volume overload management"
+  },
+  {
+    "id": "ENC-201",
+    "patientId": "P002",
+    "admissionId": "ADM-201",
+    "type": "inpatient_admission",
+    "date": "2025-07-10T13:00:00Z",
+    "department": "General Medicine",
+    "doctorId": "DOC-101",
+    "reason": "Admission for right leg acute DVT anticoagulation initiation"
+  },
+  {
+    "id": "ENC-202",
+    "patientId": "P002",
+    "type": "outpatient_clinic",
+    "date": "2025-08-22T10:00:00Z",
+    "department": "Anticoagulation Clinic",
+    "doctorId": "DOC-101",
+    "reason": "Labile INR monitoring and Warfarin dosage adjustment"
+  },
+  {
+    "id": "ENC-203",
+    "patientId": "P002",
+    "admissionId": "ADM-202",
+    "type": "inpatient_admission",
+    "date": "2026-01-14T09:20:00Z",
+    "department": "General Medicine",
+    "doctorId": "DOC-101",
+    "reason": "Emergency admission for bilateral pulmonary embolism on Warfarin"
+  },
+  {
+    "id": "ENC-204",
+    "patientId": "P002",
+    "type": "outpatient_clinic",
+    "date": "2026-03-30T15:00:00Z",
+    "department": "Primary Care",
+    "doctorId": "DOC-101",
+    "reason": "Follow-up on Apixaban therapy and glycemic control"
+  },
+  {
+    "id": "ENC-205",
+    "patientId": "P002",
+    "admissionId": "ADM-203",
+    "type": "inpatient_admission",
+    "date": "2026-09-02T07:15:00Z",
+    "department": "General Medicine",
+    "doctorId": "DOC-101",
+    "reason": "Admission for hematochezia and acute drop in hemoglobin"
+  },
+  {
+    "id": "ENC-301",
+    "patientId": "P003",
+    "type": "specialist_consult",
+    "date": "2025-05-10T11:00:00Z",
+    "department": "Neuroimmunology",
+    "doctorId": "DOC-104",
+    "reason": "Routine MS monitoring and pre-infusion assessment"
+  },
+  {
+    "id": "ENC-302",
+    "patientId": "P003",
+    "admissionId": "ADM-301",
+    "type": "inpatient_admission",
+    "date": "2025-10-14T17:40:00Z",
+    "department": "Infectious Diseases",
+    "doctorId": "DOC-103",
+    "reason": "Emergency admission for septic shock secondary to UTI"
+  },
+  {
+    "id": "ENC-303",
+    "patientId": "P003",
+    "type": "outpatient_clinic",
+    "date": "2025-12-04T13:30:00Z",
+    "department": "Infectious Diseases",
+    "doctorId": "DOC-103",
+    "reason": "Post-sepsis test of cure follow-up"
+  },
+  {
+    "id": "ENC-304",
+    "patientId": "P003",
+    "admissionId": "ADM-302",
+    "type": "inpatient_admission",
+    "date": "2026-04-02T14:10:00Z",
+    "department": "Neurology",
+    "doctorId": "DOC-105",
+    "reason": "Admission for severe MS acute relapse management"
+  },
+  {
+    "id": "ENC-401",
+    "patientId": "P004",
+    "admissionId": "ADM-401",
+    "type": "inpatient_admission",
+    "date": "2025-06-20T06:45:00Z",
+    "department": "Cardiovascular Care",
+    "doctorId": "DOC-102",
+    "reason": "Admission for acute COPD exacerbation and AF with rapid ventricular rate"
+  },
+  {
+    "id": "ENC-402",
+    "patientId": "P004",
+    "type": "outpatient_clinic",
+    "date": "2025-11-12T10:15:00Z",
+    "department": "Pulmonology Outpatient",
+    "doctorId": "DOC-101",
+    "reason": "Pulmonary function test and inhaler therapy escalation"
+  },
+  {
+    "id": "ENC-403",
+    "patientId": "P004",
+    "admissionId": "ADM-402",
+    "type": "inpatient_admission",
+    "date": "2026-03-10T08:00:00Z",
+    "department": "Endocrinology & Metabolism",
+    "doctorId": "DOC-108",
+    "reason": "Admission for thyroid storm / severe thyrotoxicosis"
+  },
+  {
+    "id": "ENC-404",
+    "patientId": "P004",
+    "type": "specialist_consult",
+    "date": "2026-07-22T14:00:00Z",
+    "department": "Endocrinology Outpatient",
+    "doctorId": "DOC-108",
+    "reason": "Evaluation of thyroid function post-amiodarone cessation"
+  },
+  {
+    "id": "ENC-501",
+    "patientId": "P005",
+    "admissionId": "ADM-501",
+    "type": "inpatient_admission",
+    "date": "2025-08-01T12:00:00Z",
+    "department": "Orthopedic Surgery",
+    "doctorId": "DOC-107",
+    "reason": "Trauma admission for surgical repair of right femoral neck fracture"
+  },
+  {
+    "id": "ENC-502",
+    "patientId": "P005",
+    "type": "outpatient_clinic",
+    "date": "2025-10-18T11:00:00Z",
+    "department": "Orthopedic Outpatient",
+    "doctorId": "DOC-107",
+    "reason": "Two-month post-hemiarthroplasty physical rehabilitation review"
+  },
+  {
+    "id": "ENC-503",
+    "patientId": "P005",
+    "admissionId": "ADM-502",
+    "type": "inpatient_admission",
+    "date": "2026-05-15T10:30:00Z",
+    "department": "General Medicine",
+    "doctorId": "DOC-101",
+    "reason": "Admission for acute confusion, urinary retention, and agitation"
+  }
+]

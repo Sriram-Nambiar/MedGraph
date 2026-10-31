@@ -1,0 +1,50 @@
+[
+  {
+    "id": "DOC-101",
+    "name": "Dr. Gregory House",
+    "specialty": "Internal Medicine",
+    "department": "General Medicine"
+  },
+  {
+    "id": "DOC-102",
+    "name": "Dr. Cristina Yang",
+    "specialty": "Cardiology",
+    "department": "Cardiovascular Care"
+  },
+  {
+    "id": "DOC-103",
+    "name": "Dr. Robert Chase",
+    "specialty": "Infectious Disease",
+    "department": "Infectious Diseases"
+  },
+  {
+    "id": "DOC-104",
+    "name": "Dr. Allison Cameron",
+    "specialty": "Immunology & Neurology",
+    "department": "Neuroimmunology"
+  },
+  {
+    "id": "DOC-105",
+    "name": "Dr. Eric Foreman",
+    "specialty": "Neurology",
+    "department": "Neurology"
+  },
+  {
+    "id": "DOC-106",
+    "name": "Dr. James Wilson",
+    "specialty": "Oncology & Palliative",
+    "department": "Medical Oncology"
+  },
+  {
+    "id": "DOC-107",
+    "name": "Dr. Miranda Bailey",
+    "specialty": "General Surgery & Trauma",
+    "department": "Orthopedic Surgery"
+  },
+  {
+    "id": "DOC-108",
+    "name": "Dr. Lisa Cuddy",
+    "specialty": "Endocrinology",
+    "department": "Endocrinology & Metabolism"
+  }
+]

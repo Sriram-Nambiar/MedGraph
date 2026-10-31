@@ -1,0 +1,347 @@
+{
+  "patient": {
+    "id": "P003",
+    "mrn": "MRN-582109",
+    "name": "Sarah Chen",
+    "age": 42,
+    "gender": "Female",
+    "dateOfBirth": "1984-11-03",
+    "bloodType": "B-",
+    "primaryDiagnosis": "Relapsing-Remitting Multiple Sclerosis (RRMS) with Severe Urosepsis",
+    "allergies": [
+      "Latex (Contact Dermatitis)"
+    ]
+  },
+  "conditions": [
+    {
+      "id": "COND-301",
+      "patientId": "P003",
+      "code": "G35",
+      "name": "Multiple sclerosis, relapsing-remitting",
+      "category": "Neurology",
+      "status": "Chronic",
+      "onsetDate": "2019-02-14"
+    },
+    {
+      "id": "COND-302",
+      "patientId": "P003",
+      "code": "A41.51",
+      "name": "Sepsis due to Escherichia coli (Urosepsis)",
+      "category": "Renal",
+      "status": "Resolved",
+      "onsetDate": "2025-10-14"
+    },
+    {
+      "id": "COND-303",
+      "patientId": "P003",
+      "code": "N31.9",
+      "name": "Neuromuscular dysfunction of bladder (Neurogenic bladder)",
+      "category": "Renal",
+      "status": "Active",
+      "onsetDate": "2021-08-20"
+    }
+  ],
+  "admissions": [
+    {
+      "id": "ADM-301",
+      "patientId": "P003",
+      "admissionDate": "2025-10-14T17:40:00Z",
+      "dischargeDate": "2025-10-19T10:00:00Z",
+      "reason": "Severe urosepsis with E. coli bacteremia and hemodynamic instability in patient on Ocrelizumab therapy",
+      "admissionType": "Emergency",
+      "department": "Infectious Diseases",
+      "attendingDoctorId": "DOC-103",
+      "dischargeDisposition": "Discharged Home",
+      "primaryConditionId": "COND-302",
+      "dischargeSummaryId": "NOTE-304"
+    },
+    {
+      "id": "ADM-302",
+      "patientId": "P003",
+      "admissionDate": "2026-04-02T14:10:00Z",
+      "dischargeDate": "2026-04-07T11:45:00Z",
+      "reason": "Acute neurological decline with left lower extremity paraparesis and ataxia (MS flare vs UTI pseudoexacerbation)",
+      "admissionType": "Urgent",
+      "department": "Neurology",
+      "attendingDoctorId": "DOC-104",
+      "dischargeDisposition": "Discharged Home",
+      "primaryConditionId": "COND-301",
+      "dischargeSummaryId": "NOTE-307"
+    }
+  ],
+  "encounters": [
+    {
+      "id": "ENC-301",
+      "patientId": "P003",
+      "type": "specialist_consult",
+      "date": "2025-05-10T11:00:00Z",
+      "department": "Neuroimmunology",
+      "doctorId": "DOC-104",
+      "reason": "Routine MS monitoring and pre-infusion assessment"
+    },
+    {
+      "id": "ENC-302",
+      "patientId": "P003",
+      "admissionId": "ADM-301",
+      "type": "inpatient_admission",
+      "date": "2025-10-14T17:40:00Z",
+      "department": "Infectious Diseases",
+      "doctorId": "DOC-103",
+      "reason": "Emergency admission for septic shock secondary to UTI"
+    },
+    {
+      "id": "ENC-303",
+      "patientId": "P003",
+      "type": "outpatient_clinic",
+      "date": "2025-12-04T13:30:00Z",
+      "department": "Infectious Diseases",
+      "doctorId": "DOC-103",
+      "reason": "Post-sepsis test of cure follow-up"
+    },
+    {
+      "id": "ENC-304",
+      "patientId": "P003",
+      "admissionId": "ADM-302",
+      "type": "inpatient_admission",
+      "date": "2026-04-02T14:10:00Z",
+      "department": "Neurology",
+      "doctorId": "DOC-105",
+      "reason": "Admission for severe MS acute relapse management"
+    }
+  ],
+  "prescriptions": [
+    {
+      "id": "RX-301",
+      "patientId": "P003",
+      "encounterId": "ENC-301",
+      "medicationId": "MED-OCRELIZUMAB",
+      "dosage": "600 mg",
+      "frequency": "Every 6 Months",
+      "route": "IV Infusion",
+      "startDate": "2023-01-15",
+      "status": "Active",
+      "action": "Maintained",
+      "reason": "Disease-modifying therapy for Relapsing-Remitting Multiple Sclerosis",
+      "sourceRecordId": "NOTE-301"
+    },
+    {
+      "id": "RX-302",
+      "patientId": "P003",
+      "encounterId": "ENC-301",
+      "medicationId": "MED-BACLOFEN",
+      "dosage": "10 mg",
+      "frequency": "Three Times Daily",
+      "route": "Oral",
+      "startDate": "2024-05-10",
+      "status": "Active",
+      "action": "Maintained",
+      "reason": "Symptomatic management of lower extremity muscular spasticity",
+      "sourceRecordId": "NOTE-301"
+    },
+    {
+      "id": "RX-303",
+      "patientId": "P003",
+      "encounterId": "ENC-302",
+      "admissionId": "ADM-301",
+      "medicationId": "MED-CEFTRIAXONE",
+      "dosage": "2 g",
+      "frequency": "Every 24 Hours",
+      "route": "IV Injection",
+      "startDate": "2025-10-14",
+      "endDate": "2025-10-18",
+      "status": "Completed",
+      "action": "Initiated",
+      "reason": "Empiric broad-spectrum antibiotic coverage for severe urosepsis",
+      "sourceRecordId": "NOTE-302"
+    },
+    {
+      "id": "RX-304",
+      "patientId": "P003",
+      "encounterId": "ENC-302",
+      "admissionId": "ADM-301",
+      "medicationId": "MED-CIPRO",
+      "dosage": "500 mg",
+      "frequency": "Twice Daily x 7 days",
+      "route": "Oral",
+      "startDate": "2025-10-18",
+      "endDate": "2025-10-25",
+      "status": "Completed",
+      "action": "Initiated",
+      "reason": "Step-down oral antibiotic course for confirmed susceptible E. coli urinary tract infection",
+      "sourceRecordId": "NOTE-304"
+    },
+    {
+      "id": "RX-305",
+      "patientId": "P003",
+      "encounterId": "ENC-304",
+      "admissionId": "ADM-302",
+      "medicationId": "MED-METHYLPRED",
+      "dosage": "1000 mg",
+      "frequency": "Once Daily x 3 days",
+      "route": "IV Solution",
+      "startDate": "2026-04-02",
+      "endDate": "2026-04-05",
+      "status": "Completed",
+      "action": "Initiated",
+      "reason": "High-dose pulse corticosteroid therapy for acute multiple sclerosis relapse with paraparesis",
+      "sourceRecordId": "NOTE-306"
+    }
+  ],
+  "labResults": [
+    {
+      "id": "LAB-301",
+      "patientId": "P003",
+      "encounterId": "ENC-302",
+      "testId": "TEST-WBC",
+      "date": "2025-10-14T18:00:00Z",
+      "value": 16.4,
+      "unit": "x10^9/L",
+      "flag": "Critical High",
+      "sourceRecordId": "NOTE-302"
+    },
+    {
+      "id": "LAB-302",
+      "patientId": "P003",
+      "encounterId": "ENC-302",
+      "testId": "TEST-CRP",
+      "date": "2025-10-14T18:00:00Z",
+      "value": 85,
+      "unit": "mg/L",
+      "flag": "Critical High",
+      "sourceRecordId": "NOTE-302"
+    },
+    {
+      "id": "LAB-303",
+      "patientId": "P003",
+      "encounterId": "ENC-302",
+      "testId": "TEST-CREAT",
+      "date": "2025-10-14T18:00:00Z",
+      "value": 1.4,
+      "unit": "mg/dL",
+      "flag": "High",
+      "sourceRecordId": "NOTE-302"
+    },
+    {
+      "id": "LAB-304",
+      "patientId": "P003",
+      "encounterId": "ENC-302",
+      "testId": "TEST-WBC",
+      "date": "2025-10-18T07:30:00Z",
+      "value": 7.2,
+      "unit": "x10^9/L",
+      "flag": "Normal",
+      "sourceRecordId": "NOTE-304"
+    },
+    {
+      "id": "LAB-305",
+      "patientId": "P003",
+      "encounterId": "ENC-304",
+      "testId": "TEST-WBC",
+      "date": "2026-04-02T15:00:00Z",
+      "value": 8.1,
+      "unit": "x10^9/L",
+      "flag": "Normal",
+      "sourceRecordId": "NOTE-305"
+    },
+    {
+      "id": "LAB-306",
+      "patientId": "P003",
+      "encounterId": "ENC-304",
+      "testId": "TEST-CRP",
+      "date": "2026-04-02T15:00:00Z",
+      "value": 4.2,
+      "unit": "mg/L",
+      "flag": "Normal",
+      "sourceRecordId": "NOTE-305"
+    }
+  ],
+  "clinicalNotes": [
+    {
+      "id": "NOTE-301",
+      "patientId": "P003",
+      "encounterId": "ENC-301",
+      "timestamp": "2025-05-10T11:30:00Z",
+      "noteType": "Consultation Note",
+      "title": "Neuroimmunology Semi-Annual MS Review",
+      "authorId": "DOC-104",
+      "text": "Sarah Chen is a 42-year-old female with RRMS diagnosed in 2019. EDSS score is stable at 2.5.\nCurrently receiving Ocrelizumab 600 mg IV every 6 months, next infusion scheduled for late October 2025.\nTaking Baclofen 10 mg TID for spasticity. Uses intermittent self-catheterization for neurogenic bladder.",
+      "sourceRecordId": "REC-P003-001"
+    },
+    {
+      "id": "NOTE-302",
+      "patientId": "P003",
+      "encounterId": "ENC-302",
+      "admissionId": "ADM-301",
+      "timestamp": "2025-10-14T19:00:00Z",
+      "noteType": "Admission Note",
+      "title": "Inpatient Medicine H&P: Severe Sepsis Secondary to UTI",
+      "authorId": "DOC-103",
+      "text": "Patient brought to ED with shivering rigors, severe flank pain, confusion, and hypotension (BP 82/50 mmHg).\nCONTRADICTION IN VITALS & RECORD:\nTriage nurse record lists emergency entrance temperature as 39.4°C (102.9°F) with heart rate 128 bpm.\nHowever, attending physician Dr. Chase notes in the assessment: \"Patient has remained entirely afebrile throughout presentation (max temp 37.1°C), likely blunted by immunosuppression.\"\nLabs show WBC 16.4 x 10^9/L with 88% neutrophils, CRP 85 mg/L.\nUrine analysis strongly positive for nitrites and leukocyte esterase.\nDiagnosis: Urosepsis with septic shock.\nACTION: Upcoming scheduled Ocrelizumab infusion is CANCELLED AND HELD due to severe life-threatening active bacterial infection.\nInitiated IV Ceftriaxone 2g daily and aggressive fluid resuscitation.",
+      "sourceRecordId": "REC-P003-002",
+      "isContradictoryOrMissing": true,
+      "metaAnnotation": "Contradiction: Triage temp 39.4°C vs Doctor Chase note claiming patient was afebrile at 37.1°C."
+    },
+    {
+      "id": "NOTE-303",
+      "patientId": "P003",
+      "encounterId": "ENC-302",
+      "admissionId": "ADM-301",
+      "timestamp": "2025-10-16T10:00:00Z",
+      "noteType": "Progress Note",
+      "title": "Infectious Disease Progress Note - Missing Blood Culture Panel",
+      "authorId": "DOC-103",
+      "text": "Blood cultures grew Escherichia coli.\nMISSING RECORD: The attending note states: \"Specific antibiotic minimum inhibitory concentration (MIC) sensitivities are attached to the chart.\" However, no microbiology sensitivity report is present in the electronic document repository.\nEmpirically responding well to Ceftriaxone. Afebrile for 24 hours.",
+      "sourceRecordId": "REC-P003-003",
+      "isContradictoryOrMissing": true,
+      "metaAnnotation": "Missing record: MIC sensitivity report referenced but absent."
+    },
+    {
+      "id": "NOTE-304",
+      "patientId": "P003",
+      "encounterId": "ENC-302",
+      "admissionId": "ADM-301",
+      "timestamp": "2025-10-19T09:30:00Z",
+      "noteType": "Discharge Summary",
+      "title": "Discharge Summary - ADM-301 Sepsis Resolution",
+      "authorId": "DOC-103",
+      "text": "Urosepsis resolved. WBC down to 7.2.\nDischarged on oral Ciprofloxacin 500 mg BID x 7 days.\nIMPORTANT: Ocrelizumab infusion remains on hold. Patient advised not to receive anti-CD20 immunosuppression until cleared by neurology and infectious disease in at least 6 weeks.",
+      "sourceRecordId": "REC-P003-004"
+    },
+    {
+      "id": "NOTE-305",
+      "patientId": "P003",
+      "encounterId": "ENC-304",
+      "admissionId": "ADM-302",
+      "timestamp": "2026-04-02T16:00:00Z",
+      "noteType": "Admission Note",
+      "title": "Neurology H&P: Acute MS Relapse",
+      "authorId": "DOC-105",
+      "text": "Patient admitted with 3-day history of worsening lower extremity weakness, numbness from T10 dermatome down, and inability to ambulate without assistance.\nInfection workup is negative: WBC normal (8.1), CRP normal (4.2), urinalysis negative.\nBrain and spine MRI demonstrates an active new gadolinium-enhancing demyelinating plaque in the thoracic spinal cord (T8).\nImpression: True acute MS relapse in setting of delayed disease-modifying therapy.\nPlan: IV Methylprednisolone (Solu-Medrol) 1000 mg daily x 3 days followed by oral prednisone taper.",
+      "sourceRecordId": "REC-P003-005"
+    },
+    {
+      "id": "NOTE-306",
+      "patientId": "P003",
+      "encounterId": "ENC-304",
+      "admissionId": "ADM-302",
+      "timestamp": "2026-04-05T11:00:00Z",
+      "noteType": "Progress Note",
+      "title": "Neurology Progress Note: High-Dose Steroid Response",
+      "authorId": "DOC-105",
+      "text": "Completed 3-day course of IV Solu-Medrol 1g daily. Strength in left lower extremity significantly improved from 2/5 to 4/5. Ambulation restored with walker. Plan discharge on oral taper.",
+      "sourceRecordId": "REC-P003-006"
+    },
+    {
+      "id": "NOTE-307",
+      "patientId": "P003",
+      "encounterId": "ENC-304",
+      "admissionId": "ADM-302",
+      "timestamp": "2026-04-07T11:00:00Z",
+      "noteType": "Discharge Summary",
+      "title": "Discharge Summary - ADM-302 MS Flare",
+      "authorId": "DOC-105",
+      "text": "Acute relapse treated successfully. Ocrelizumab therapy cleared to resume in 4 weeks given absence of active infection and urgent need to prevent further neurological accrual.",
+      "sourceRecordId": "REC-P003-007"
+    }
+  ]
+}

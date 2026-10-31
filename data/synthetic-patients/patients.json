@@ -1,0 +1,68 @@
+[
+  {
+    "id": "P001",
+    "mrn": "MRN-847291",
+    "name": "Eleanor Vance",
+    "age": 68,
+    "gender": "Female",
+    "dateOfBirth": "1958-04-12",
+    "bloodType": "A+",
+    "primaryDiagnosis": "Heart Failure with Reduced Ejection Fraction (HFrEF) & Chronic Kidney Disease Stage 3b",
+    "allergies": [
+      "Penicillin (Rash)",
+      "Sulfa drugs (Hives)"
+    ]
+  },
+  {
+    "id": "P002",
+    "mrn": "MRN-391824",
+    "name": "Marcus Thorne",
+    "age": 54,
+    "gender": "Male",
+    "dateOfBirth": "1972-08-25",
+    "bloodType": "O+",
+    "primaryDiagnosis": "Recurrent Deep Vein Thrombosis & Pulmonary Embolism on Anticoagulation",
+    "allergies": [
+      "No Known Drug Allergies (NKDA)"
+    ]
+  },
+  {
+    "id": "P003",
+    "mrn": "MRN-582109",
+    "name": "Sarah Chen",
+    "age": 42,
+    "gender": "Female",
+    "dateOfBirth": "1984-11-03",
+    "bloodType": "B-",
+    "primaryDiagnosis": "Relapsing-Remitting Multiple Sclerosis (RRMS) with Severe Urosepsis",
+    "allergies": [
+      "Latex (Contact Dermatitis)"
+    ]
+  },
+  {
+    "id": "P004",
+    "mrn": "MRN-204918",
+    "name": "James Rodriguez",
+    "age": 71,
+    "gender": "Male",
+    "dateOfBirth": "1955-01-19",
+    "bloodType": "AB+",
+    "primaryDiagnosis": "Severe COPD (GOLD 3) with Drug-Induced Amiodarone Thyrotoxicosis",
+    "allergies": [
+      "Codeine (Nausea/Vomiting)"
+    ]
+  },
+  {
+    "id": "P005",
+    "mrn": "MRN-773012",
+    "name": "Beatrice Kim",
+    "age": 80,
+    "gender": "Female",
+    "dateOfBirth": "1946-06-30",
+    "bloodType": "O-",
+    "primaryDiagnosis": "Femoral Neck Fracture Post-Op Delirium & Anticholinergic Toxicity",
+    "allergies": [
+      "Aspirin (Bronchospasm)"
+    ]
+  }
+]
