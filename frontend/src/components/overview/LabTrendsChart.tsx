@@ -7,9 +7,7 @@ import {
   YAxis,
   Tooltip,
   CartesianGrid,
-  ReferenceLine,
 } from 'recharts';
-import { FlaskConical, TrendingUp, Info } from 'lucide-react';
 import { LabResult } from '../../types';
 
 interface LabTrendsChartProps {
@@ -17,8 +15,7 @@ interface LabTrendsChartProps {
   onOpenEvidence: (recordId: string) => void;
 }
 
-export const LabTrendsChart: React.FC<LabTrendsChartProps> = ({ labResults, onOpenEvidence }) => {
-  // Available unique tests in patient records
+export const LabTrendsChart: React.FC<LabTrendsChartProps> = ({ labResults }) => {
   const availableTests = useMemo(() => {
     const map = new Map<string, { id: string; count: number; unit: string }>();
     for (const lr of labResults) {
@@ -34,7 +31,6 @@ export const LabTrendsChart: React.FC<LabTrendsChartProps> = ({ labResults, onOp
     return availableTests[0]?.id || 'TEST-CREAT';
   });
 
-  // Filtered and formatted data for chart
   const chartData = useMemo(() => {
     return labResults
       .filter((lr) => lr.testId === selectedTestId)
@@ -52,16 +48,15 @@ export const LabTrendsChart: React.FC<LabTrendsChartProps> = ({ labResults, onOp
   const currentTestInfo = availableTests.find((t) => t.id === selectedTestId);
 
   return (
-    <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-5 shadow-sm space-y-4">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <FlaskConical className="w-4 h-4 text-cyan-400" />
-          <h2 className="text-sm font-semibold text-white uppercase tracking-wider font-mono">
-            Longitudinal Laboratory Trajectory
+    <div className="bg-zinc-900/30 border border-zinc-800/80 rounded-xl p-5 space-y-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-zinc-800/60">
+        <div>
+          <h2 className="text-xs font-mono uppercase tracking-wider font-semibold text-zinc-400">
+            Laboratory Trajectory Over Time
           </h2>
         </div>
 
-        {/* Test Selector Pills */}
+        {/* Test Selector Tabs */}
         <div className="flex flex-wrap items-center gap-1.5">
           {availableTests.map((test) => (
             <button
@@ -69,30 +64,29 @@ export const LabTrendsChart: React.FC<LabTrendsChartProps> = ({ labResults, onOp
               onClick={() => setSelectedTestId(test.id)}
               className={`px-2.5 py-1 text-xs rounded-md font-mono transition-colors ${
                 selectedTestId === test.id
-                  ? 'bg-zinc-800 text-cyan-300 border border-cyan-800/80 font-bold shadow-sm'
-                  : 'text-zinc-400 hover:text-white hover:bg-zinc-850'
+                  ? 'bg-zinc-800 text-white font-medium border border-zinc-700 shadow-sm'
+                  : 'text-zinc-500 hover:text-zinc-300'
               }`}
             >
-              {test.id.replace('TEST-', '')} ({test.count})
+              {test.id.replace('TEST-', '')}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Chart visualization */}
       {chartData.length > 0 ? (
-        <div className="h-64 w-full pt-2">
+        <div className="h-56 w-full pt-1">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+            <LineChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#1f2028" />
               <XAxis
                 dataKey="date"
-                stroke="#64748b"
-                tick={{ fontSize: 11, fill: '#94a3b8', fontFamily: 'monospace' }}
+                stroke="#52525b"
+                tick={{ fontSize: 10, fill: '#71717a', fontFamily: 'monospace' }}
               />
               <YAxis
-                stroke="#64748b"
-                tick={{ fontSize: 11, fill: '#94a3b8', fontFamily: 'monospace' }}
+                stroke="#52525b"
+                tick={{ fontSize: 10, fill: '#71717a', fontFamily: 'monospace' }}
                 domain={['auto', 'auto']}
               />
               <Tooltip
@@ -100,25 +94,13 @@ export const LabTrendsChart: React.FC<LabTrendsChartProps> = ({ labResults, onOp
                   if (active && payload && payload.length) {
                     const data = payload[0].payload;
                     return (
-                      <div className="bg-zinc-950/95 border border-zinc-750 p-3 rounded-lg shadow-xl text-xs space-y-1 font-mono">
-                        <div className="text-zinc-400">{data.date}</div>
-                        <div className="text-white font-bold text-sm">
+                      <div className="bg-zinc-950 border border-zinc-800 p-2.5 rounded-lg shadow-xl text-xs space-y-1 font-mono">
+                        <div className="text-zinc-500">{data.date}</div>
+                        <div className="text-white font-semibold">
                           {data.value} {data.unit}
                         </div>
-                        <div
-                          className={`text-[10px] font-semibold ${
-                            data.flag.includes('Critical')
-                              ? 'text-rose-400'
-                              : data.flag.includes('High') || data.flag.includes('Low')
-                              ? 'text-amber-400'
-                              : 'text-emerald-400'
-                          }`}
-                        >
-                          Status: {data.flag}
-                        </div>
-                        <div className="pt-1 text-[10px] text-cyan-400">
-                          Source: [{data.sourceRecordId}]
-                        </div>
+                        <div className="text-[10px] text-zinc-400">Status: {data.flag}</div>
+                        <div className="text-[10px] text-zinc-500">[{data.sourceRecordId}]</div>
                       </div>
                     );
                   }
@@ -128,27 +110,23 @@ export const LabTrendsChart: React.FC<LabTrendsChartProps> = ({ labResults, onOp
               <Line
                 type="monotone"
                 dataKey="value"
-                stroke="#22d3ee"
-                strokeWidth={2.5}
-                dot={{ r: 4, fill: '#22d3ee', stroke: '#090a0f', strokeWidth: 2 }}
-                activeDot={{ r: 6, fill: '#67e8f9' }}
+                stroke="#f4f4f5"
+                strokeWidth={2}
+                dot={{ r: 3.5, fill: '#ffffff', stroke: '#09090b', strokeWidth: 1.5 }}
+                activeDot={{ r: 5, fill: '#ffffff' }}
               />
             </LineChart>
           </ResponsiveContainer>
         </div>
       ) : (
-        <div className="h-48 flex items-center justify-center text-xs text-zinc-500 font-mono">
-          No longitudinal data points available for {selectedTestId}.
+        <div className="h-40 flex items-center justify-center text-xs text-zinc-500 font-mono">
+          No records found for {selectedTestId}.
         </div>
       )}
 
-      {/* Footer Info */}
-      <div className="flex items-center justify-between text-[11px] text-zinc-500 font-mono pt-2 border-t border-zinc-800/80">
-        <span className="flex items-center gap-1">
-          <Info className="w-3.5 h-3.5" />
-          Measured in {currentTestInfo?.unit || 'standard units'}. Points correlate to clinical note documentation.
-        </span>
-        <span>{chartData.length} records analyzed</span>
+      <div className="flex items-center justify-between text-[10px] text-zinc-500 font-mono pt-1">
+        <span>Unit: {currentTestInfo?.unit || 'standard'}</span>
+        <span>{chartData.length} data points recorded</span>
       </div>
     </div>
   );
