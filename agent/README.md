@@ -2,7 +2,7 @@
 
 This directory contains the complete **AI and agent orchestration layer** for MedGraph, built using LangChain and LangGraph.
 
-It fulfills the **Person 2** role for the Hackathon, providing an evidence-grounded longitudinal clinical history investigation engine that connects with Person 1's Express/Neo4j backend.
+It provides an evidence-grounded longitudinal clinical history investigation engine that connects with the MedGraph Express/Neo4j backend.
 
 ---
 
@@ -34,11 +34,11 @@ flowchart TD
 - **Causality Protection**: Refuses to assume causation from correlation. If a medication change has no documented rationale in physician notes, it is flagged as unverified and the system abstains.
 - **Controlled Self-Correction**: Implements bounded retry loops (maximum 2 retries) for targeted retrieval when evidence is incomplete.
 - **Thread & Patient Isolation**: Persists session state using LangGraph checkpointing (`MemorySaver`) while enforcing strict patient isolation.
-- **Dual Mode**: Can run against Person 1's live backend (`USE_MOCK_API=False`, port 5000) or standalone with high-fidelity synthetic patient data (`USE_MOCK_API=True`).
+- **Dual Mode**: Can run against the live backend (`USE_MOCK_API=False`, port 5000) or standalone with high-fidelity synthetic patient data (`USE_MOCK_API=True`).
 
 ---
 
-## 3. Backend Integration (Person 1 <-> Person 2)
+## 3. Backend Integration (Express Backend <-> Agent Service)
 
 When the MedGraph Express backend calls `POST http://localhost:8000/investigate`:
 1. The FastAPI service in `server.py` receives:

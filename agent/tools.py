@@ -1,5 +1,5 @@
 """
-MedGraph LangChain / LangGraph Tool Suite for Person 2
+MedGraph LangChain / LangGraph Tool Suite
 Use these tools within your LangGraph question-planning and evidence-verification agents.
 All tools strictly enforce patient_id filtering.
 """

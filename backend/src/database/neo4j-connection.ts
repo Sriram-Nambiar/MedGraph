@@ -17,7 +17,8 @@ export function getNeo4jDriver(): Driver | null {
       driver = neo4j.driver(NEO4J_URI, neo4j.auth.basic(NEO4J_USER, NEO4J_PASSWORD), {
         maxConnectionLifetime: 3 * 60 * 60 * 1000, // 3 hours
         maxConnectionPoolSize: 50,
-        connectionAcquisitionTimeout: 5000,
+        connectionTimeout: 10000,
+        connectionAcquisitionTimeout: 20000,
         logging: {
           level: 'warn',
           logger: (level, message) => console.log(`[Neo4j ${level}] ${message}`),
@@ -57,7 +58,10 @@ export function isNeo4jActive(): boolean {
 export function getNeo4jSession(): Session | null {
   const drv = getNeo4jDriver();
   if (!drv || !isConnected) return null;
-  return drv.session({ database: NEO4J_DATABASE });
+  if (NEO4J_DATABASE && NEO4J_DATABASE !== 'default') {
+    return drv.session({ database: NEO4J_DATABASE });
+  }
+  return drv.session();
 }
 
 export async function closeNeo4jDriver(): Promise<void> {

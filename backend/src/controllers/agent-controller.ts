@@ -62,7 +62,7 @@ export class AgentController {
             return;
           }
         } catch (err: any) {
-          console.log(`[Agent Integration] Person 2's agent endpoint at ${agentServiceUrl} not reachable (${err.message}). Using integrated GraphRAG investigation engine.`);
+          console.log(`[Agent Integration] LangGraph agent endpoint at ${agentServiceUrl} not reachable (${err.message}). Using integrated GraphRAG investigation engine.`);
         }
       }
 

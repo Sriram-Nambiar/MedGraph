@@ -340,6 +340,7 @@ export const ThreeDGraphView: React.FC<ThreeDGraphViewProps> = ({
       });
       const glowMesh = new THREE.Mesh(glowGeo, glowMat);
       glowMesh.name = 'glow';
+      glowMesh.raycast = () => {};
       mesh.add(glowMesh);
 
       // 3D Billboard Sprite Label
@@ -347,6 +348,7 @@ export const ThreeDGraphView: React.FC<ThreeDGraphViewProps> = ({
       const sprite = createTextSprite(labelText, conf.css);
       sprite.position.set(0, radius + 5.5, 0);
       sprite.visible = showLabels;
+      sprite.raycast = () => {};
       mesh.add(sprite);
 
       scene.add(mesh);
@@ -418,83 +420,100 @@ export const ThreeDGraphView: React.FC<ThreeDGraphViewProps> = ({
       });
     };
 
+    const findHitNode = (obj: THREE.Object3D | null): { mesh: THREE.Mesh; node: GraphNode } | null => {
+      let cur: THREE.Object3D | null = obj;
+      while (cur) {
+        if (cur.userData && cur.userData.node) {
+          return { mesh: cur as THREE.Mesh, node: cur.userData.node };
+        }
+        cur = cur.parent;
+      }
+      return null;
+    };
+
     const onPointerMove = (event: MouseEvent) => {
       const rect = container.getBoundingClientRect();
       mouse.x = ((event.clientX - rect.left) / container.clientWidth) * 2 - 1;
       mouse.y = -((event.clientY - rect.top) / container.clientHeight) * 2 + 1;
 
       raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObjects(interactiveMeshes);
+      const intersects = raycaster.intersectObjects(interactiveMeshes, true);
 
       if (intersects.length > 0) {
-        const hit = intersects[0].object as THREE.Mesh;
-        const node = hit.userData.node as GraphNode;
+        const found = findHitNode(intersects[0].object);
+        if (found && found.node) {
+          const hit = found.mesh;
+          const node = found.node;
 
-        if (currentHoveredMesh !== hit) {
-          resetHighlights();
-          currentHoveredMesh = hit;
+          if (currentHoveredMesh !== hit) {
+            resetHighlights();
+            currentHoveredMesh = hit;
 
-          // Scale hovered node & boost glow
-          hit.scale.set(1.35, 1.35, 1.35);
-          const hitMat = hit.material as THREE.MeshStandardMaterial;
-          hitMat.emissiveIntensity = 0.95;
+            hit.scale.set(1.35, 1.35, 1.35);
+            const hitMat = hit.material as THREE.MeshStandardMaterial;
+            hitMat.emissiveIntensity = 0.95;
 
-          const glow = hit.getObjectByName('glow') as THREE.Mesh;
-          if (glow) {
-            const gMat = glow.material as THREE.MeshBasicMaterial;
-            gMat.opacity = 0.75;
+            const glow = hit.getObjectByName('glow') as THREE.Mesh;
+            if (glow) {
+              const gMat = glow.material as THREE.MeshBasicMaterial;
+              gMat.opacity = 0.75;
+            }
+
+            const connectedNodeIds = new Set<string>([node.id]);
+            edgeLines.forEach(({ line, source, target }) => {
+              if (source === node.id || target === node.id) {
+                const mat = line.material as THREE.LineBasicMaterial;
+                mat.color.setHex(0x38bdf8);
+                mat.opacity = 1.0;
+                connectedNodeIds.add(source);
+                connectedNodeIds.add(target);
+              }
+            });
+
+            nodeMeshes.forEach((mesh, id) => {
+              if (!connectedNodeIds.has(id)) {
+                const mat = mesh.material as THREE.MeshStandardMaterial;
+                mat.transparent = true;
+                mat.opacity = 0.35;
+              }
+            });
           }
 
-          // Highlight connected edges
-          const connectedNodeIds = new Set<string>([node.id]);
-          edgeLines.forEach(({ line, source, target }) => {
-            if (source === node.id || target === node.id) {
-              const mat = line.material as THREE.LineBasicMaterial;
-              mat.color.setHex(0x38bdf8);
-              mat.opacity = 1.0;
-              connectedNodeIds.add(source);
-              connectedNodeIds.add(target);
-            }
+          setHoveredNode({
+            node,
+            x: event.clientX - rect.left,
+            y: event.clientY - rect.top,
           });
-
-          // Dim unconnected nodes
-          nodeMeshes.forEach((mesh, id) => {
-            if (!connectedNodeIds.has(id)) {
-              const mat = mesh.material as THREE.MeshStandardMaterial;
-              mat.transparent = true;
-              mat.opacity = 0.35;
-            }
-          });
+          container.style.cursor = 'pointer';
+          return;
         }
-
-        setHoveredNode({
-          node,
-          x: event.clientX - rect.left,
-          y: event.clientY - rect.top,
-        });
-        container.style.cursor = 'pointer';
-      } else {
-        if (currentHoveredMesh) {
-          resetHighlights();
-          currentHoveredMesh = null;
-        }
-        setHoveredNode(null);
-        container.style.cursor = 'default';
       }
+
+      if (currentHoveredMesh) {
+        resetHighlights();
+        currentHoveredMesh = null;
+      }
+      setHoveredNode(null);
+      container.style.cursor = 'default';
     };
 
     const onClick = (event: MouseEvent) => {
-      const rect = container.getBoundingClientRect();
-      mouse.x = ((event.clientX - rect.left) / container.clientWidth) * 2 - 1;
-      mouse.y = -((event.clientY - rect.top) / container.clientHeight) * 2 + 1;
+      try {
+        const rect = container.getBoundingClientRect();
+        mouse.x = ((event.clientX - rect.left) / container.clientWidth) * 2 - 1;
+        mouse.y = -((event.clientY - rect.top) / container.clientHeight) * 2 + 1;
 
-      raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObjects(interactiveMeshes);
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(interactiveMeshes, true);
 
-      if (intersects.length > 0) {
-        const hit = intersects[0].object as THREE.Mesh;
-        const node = hit.userData.node as GraphNode;
-        setSelectedNode(node);
+        if (intersects.length > 0) {
+          const found = findHitNode(intersects[0].object);
+          if (found && found.node) {
+            setSelectedNode(found.node);
+          }
+        }
+      } catch (err) {
+        console.error('Error handling 3D node click:', err);
       }
     };
 
@@ -857,50 +876,50 @@ export const ThreeDGraphView: React.FC<ThreeDGraphViewProps> = ({
       </div>
 
       {/* Right Slide-over Inspector Drawer for Selected Node */}
-      {selectedNode && (
-        <div className="absolute top-4 right-4 bottom-4 w-88 bg-zinc-950/95 border border-zinc-800 rounded-xl shadow-2xl backdrop-blur-lg z-30 flex flex-col overflow-hidden animate-in slide-in-from-right duration-200">
-          <div className="p-4 border-b border-zinc-800/80 flex items-center justify-between shrink-0">
+      {selectedNode && selectedNode.id && (
+        <div className="absolute top-4 right-4 bottom-4 w-88 bg-white/95 dark:bg-zinc-950/95 border-2 border-[#bfdbfe] dark:border-zinc-800 rounded-2xl shadow-2xl backdrop-blur-lg z-30 flex flex-col overflow-hidden animate-in slide-in-from-right duration-200">
+          <div className="p-4 border-b-2 border-[#bfdbfe] dark:border-zinc-800/80 bg-[#eff6ff] dark:bg-zinc-900/60 flex items-center justify-between shrink-0">
             <div className="flex items-center gap-2">
               <span
-                className="w-3 h-3 rounded-full shrink-0"
-                style={{ backgroundColor: CATEGORY_COLORS[selectedNode.label]?.css || '#71717a' }}
+                className="w-3 h-3 rounded-full shrink-0 shadow-xs"
+                style={{ backgroundColor: CATEGORY_COLORS[selectedNode.label]?.css || '#2563eb' }}
               />
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-white">
-                {selectedNode.label} Inspector
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#0f172a] dark:text-white">
+                {selectedNode.label || 'Entity'} Inspector
               </span>
             </div>
 
             <button
               onClick={() => setSelectedNode(null)}
-              className="p-1 rounded text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+              className="p-1 rounded-lg text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-blue-100 dark:hover:bg-zinc-800 transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
           <div className="flex-1 overflow-y-auto p-4 space-y-4 text-xs font-sans">
-            <div className="space-y-1">
-              <div className="text-[10px] font-mono text-zinc-500 uppercase tracking-tight">Entity Identifier</div>
-              <div className="text-sm font-bold text-white font-mono">{selectedNode.id}</div>
-              <div className="text-xs text-zinc-200 font-medium pt-0.5">
+            <div className="space-y-1 bg-[#f8faff] dark:bg-zinc-900/50 p-3 rounded-xl border border-[#bfdbfe] dark:border-zinc-800">
+              <div className="text-[10px] font-mono text-slate-500 uppercase tracking-tight font-bold">Entity Identifier</div>
+              <div className="text-sm font-black text-[#0f172a] dark:text-white font-mono">{selectedNode.id}</div>
+              <div className="text-xs text-slate-700 dark:text-zinc-200 font-bold pt-0.5">
                 {getNodeDisplayName(selectedNode)}
               </div>
-              <div className="text-[11px] font-mono text-emerald-400 pt-0.5">
+              <div className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-bold pt-0.5">
                 {getNodeRoleTag(selectedNode)}
               </div>
             </div>
 
-            <div className="space-y-2 pt-2 border-t border-zinc-850">
-              <span className="text-[10px] font-mono uppercase text-zinc-400 font-bold block">
+            <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-zinc-850">
+              <span className="text-[10px] font-mono uppercase text-[#1e3a8a] dark:text-zinc-400 font-bold block">
                 Node Properties:
               </span>
-              <div className="bg-zinc-900/80 rounded-lg p-2.5 space-y-2 border border-zinc-850">
-                {Object.entries(selectedNode.properties).map(([key, val]) => {
+              <div className="bg-white dark:bg-zinc-900/80 rounded-xl p-3 space-y-2 border-2 border-[#bfdbfe] dark:border-zinc-850 shadow-xs">
+                {Object.entries(selectedNode.properties || {}).map(([key, val]) => {
                   if (typeof val === 'object' && val !== null) return null;
                   return (
-                    <div key={key} className="flex items-start justify-between gap-2 text-[11px]">
-                      <span className="font-mono text-zinc-400 shrink-0">{key}:</span>
-                      <span className="font-medium text-white text-right truncate">
+                    <div key={key} className="flex items-start justify-between gap-2 text-[11px] pb-1 border-b border-slate-50 dark:border-zinc-800 last:border-0">
+                      <span className="font-mono text-slate-500 dark:text-zinc-400 shrink-0 font-bold">{key}:</span>
+                      <span className="font-semibold text-[#0f172a] dark:text-white text-right truncate">
                         {String(val)}
                       </span>
                     </div>
@@ -909,12 +928,12 @@ export const ThreeDGraphView: React.FC<ThreeDGraphViewProps> = ({
               </div>
             </div>
 
-            <div className="space-y-2 pt-2 border-t border-zinc-850">
-              <span className="text-[10px] font-mono uppercase text-zinc-400 font-bold block">
+            <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-zinc-850">
+              <span className="text-[10px] font-mono uppercase text-[#1e3a8a] dark:text-zinc-400 font-bold block">
                 Connected 3D Links:
               </span>
               <div className="space-y-1.5">
-                {relationships
+                {(relationships || [])
                   .filter((r) => r.source === selectedNode.id || r.target === selectedNode.id)
                   .map((r, idx) => {
                     const isSource = r.source === selectedNode.id;
@@ -925,17 +944,17 @@ export const ThreeDGraphView: React.FC<ThreeDGraphViewProps> = ({
                       <div
                         key={idx}
                         onClick={() => neighborNode && setSelectedNode(neighborNode)}
-                        className="p-2 rounded bg-zinc-900/60 hover:bg-zinc-850 border border-zinc-850 text-[11px] flex items-center justify-between gap-1.5 cursor-pointer transition-colors"
+                        className="p-2 rounded-xl bg-[#f0f6ff] hover:bg-[#e0edfd] dark:bg-zinc-900/60 dark:hover:bg-zinc-850 border border-[#bfdbfe] dark:border-zinc-850 text-[11px] flex items-center justify-between gap-1.5 cursor-pointer transition-colors shadow-xs"
                       >
                         <div className="flex items-center gap-1.5 min-w-0">
-                          <span className="text-[9px] font-mono text-zinc-400">
+                          <span className="text-[9px] font-mono text-[#2563eb] font-bold">
                             {isSource ? '→' : '←'}
                           </span>
-                          <span className="font-mono text-[10px] text-zinc-300 font-bold">
+                          <span className="font-mono text-[10px] text-[#1e3a8a] dark:text-zinc-300 font-bold truncate">
                             {r.type}
                           </span>
                         </div>
-                        <span className="font-mono text-[10px] text-white font-bold bg-zinc-800 px-1.5 py-0.5 rounded shrink-0">
+                        <span className="font-mono text-[10px] text-white font-bold bg-[#1e3a8a] px-2 py-0.5 rounded-lg shrink-0 shadow-xs">
                           {neighborId}
                         </span>
                       </div>
@@ -944,15 +963,17 @@ export const ThreeDGraphView: React.FC<ThreeDGraphViewProps> = ({
               </div>
             </div>
 
-            <div className="pt-3 border-t border-zinc-850">
-              <button
-                onClick={() => onOpenEvidence(selectedNode.id)}
-                className="w-full flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white font-mono text-xs font-bold border border-zinc-700 transition-colors shadow-sm"
-              >
-                <ExternalLink className="w-3.5 h-3.5" />
-                <span>Open Raw Evidence [{selectedNode.id}]</span>
-              </button>
-            </div>
+            {selectedNode.properties?.sourceRecordId && (
+              <div className="pt-3 border-t border-slate-100 dark:border-zinc-850">
+                <button
+                  onClick={() => onOpenEvidence(selectedNode.properties.sourceRecordId)}
+                  className="w-full flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-[#1e3a8a] hover:bg-[#152347] text-white font-mono text-xs font-bold transition-colors shadow-sm"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>Open Raw Evidence [{selectedNode.properties.sourceRecordId}]</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

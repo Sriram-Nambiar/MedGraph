@@ -33,7 +33,10 @@ class Settings(BaseSettings):
     admission_endpoint: str = "/api/patients/{patient_id}/admissions"
 
     # LLM configuration
-    llm_provider: Literal["mock", "openai", "google_genai", "anthropic"] = "mock"
+    llm_provider: Literal["mock", "openai", "google_genai", "anthropic", "nvidia"] = "nvidia"
+    nvidia_api_key: Optional[str] = None
+    nvidia_base_url: str = "https://integrate.api.nvidia.com/v1"
+    nvidia_model: str = "nvidia/nemotron-3-ultra-550b-a55b"
     openai_api_key: Optional[str] = None
     openai_model: str = "gpt-4o"
     google_api_key: Optional[str] = None
@@ -68,6 +71,8 @@ class Settings(BaseSettings):
         """Auto-detect provider if default is mock or explicit."""
         if self.llm_provider != "mock":
             return self.llm_provider
+        if self.nvidia_api_key or os.getenv("NVIDIA_API_KEY"):
+            return "nvidia"
         if self.openai_api_key or os.getenv("OPENAI_API_KEY"):
             return "openai"
         if self.google_api_key or os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY"):

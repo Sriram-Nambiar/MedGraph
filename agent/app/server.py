@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="MedGraph LangGraph Agent Service",
-    description="Person 2 Agentic Clinical Investigation Service integrated with Person 1's backend.",
+    description="MedGraph Agentic Clinical Investigation Service integrated with Express/Neo4j backend.",
     version="1.0.0"
 )
 

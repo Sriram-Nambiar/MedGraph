@@ -10,7 +10,22 @@ def get_configured_llm():
     """Factory creating the appropriate BaseChatModel or None for mock mode."""
     provider = settings.resolve_provider()
 
-    if provider == "openai":
+    if provider == "nvidia":
+        api_key = settings.nvidia_api_key or os.getenv("NVIDIA_API_KEY")
+        if not api_key:
+            logger.warning("NVIDIA provider selected but NVIDIA_API_KEY is not set.")
+            return None
+        from langchain_openai import ChatOpenAI
+        return ChatOpenAI(
+            model=settings.nvidia_model,
+            base_url=settings.nvidia_base_url,
+            api_key=api_key,
+            temperature=settings.temperature,
+            timeout=35.0,
+            max_retries=1
+        )
+
+    elif provider == "openai":
         api_key = settings.openai_api_key or os.getenv("OPENAI_API_KEY")
         if not api_key:
             logger.warning("OpenAI provider selected but OPENAI_API_KEY is not set. Falling back to deterministic mode.")
