@@ -11,6 +11,8 @@ export interface VectorSearchParams {
   note_type?: string;
   start_date?: string;
   end_date?: string;
+  hospital_id?: string;
+  allowed_hospital_ids?: string[];
 }
 
 export class ClinicalNotesVectorStore {
@@ -39,6 +41,8 @@ export class ClinicalNotesVectorStore {
     this.documents = notes.map((note, idx) => ({
       record_id: note.id,
       patient_id: note.patientId,
+      hospital_id: note.hospitalId || 'HOSP001',
+      hospital_name: note.hospitalName || (note.hospitalId === 'HOSP002' ? 'Bengaluru City Medical Center' : 'Apollo General Hospital'),
       encounter_id: note.encounterId,
       admission_id: note.admissionId,
       timestamp: note.timestamp,
@@ -84,6 +88,15 @@ export class ClinicalNotesVectorStore {
       if (note_type && doc.note_type.toLowerCase() !== note_type.toLowerCase()) return false;
       if (start_date && new Date(doc.timestamp) < new Date(start_date)) return false;
       if (end_date && new Date(doc.timestamp) > new Date(end_date)) return false;
+
+      // Hospital scoping and consent filtering
+      if (params.allowed_hospital_ids && params.allowed_hospital_ids.length > 0) {
+        const docHosp = doc.hospital_id || 'HOSP001';
+        if (!params.allowed_hospital_ids.includes(docHosp)) return false;
+      }
+      if (params.hospital_id && (doc.hospital_id || 'HOSP001') !== params.hospital_id) {
+        return false;
+      }
 
       return true;
     });
