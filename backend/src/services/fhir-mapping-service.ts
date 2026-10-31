@@ -376,6 +376,34 @@ export class FHIRMappingService {
       entry: entries,
     };
   }
+
+  /**
+   * Reverse map incoming FHIR R4 Patient to MedGraph Patient
+   */
+  public fromFHIRPatient(resource: FHIRPatientResource): Partial<Patient> {
+    return {
+      id: resource.id,
+      name: resource.name?.[0]?.text || 'Unknown Patient',
+      gender: resource.gender === 'female' ? 'Female' : resource.gender === 'male' ? 'Male' : 'Other',
+      dateOfBirth: resource.birthDate || '',
+      mrn: resource.identifier?.find((i) => i.system?.includes('mrn'))?.value || resource.id,
+    };
+  }
+
+  /**
+   * Reverse map incoming FHIR R4 Encounter to MedGraph Encounter
+   */
+  public fromFHIREncounter(resource: FHIREncounterResource): Partial<Encounter> {
+    return {
+      id: resource.id,
+      patientId: resource.subject?.reference?.replace('Patient/', '') || '',
+      date: resource.period?.start || new Date().toISOString(),
+      reason: resource.reasonCode?.[0]?.text || 'Clinical Encounter',
+      type: resource.class?.code === 'IMP' ? 'inpatient_admission' : 'outpatient_clinic',
+      hospitalId: resource.serviceProvider?.reference?.replace('Organization/', '') || 'HOSP001',
+      hospitalName: resource.serviceProvider?.display || 'Apollo General Hospital',
+    };
+  }
 }
 
 export const fhirMappingService = new FHIRMappingService();
