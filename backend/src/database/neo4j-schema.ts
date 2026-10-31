@@ -19,6 +19,7 @@ export async function setupNeo4jSchema(): Promise<void> {
     'CREATE CONSTRAINT labresult_id_unique IF NOT EXISTS FOR (r:LabResult) REQUIRE r.id IS UNIQUE;',
     'CREATE CONSTRAINT prescription_id_unique IF NOT EXISTS FOR (rx:Prescription) REQUIRE rx.id IS UNIQUE;',
     'CREATE CONSTRAINT doctor_id_unique IF NOT EXISTS FOR (d:Doctor) REQUIRE d.id IS UNIQUE;',
+    'CREATE CONSTRAINT hospital_id_unique IF NOT EXISTS FOR (h:Hospital) REQUIRE h.id IS UNIQUE;',
 
     // Performance Indexes for fast patient-scoped retrieval
     'CREATE INDEX patient_encounter_idx IF NOT EXISTS FOR (e:Encounter) ON (e.patientId);',
@@ -27,6 +28,11 @@ export async function setupNeo4jSchema(): Promise<void> {
     'CREATE INDEX patient_prescription_idx IF NOT EXISTS FOR (rx:Prescription) ON (rx.patientId);',
     'CREATE INDEX patient_labresult_idx IF NOT EXISTS FOR (r:LabResult) ON (r.patientId);',
     'CREATE INDEX patient_condition_idx IF NOT EXISTS FOR (c:Condition) ON (c.patientId);',
+    'CREATE INDEX hospital_encounter_idx IF NOT EXISTS FOR (e:Encounter) ON (e.hospitalId);',
+    'CREATE INDEX hospital_admission_idx IF NOT EXISTS FOR (a:Admission) ON (a.hospitalId);',
+    'CREATE INDEX hospital_note_idx IF NOT EXISTS FOR (n:ClinicalNote) ON (n.hospitalId);',
+    'CREATE INDEX hospital_prescription_idx IF NOT EXISTS FOR (rx:Prescription) ON (rx.hospitalId);',
+    'CREATE INDEX hospital_labresult_idx IF NOT EXISTS FOR (r:LabResult) ON (r.hospitalId);',
   ];
 
   try {
