@@ -49,7 +49,7 @@ export interface Condition {
   patientId: string;
   code: string; // ICD-10 code
   name: string;
-  category: "Cardiovascular" | "Renal" | "Endocrine" | "Hematology" | "Neurology" | "Respiratory" | "Musculoskeletal";
+  category: "Cardiovascular" | "Renal" | "Endocrine" | "Hematology" | "Neurology" | "Respiratory" | "Musculoskeletal" | "Dermatology";
   status: "Active" | "Resolved" | "Recurrent" | "Chronic";
   onsetDate: string;
 }

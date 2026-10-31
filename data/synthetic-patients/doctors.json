@@ -46,5 +46,11 @@
     "name": "Dr. Lisa Cuddy",
     "specialty": "Endocrinology",
     "department": "Endocrinology & Metabolism"
+  },
+  {
+    "id": "DOC-109",
+    "name": "Dr. Maya Lin",
+    "specialty": "Dermatology",
+    "department": "Dermatology Clinic"
   }
 ]

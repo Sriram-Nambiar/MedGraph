@@ -11,11 +11,11 @@
   {
     "id": "COND-102",
     "patientId": "P001",
-    "code": "N18.32",
-    "name": "Chronic kidney disease, stage 3b",
-    "category": "Renal",
+    "code": "L40.0",
+    "name": "Severe plaque psoriasis",
+    "category": "Dermatology",
     "status": "Active",
-    "onsetDate": "2024-01-10"
+    "onsetDate": "2022-07-10"
   },
   {
     "id": "COND-103",
@@ -25,15 +25,6 @@
     "category": "Cardiovascular",
     "status": "Active",
     "onsetDate": "2015-06-20"
-  },
-  {
-    "id": "COND-104",
-    "patientId": "P001",
-    "code": "E11.9",
-    "name": "Type 2 diabetes mellitus without complications",
-    "category": "Endocrine",
-    "status": "Active",
-    "onsetDate": "2018-09-05"
   },
   {
     "id": "COND-201",

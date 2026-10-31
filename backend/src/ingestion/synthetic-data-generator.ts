@@ -23,6 +23,7 @@ export const doctors: Doctor[] = [
   { id: 'DOC-106', name: 'Dr. James Wilson', specialty: 'Oncology & Palliative', department: 'Medical Oncology' },
   { id: 'DOC-107', name: 'Dr. Miranda Bailey', specialty: 'General Surgery & Trauma', department: 'Orthopedic Surgery' },
   { id: 'DOC-108', name: 'Dr. Lisa Cuddy', specialty: 'Endocrinology', department: 'Endocrinology & Metabolism' },
+  { id: 'DOC-109', name: 'Dr. Maya Lin', specialty: 'Dermatology', department: 'Dermatology Clinic' },
 ];
 
 // Lab Test Catalog
@@ -69,6 +70,7 @@ export const medications: Medication[] = [
   { id: 'MED-ACETAMINOPHEN', name: 'Acetaminophen (Tylenol)', genericName: 'Acetaminophen', category: 'Analgesic / Antipyretic', dosageForm: 'Oral / IV' },
   { id: 'MED-BENADRYL', name: 'Diphenhydramine (Benadryl)', genericName: 'Diphenhydramine HCl', category: 'First-Gen Antihistamine', dosageForm: 'OTC Oral' },
   { id: 'MED-MELATONIN', name: 'Melatonin', genericName: 'Melatonin', category: 'Sleep Aid', dosageForm: 'Oral Tablet' },
+  { id: 'MED-CLOBETASOL', name: 'Clobetasol Propionate 0.05%', genericName: 'Clobetasol Propionate', category: 'Topical Corticosteroid', dosageForm: 'Topical Cream' },
 ];
 
 export function generateSyntheticDataset() {

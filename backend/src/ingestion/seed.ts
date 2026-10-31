@@ -93,12 +93,25 @@ export async function seedKnowledgeGraph(dataPath?: string): Promise<{
   }
 
   for (const a of dataset.admissions) {
-    inMemoryGraph.addNode(a.id, 'Admission', a, a.patientId);
+    const enrichedAdmission = {
+      ...a,
+      name: `${a.department} Admission (${a.admissionType || 'Inpatient'})`,
+    };
+    inMemoryGraph.addNode(a.id, 'Admission', enrichedAdmission, a.patientId);
     inMemoryGraph.addRelationship(`rel-${a.patientId}-${a.id}`, a.patientId, a.id, 'HAS_ADMISSION', {}, a.patientId);
   }
 
   for (const e of dataset.encounters) {
-    inMemoryGraph.addNode(e.id, 'Encounter', e, e.patientId);
+    const isCardio = e.department?.toLowerCase().includes('cardio') || e.reason?.toLowerCase().includes('cardio');
+    const isDerma = e.department?.toLowerCase().includes('derm') || e.reason?.toLowerCase().includes('derm');
+    const doctorName = isCardio ? 'Dr. Cristina Yang (Cardiologist)' : isDerma ? 'Dr. Maya Lin (Dermatologist)' : 'Attending Physician';
+    const enrichedEncounter = {
+      ...e,
+      name: isCardio ? 'Cardiologist Visit (Dr. Yang)' : isDerma ? 'Dermatologist Visit (Dr. Lin)' : `${e.department} Visit`,
+      doctorName,
+      specialistType: isCardio ? 'Cardiologist' : isDerma ? 'Dermatologist' : 'Specialist',
+    };
+    inMemoryGraph.addNode(e.id, 'Encounter', enrichedEncounter, e.patientId);
     inMemoryGraph.addRelationship(`rel-${e.patientId}-${e.id}`, e.patientId, e.id, 'HAS_ENCOUNTER', {}, e.patientId);
 
     if (e.admissionId) {
@@ -111,26 +124,62 @@ export async function seedKnowledgeGraph(dataPath?: string): Promise<{
 
   for (const c of dataset.conditions) {
     inMemoryGraph.addNode(c.id, 'Condition', c, c.patientId);
+    inMemoryGraph.addRelationship(`rel-${c.patientId}-${c.id}`, c.patientId, c.id, 'HAS_CONDITION', {}, c.patientId);
+
     const encs = dataset.encounters.filter((e) => e.patientId === c.patientId);
-    if (encs.length > 0) {
-      inMemoryGraph.addRelationship(`rel-${encs[0].id}-${c.id}`, encs[0].id, c.id, 'DOCUMENTS', {}, c.patientId);
+    const matchingEnc = encs.find((e) => {
+      if (c.category === 'Dermatology' && e.department?.toLowerCase().includes('derm')) return true;
+      if (c.category === 'Cardiovascular' && e.department?.toLowerCase().includes('cardio')) return true;
+      return false;
+    }) || encs[0];
+
+    if (matchingEnc) {
+      inMemoryGraph.addRelationship(`rel-${matchingEnc.id}-${c.id}`, matchingEnc.id, c.id, 'DOCUMENTS', {}, c.patientId);
     }
   }
 
+  const testMap = new Map<string, LabTest>();
+  for (const t of dataset.labTests) {
+    testMap.set(t.id, t);
+  }
+
   for (const rx of dataset.prescriptions) {
-    inMemoryGraph.addNode(rx.id, 'Prescription', rx, rx.patientId);
+    const medName = rx.medicationId.replace('MED-', '');
+    const cleanMedName = medName === 'LISINOPRIL'
+      ? 'Lisinopril'
+      : medName === 'ENTRESTO'
+      ? 'Entresto (Sacubitril/Valsartan)'
+      : medName === 'CLOBETASOL'
+      ? 'Clobetasol Propionate'
+      : medName;
+    const enrichedRx = {
+      ...rx,
+      name: `${cleanMedName} ${rx.dosage || ''}`.trim(),
+      medicationName: cleanMedName,
+    };
+    inMemoryGraph.addNode(rx.id, 'Prescription', enrichedRx, rx.patientId);
     inMemoryGraph.addRelationship(`rel-${rx.encounterId}-${rx.id}`, rx.encounterId, rx.id, 'HAS_PRESCRIPTION', {}, rx.patientId);
     inMemoryGraph.addRelationship(`rel-${rx.id}-${rx.medicationId}`, rx.id, rx.medicationId, 'PRESCRIBES', {}, rx.patientId);
   }
 
   for (const lr of dataset.labResults) {
-    inMemoryGraph.addNode(lr.id, 'LabResult', lr, lr.patientId);
+    const testDef = testMap.get(lr.testId);
+    const enrichedLab = {
+      ...lr,
+      name: `${testDef?.name || lr.testId}: ${lr.value} ${lr.unit}`,
+      testName: testDef?.name || lr.testId,
+    };
+    inMemoryGraph.addNode(lr.id, 'LabResult', enrichedLab, lr.patientId);
     inMemoryGraph.addRelationship(`rel-${lr.encounterId}-${lr.id}`, lr.encounterId, lr.id, 'HAS_LAB_RESULT', {}, lr.patientId);
     inMemoryGraph.addRelationship(`rel-${lr.id}-${lr.testId}`, lr.id, lr.testId, 'OF_TEST', {}, lr.patientId);
   }
 
   for (const cn of dataset.clinicalNotes) {
-    inMemoryGraph.addNode(cn.id, 'ClinicalNote', cn, cn.patientId);
+    const enrichedNote = {
+      ...cn,
+      name: cn.title || `${cn.noteType || 'Clinical Note'} (${cn.id})`,
+    };
+    inMemoryGraph.addNode(cn.id, 'ClinicalNote', enrichedNote, cn.patientId);
     inMemoryGraph.addRelationship(`rel-${cn.encounterId}-${cn.id}`, cn.encounterId, cn.id, 'HAS_NOTE', {}, cn.patientId);
   }
 

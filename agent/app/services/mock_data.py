@@ -11,135 +11,147 @@ episodes for synthetic patients (P001, P002, P003, P004) covering:
 from typing import List, Dict, Any, Optional
 from app.schemas.evidence import GraphRecord, ClinicalNote, AdmissionRecord
 
-# --- PATIENT P001 (Marcus Vance - 62M, Heart Failure with reduced Ejection Fraction) ---
+# --- PATIENT P001 (Eleanor Vance - 68F, Heart Failure, Plaque Psoriasis, Hypertension) ---
 P001_ADMISSIONS = [
     AdmissionRecord(
-        admission_id="ADM-2023-01",
+        admission_id="ADM-101",
         patient_id="P001",
-        admission_date="2023-04-10T08:30:00Z",
-        discharge_date="2023-04-15T14:00:00Z",
-        reason="Acute Decompensated Heart Failure (NYHA Class II-III)",
-        department="Cardiology",
-        attending_physician="Dr. Sarah Chen, MD"
-    ),
-    AdmissionRecord(
-        admission_id="ADM-2023-02",
-        patient_id="P001",
-        admission_date="2023-08-01T10:15:00Z",
-        discharge_date="2023-08-07T11:45:00Z",
-        reason="Heart Failure Exacerbation with Volume Overload",
-        department="Cardiology",
-        attending_physician="Dr. Sarah Chen, MD"
+        admission_date="2025-09-12T08:30:00Z",
+        discharge_date="2025-09-15T14:00:00Z",
+        reason="Acute Decompensated Heart Failure (HFrEF EF 32%) and Severe Hyperkalemia",
+        department="Cardiovascular Care",
+        attending_physician="Dr. Cristina Yang, MD (Cardiologist)"
     )
 ]
 
 P001_GRAPH_RECORDS = [
-    # Admission 1 records
+    # Specialist Encounters (Cardiologist and Dermatologist)
     GraphRecord(
-        record_id="MED-001",
+        record_id="ENC-101",
         patient_id="P001",
-        record_type="medication",
-        timestamp="2023-04-10T12:00:00Z",
-        details={"name": "Lisinopril", "dosage": "10mg", "route": "Oral", "frequency": "Daily", "status": "Active"},
-        relationships=[{"type": "PRESCRIBED_DURING", "target": "ADM-2023-01"}]
+        record_type="encounter",
+        timestamp="2025-09-12T08:30:00Z",
+        details={
+            "name": "Cardiologist Visit (Dr. Cristina Yang)",
+            "specialist": "Cardiologist",
+            "department": "Cardiovascular Care",
+            "doctor": "Dr. Cristina Yang, MD",
+            "reason": "Inpatient heart failure management and ACE-inhibitor washout"
+        },
+        relationships=[{"type": "ATTENDED_BY", "target": "DOC-102"}]
     ),
     GraphRecord(
-        record_id="MED-002",
+        record_id="ENC-102",
         patient_id="P001",
-        record_type="medication",
-        timestamp="2023-04-10T12:00:00Z",
-        details={"name": "Furosemide", "dosage": "20mg", "route": "Oral", "frequency": "Daily", "status": "Active"},
-        relationships=[{"type": "PRESCRIBED_DURING", "target": "ADM-2023-01"}]
-    ),
-    GraphRecord(
-        record_id="MED-003",
-        patient_id="P001",
-        record_type="medication",
-        timestamp="2023-04-10T12:00:00Z",
-        details={"name": "Metoprolol Tartrate", "dosage": "25mg", "route": "Oral", "frequency": "BID", "status": "Active"},
-        relationships=[{"type": "PRESCRIBED_DURING", "target": "ADM-2023-01"}]
-    ),
-    GraphRecord(
-        record_id="LAB-001",
-        patient_id="P001",
-        record_type="lab_result",
-        timestamp="2023-04-11T07:15:00Z",
-        details={"test_name": "B-type Natriuretic Peptide (BNP)", "value": 450.0, "unit": "pg/mL", "reference_range": "< 100", "flag": "HIGH"},
-        relationships=[{"type": "ORDERED_DURING", "target": "ADM-2023-01"}]
-    ),
-    GraphRecord(
-        record_id="LAB-002",
-        patient_id="P001",
-        record_type="lab_result",
-        timestamp="2023-04-11T07:15:00Z",
-        details={"test_name": "Serum Creatinine", "value": 1.1, "unit": "mg/dL", "reference_range": "0.7 - 1.3", "flag": "NORMAL"},
-        relationships=[{"type": "ORDERED_DURING", "target": "ADM-2023-01"}]
-    ),
-    GraphRecord(
-        record_id="LAB-003",
-        patient_id="P001",
-        record_type="lab_result",
-        timestamp="2023-04-11T07:15:00Z",
-        details={"test_name": "Potassium", "value": 4.2, "unit": "mEq/L", "reference_range": "3.5 - 5.0", "flag": "NORMAL"},
-        relationships=[{"type": "ORDERED_DURING", "target": "ADM-2023-01"}]
+        record_type="encounter",
+        timestamp="2025-11-20T14:00:00Z",
+        details={
+            "name": "Dermatologist Visit (Dr. Maya Lin)",
+            "specialist": "Dermatologist",
+            "department": "Dermatology Clinic",
+            "doctor": "Dr. Maya Lin, MD",
+            "reason": "Outpatient evaluation and topical therapy for severe plaque psoriasis"
+        },
+        relationships=[{"type": "ATTENDED_BY", "target": "DOC-109"}]
     ),
 
-    # Admission 2 records
+    # 3 Conditions
     GraphRecord(
-        record_id="MED-104",
+        record_id="COND-101",
         patient_id="P001",
-        record_type="medication",
-        timestamp="2023-08-02T09:00:00Z",
-        details={"name": "Entresto (Sacubitril/Valsartan)", "dosage": "24/26mg", "route": "Oral", "frequency": "BID", "status": "Active"},
-        relationships=[{"type": "PRESCRIBED_DURING", "target": "ADM-2023-02"}]
+        record_type="condition",
+        timestamp="2023-03-15T09:00:00Z",
+        details={"name": "Chronic systolic heart failure (HFrEF, EF 32%)", "icd10": "I50.22", "category": "Cardiovascular", "status": "Chronic"},
+        relationships=[{"type": "DOCUMENTED_BY", "target": "ENC-101"}]
     ),
     GraphRecord(
-        record_id="MED-105",
+        record_id="COND-102",
         patient_id="P001",
-        record_type="medication",
-        timestamp="2023-08-01T14:00:00Z",
-        details={"name": "Furosemide", "dosage": "40mg", "route": "Oral", "frequency": "Daily", "status": "Active"},
-        relationships=[{"type": "PRESCRIBED_DURING", "target": "ADM-2023-02"}]
+        record_type="condition",
+        timestamp="2022-07-10T10:00:00Z",
+        details={"name": "Severe plaque psoriasis", "icd10": "L40.0", "category": "Dermatology", "status": "Active"},
+        relationships=[{"type": "DOCUMENTED_BY", "target": "ENC-102"}]
     ),
     GraphRecord(
-        record_id="MED-106",
+        record_id="COND-103",
+        patient_id="P001",
+        record_type="condition",
+        timestamp="2015-06-20T11:00:00Z",
+        details={"name": "Essential hypertension", "icd10": "I10", "category": "Cardiovascular", "status": "Active"},
+        relationships=[{"type": "DOCUMENTED_BY", "target": "ENC-101"}]
+    ),
+
+    # Medications
+    GraphRecord(
+        record_id="RX-101",
         patient_id="P001",
         record_type="medication",
-        timestamp="2023-08-01T14:00:00Z",
-        details={"name": "Metoprolol Succinate", "dosage": "50mg", "route": "Oral", "frequency": "Daily", "status": "Active"},
-        relationships=[{"type": "PRESCRIBED_DURING", "target": "ADM-2023-02"}]
+        timestamp="2025-08-15T10:00:00Z",
+        details={
+            "name": "Lisinopril",
+            "dosage": "20mg",
+            "route": "Oral",
+            "frequency": "Daily",
+            "status": "Discontinued",
+            "reason": "Discontinued by Cardiologist due to severe acute hyperkalemia (Potassium 5.7 mEq/L)"
+        },
+        relationships=[{"type": "PRESCRIBED_DURING", "target": "ENC-101"}]
     ),
+    GraphRecord(
+        record_id="RX-102",
+        patient_id="P001",
+        record_type="medication",
+        timestamp="2025-09-15T12:00:00Z",
+        details={
+            "name": "Entresto (Sacubitril/Valsartan)",
+            "dosage": "24/26mg",
+            "route": "Oral",
+            "frequency": "BID",
+            "status": "Active",
+            "reason": "Initiated by Cardiologist following 36-hour washout for HFrEF guideline therapy"
+        },
+        relationships=[{"type": "PRESCRIBED_DURING", "target": "ENC-101"}]
+    ),
+    GraphRecord(
+        record_id="RX-103",
+        patient_id="P001",
+        record_type="medication",
+        timestamp="2025-11-20T14:30:00Z",
+        details={
+            "name": "Clobetasol Propionate",
+            "dosage": "0.05% cream",
+            "route": "Topical",
+            "frequency": "BID",
+            "status": "Active",
+            "reason": "Prescribed by Dermatologist for plaque psoriasis over extensor elbows and knees"
+        },
+        relationships=[{"type": "PRESCRIBED_DURING", "target": "ENC-102"}]
+    ),
+
+    # Labs
     GraphRecord(
         record_id="LAB-101",
         patient_id="P001",
         record_type="lab_result",
-        timestamp="2023-08-02T06:45:00Z",
-        details={"test_name": "B-type Natriuretic Peptide (BNP)", "value": 1250.0, "unit": "pg/mL", "reference_range": "< 100", "flag": "CRITICAL_HIGH"},
-        relationships=[{"type": "ORDERED_DURING", "target": "ADM-2023-02"}]
+        timestamp="2025-09-13T09:00:00Z",
+        details={"test_name": "Potassium", "value": 5.7, "unit": "mEq/L", "reference_range": "3.5 - 5.1", "flag": "CRITICAL_HIGH"},
+        relationships=[{"type": "ORDERED_DURING", "target": "ENC-101"}]
     ),
     GraphRecord(
         record_id="LAB-102",
         patient_id="P001",
         record_type="lab_result",
-        timestamp="2023-08-02T06:45:00Z",
-        details={"test_name": "Serum Creatinine", "value": 1.4, "unit": "mg/dL", "reference_range": "0.7 - 1.3", "flag": "HIGH"},
-        relationships=[{"type": "ORDERED_DURING", "target": "ADM-2023-02"}]
+        timestamp="2025-09-13T09:00:00Z",
+        details={"test_name": "Serum Creatinine", "value": 2.1, "unit": "mg/dL", "reference_range": "0.6 - 1.2", "flag": "HIGH"},
+        relationships=[{"type": "ORDERED_DURING", "target": "ENC-101"}]
     ),
     GraphRecord(
         record_id="LAB-103",
         patient_id="P001",
         record_type="lab_result",
-        timestamp="2023-08-02T06:45:00Z",
-        details={"test_name": "Potassium", "value": 4.6, "unit": "mEq/L", "reference_range": "3.5 - 5.0", "flag": "NORMAL"},
-        relationships=[{"type": "ORDERED_DURING", "target": "ADM-2023-02"}]
-    ),
-    GraphRecord(
-        record_id="COND-101",
-        patient_id="P001",
-        record_type="condition",
-        timestamp="2023-08-01T11:00:00Z",
-        details={"name": "Congestive Heart Failure, NYHA Class III", "icd10": "I50.9", "status": "Worsening"},
-        relationships=[{"type": "DIAGNOSED_DURING", "target": "ADM-2023-02"}]
+        timestamp="2025-09-12T09:30:00Z",
+        details={"test_name": "B-type Natriuretic Peptide (BNP)", "value": 1250.0, "unit": "pg/mL", "reference_range": "< 100", "flag": "CRITICAL_HIGH"},
+        relationships=[{"type": "ORDERED_DURING", "target": "ENC-101"}]
     )
 ]
 
@@ -147,20 +159,20 @@ P001_CLINICAL_NOTES = [
     ClinicalNote(
         record_id="NOTE-101",
         patient_id="P001",
-        timestamp="2023-08-02T11:30:00Z",
-        author="Dr. Sarah Chen, MD",
-        note_type="consultation",
-        content="Cardiology Progress Note: Patient Marcus Vance admitted with worsening dyspnea on exertion and lower extremity edema. Switched ACE inhibitor (lisinopril) to ARNI (Entresto 24/26mg BID) due to persistent NYHA Class III symptoms despite optimal medical therapy. Lisinopril was held for 36 hours prior to initiating Entresto to avoid angioedema. Furosemide increased from 20mg to 40mg daily for persistent fluid overload.",
-        relevance_score=0.95
+        timestamp="2025-09-15T14:00:00Z",
+        author="Dr. Cristina Yang, MD (Cardiologist)",
+        note_type="discharge_summary",
+        content="Cardiology Inpatient Summary: Patient Eleanor Vance admitted for acute decompensated heart failure (EF 32%) complicated by severe hyperkalemia (Potassium 5.7 mEq/L) on Lisinopril 20 mg. Lisinopril was abruptly discontinued. Following aggressive potassium normalization and a 36-hour washout period, initiated Sacubitril/Valsartan (Entresto) 24/26 mg BID. Condition stable at discharge under ongoing cardiovascular monitoring.",
+        relevance_score=0.96
     ),
     ClinicalNote(
         record_id="NOTE-102",
         patient_id="P001",
-        timestamp="2023-08-07T10:00:00Z",
-        author="Dr. Sarah Chen, MD",
-        note_type="discharge_summary",
-        content="Discharge Summary: Patient responded well to diuresis with 4.5 kg weight loss. Discharged in stable condition on Entresto 24/26mg BID, Furosemide 40mg daily, Metoprolol Succinate 50mg daily. Lisinopril discontinued in favor of Entresto. Follow up in Cardiology clinic in 2 weeks with repeat BMP.",
-        relevance_score=0.91
+        timestamp="2025-11-20T14:30:00Z",
+        author="Dr. Maya Lin, MD (Dermatologist)",
+        note_type="consultation",
+        content="Dermatology Clinic Outpatient Note: Patient Eleanor Vance evaluated by Dr. Maya Lin for extensive silvery erythematous plaques over bilateral elbows and knees consistent with severe plaque psoriasis. Prescribed Clobetasol Propionate 0.05% topical cream twice daily. Patient instructed on proper topical application and monitoring for skin atrophy.",
+        relevance_score=0.92
     )
 ]
 

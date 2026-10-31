@@ -48,4 +48,5 @@ env/
 venv/
 .venv/
 .pytest_cache/
+scratch/
 .coverage

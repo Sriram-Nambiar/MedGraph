@@ -7,45 +7,16 @@
     "date": "2025-09-12T08:30:00Z",
     "department": "Cardiovascular Care",
     "doctorId": "DOC-102",
-    "reason": "Initial admission for acute heart failure decompensation"
+    "reason": "Cardiologist visit: Inpatient heart failure management & ACE-inhibitor washout"
   },
   {
     "id": "ENC-102",
     "patientId": "P001",
     "type": "outpatient_clinic",
     "date": "2025-11-20T14:00:00Z",
-    "department": "Cardiology Outpatient",
-    "doctorId": "DOC-102",
-    "reason": "Routine 2-month post-discharge heart failure follow-up"
-  },
-  {
-    "id": "ENC-103",
-    "patientId": "P001",
-    "admissionId": "ADM-102",
-    "type": "inpatient_admission",
-    "date": "2026-02-05T10:15:00Z",
-    "department": "Cardiovascular Care",
-    "doctorId": "DOC-102",
-    "reason": "Admission for severe hyperkalemia and renal decompensation"
-  },
-  {
-    "id": "ENC-104",
-    "patientId": "P001",
-    "type": "specialist_consult",
-    "date": "2026-04-14T09:30:00Z",
-    "department": "Nephrology Outpatient",
-    "doctorId": "DOC-101",
-    "reason": "Renal function stabilization check post-Entresto initiation"
-  },
-  {
-    "id": "ENC-105",
-    "patientId": "P001",
-    "admissionId": "ADM-103",
-    "type": "inpatient_admission",
-    "date": "2026-08-18T11:45:00Z",
-    "department": "Cardiovascular Care",
-    "doctorId": "DOC-102",
-    "reason": "Admission for GDMT step-up and volume overload management"
+    "department": "Dermatology Clinic",
+    "doctorId": "DOC-109",
+    "reason": "Dermatologist visit: Outpatient evaluation and topical therapy for severe plaque psoriasis"
   },
   {
     "id": "ENC-201",

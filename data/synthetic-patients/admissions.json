@@ -4,39 +4,13 @@
     "patientId": "P001",
     "admissionDate": "2025-09-12T08:30:00Z",
     "dischargeDate": "2025-09-16T14:00:00Z",
-    "reason": "Acute decompensated heart failure with progressive bilateral lower extremity edema and dyspnea",
+    "reason": "Cardiology admission for acute heart failure decompensation & hyperkalemia",
     "admissionType": "Emergency",
     "department": "Cardiovascular Care",
     "attendingDoctorId": "DOC-102",
     "dischargeDisposition": "Discharged Home",
     "primaryConditionId": "COND-101",
-    "dischargeSummaryId": "NOTE-103"
-  },
-  {
-    "id": "ADM-102",
-    "patientId": "P001",
-    "admissionDate": "2026-02-05T10:15:00Z",
-    "dischargeDate": "2026-02-10T16:30:00Z",
-    "reason": "Acute on chronic kidney injury and symptomatic hyperkalemia in setting of ACE-inhibitor therapy and heart failure",
-    "admissionType": "Emergency",
-    "department": "Cardiovascular Care",
-    "attendingDoctorId": "DOC-102",
-    "dischargeDisposition": "Discharged Home",
-    "primaryConditionId": "COND-102",
-    "dischargeSummaryId": "NOTE-106"
-  },
-  {
-    "id": "ADM-103",
-    "patientId": "P001",
-    "admissionDate": "2026-08-18T11:45:00Z",
-    "dischargeDate": "2026-08-23T12:00:00Z",
-    "reason": "Worsening congestive symptoms, orthopnea, and diuretic resistance requiring GDMT optimization",
-    "admissionType": "Urgent",
-    "department": "Cardiovascular Care",
-    "attendingDoctorId": "DOC-102",
-    "dischargeDisposition": "Discharged Home",
-    "primaryConditionId": "COND-101",
-    "dischargeSummaryId": "NOTE-109"
+    "dischargeSummaryId": "NOTE-101"
   },
   {
     "id": "ADM-201",

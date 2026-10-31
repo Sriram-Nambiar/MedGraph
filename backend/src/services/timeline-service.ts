@@ -109,7 +109,7 @@ export class TimelineService {
           encounterId: rx.encounterId,
           status: rx.status,
         },
-        sourceRecordId: rx.sourceRecordId,
+        sourceRecordId: rx.sourceRecordId || rx.id,
       });
 
       // If prescription was discontinued on a specific later date, log the discontinuation event
@@ -128,7 +128,7 @@ export class TimelineService {
             action: 'Discontinued',
             reason: rx.reason,
           },
-          sourceRecordId: rx.sourceRecordId,
+          sourceRecordId: rx.sourceRecordId || rx.id,
         });
       }
     }
