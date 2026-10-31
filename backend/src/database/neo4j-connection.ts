@@ -1,0 +1,70 @@
+import neo4j, { Driver, Session } from 'neo4j-driver';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const NEO4J_URI = process.env.NEO4J_URI || 'bolt://localhost:7687';
+const NEO4J_USER = process.env.NEO4J_USER || 'neo4j';
+const NEO4J_PASSWORD = process.env.NEO4J_PASSWORD || 'password';
+const NEO4J_DATABASE = process.env.NEO4J_DATABASE || 'neo4j';
+
+let driver: Driver | null = null;
+let isConnected = false;
+
+export function getNeo4jDriver(): Driver | null {
+  if (!driver) {
+    try {
+      driver = neo4j.driver(NEO4J_URI, neo4j.auth.basic(NEO4J_USER, NEO4J_PASSWORD), {
+        maxConnectionLifetime: 3 * 60 * 60 * 1000, // 3 hours
+        maxConnectionPoolSize: 50,
+        connectionAcquisitionTimeout: 5000,
+        logging: {
+          level: 'warn',
+          logger: (level, message) => console.log(`[Neo4j ${level}] ${message}`),
+        },
+      });
+    } catch (err: any) {
+      console.warn(`[Neo4j] Failed to construct driver: ${err.message}`);
+      driver = null;
+    }
+  }
+  return driver;
+}
+
+export async function testNeo4jConnection(): Promise<boolean> {
+  const drv = getNeo4jDriver();
+  if (!drv) {
+    isConnected = false;
+    return false;
+  }
+
+  try {
+    const serverInfo = await drv.getServerInfo();
+    console.log(`[Neo4j] Connected successfully to ${serverInfo.address} (${serverInfo.agent})`);
+    isConnected = true;
+    return true;
+  } catch (err: any) {
+    console.warn(`[Neo4j] Database offline or unreachable at ${NEO4J_URI}. Error: ${err.message}`);
+    isConnected = false;
+    return false;
+  }
+}
+
+export function isNeo4jActive(): boolean {
+  return isConnected;
+}
+
+export function getNeo4jSession(): Session | null {
+  const drv = getNeo4jDriver();
+  if (!drv || !isConnected) return null;
+  return drv.session({ database: NEO4J_DATABASE });
+}
+
+export async function closeNeo4jDriver(): Promise<void> {
+  if (driver) {
+    await driver.close();
+    driver = null;
+    isConnected = false;
+    console.log('[Neo4j] Driver connection closed.');
+  }
+}
