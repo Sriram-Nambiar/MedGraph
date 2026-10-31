@@ -6,6 +6,11 @@ import {
   InvestigationResponse,
   SystemHealth,
   ClinicalNote,
+  Hospital,
+  ConsentRequest,
+  ConsentGrant,
+  CrossHospitalPatientHistory,
+  AuditLog,
 } from '../types';
 
 const API_BASE = '/api';
@@ -79,15 +84,20 @@ export async function compareAdmissions(patientId: string, admissionId1: string,
 export async function runInvestigation(
   patientId: string,
   question: string,
-  threadId?: string
+  threadId?: string,
+  requestingHospitalId: string = 'HOSP002'
 ): Promise<InvestigationResponse> {
   const res = await fetch(`${API_BASE}/investigate`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'x-requesting-hospital-id': requestingHospitalId,
+    },
     body: JSON.stringify({
       patient_id: patientId,
       question,
       thread_id: threadId || `INV-${Date.now()}`,
+      requesting_hospital_id: requestingHospitalId,
     }),
   });
   if (!res.ok) throw new Error(`Investigation failed: ${res.statusText}`);
@@ -98,4 +108,157 @@ export async function fetchNoteByRecordId(patientId: string, recordId: string): 
   const res = await fetch(`${API_BASE}/vector/note/${patientId}/${recordId}`);
   if (!res.ok) throw new Error(`Failed to fetch note record: ${res.statusText}`);
   return res.json();
+}
+
+// ==========================================
+// Cross-Hospital Interoperability & Consent
+// ==========================================
+
+export async function fetchHospitals(): Promise<Hospital[]> {
+  const res = await fetch(`${API_BASE}/hospitals`);
+  if (!res.ok) throw new Error(`Failed to fetch hospitals: ${res.statusText}`);
+  const data = await res.json();
+  return data.hospitals || [];
+}
+
+export async function fetchHospitalById(hospitalId: string): Promise<Hospital> {
+  const res = await fetch(`${API_BASE}/hospitals/${hospitalId}`);
+  if (!res.ok) throw new Error(`Failed to fetch hospital ${hospitalId}: ${res.statusText}`);
+  return res.json();
+}
+
+export async function fetchConsentRequests(filter?: {
+  patient_id?: string;
+  requesting_hospital_id?: string;
+  status?: string;
+}): Promise<ConsentRequest[]> {
+  const params = new URLSearchParams();
+  if (filter?.patient_id) params.append('patient_id', filter.patient_id);
+  if (filter?.requesting_hospital_id) params.append('requesting_hospital_id', filter.requesting_hospital_id);
+  if (filter?.status) params.append('status', filter.status);
+
+  const url = `${API_BASE}/consent/requests${params.toString() ? `?${params.toString()}` : ''}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Failed to fetch consent requests: ${res.statusText}`);
+  const data = await res.json();
+  return data.requests || [];
+}
+
+export async function createConsentRequest(payload: {
+  patient_id: string;
+  patient_name: string;
+  requesting_hospital_id: string;
+  source_hospital_id: string;
+  purpose?: string;
+  requested_categories?: string[];
+}): Promise<ConsentRequest> {
+  const res = await fetch(`${API_BASE}/consent/requests`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `Failed to create consent request: ${res.statusText}`);
+  }
+  const data = await res.json();
+  return data.request;
+}
+
+export async function approveConsent(requestId: string, durationDays: number = 7): Promise<ConsentGrant> {
+  const res = await fetch(`${API_BASE}/consent/requests/${requestId}/approve`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ duration_days: durationDays }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `Failed to approve consent request: ${res.statusText}`);
+  }
+  const data = await res.json();
+  return data.grant;
+}
+
+export async function rejectConsent(requestId: string, reason?: string): Promise<ConsentRequest> {
+  const res = await fetch(`${API_BASE}/consent/requests/${requestId}/reject`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ reason: reason || 'Patient declined consent' }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `Failed to reject consent request: ${res.statusText}`);
+  }
+  const data = await res.json();
+  return data.request;
+}
+
+export async function revokeConsent(grantId: string, actorId?: string): Promise<ConsentGrant> {
+  const res = await fetch(`${API_BASE}/consent/grants/${grantId}/revoke`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ actor_id: actorId || 'Patient' }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `Failed to revoke consent grant: ${res.statusText}`);
+  }
+  const data = await res.json();
+  return data.grant;
+}
+
+export async function fetchConsentGrants(filter?: {
+  patient_id?: string;
+  requesting_hospital_id?: string;
+  status?: string;
+}): Promise<ConsentGrant[]> {
+  const params = new URLSearchParams();
+  if (filter?.patient_id) params.append('patient_id', filter.patient_id);
+  if (filter?.requesting_hospital_id) params.append('requesting_hospital_id', filter.requesting_hospital_id);
+  if (filter?.status) params.append('status', filter.status);
+
+  const url = `${API_BASE}/consent/grants${params.toString() ? `?${params.toString()}` : ''}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Failed to fetch consent grants: ${res.statusText}`);
+  const data = await res.json();
+  return data.grants || [];
+}
+
+export async function fetchCrossHospitalHistory(
+  patientId: string,
+  requestingHospitalId: string = 'HOSP002'
+): Promise<CrossHospitalPatientHistory> {
+  const res = await fetch(
+    `${API_BASE}/patients/${patientId}/cross-hospital-history?requestingHospitalId=${requestingHospitalId}`,
+    {
+      headers: {
+        'x-requesting-hospital-id': requestingHospitalId,
+      },
+    }
+  );
+  if (!res.ok) throw new Error(`Failed to fetch cross-hospital history: ${res.statusText}`);
+  return res.json();
+}
+
+export async function fetchFHIRBundle(hospitalId: string, patientId: string): Promise<any> {
+  const res = await fetch(`${API_BASE}/hospitals/${hospitalId}/patients/${patientId}/fhir`);
+  if (!res.ok) throw new Error(`Failed to export FHIR Bundle: ${res.statusText}`);
+  return res.json();
+}
+
+export async function fetchAuditLogs(filter?: {
+  patient_id?: string;
+  actor_hospital_id?: string;
+  limit?: number;
+}): Promise<AuditLog[]> {
+  const params = new URLSearchParams();
+  if (filter?.patient_id) params.append('patient_id', filter.patient_id);
+  if (filter?.actor_hospital_id) params.append('actor_hospital_id', filter.actor_hospital_id);
+  if (filter?.limit) params.append('limit', String(filter.limit));
+
+  const url = `${API_BASE}/audit-logs${params.toString() ? `?${params.toString()}` : ''}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Failed to fetch audit logs: ${res.statusText}`);
+  const data = await res.json();
+  return data.logs || [];
 }
