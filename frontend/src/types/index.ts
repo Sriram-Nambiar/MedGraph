@@ -15,6 +15,8 @@ export interface Patient {
 export interface Condition {
   id: string;
   patientId: string;
+  hospitalId?: string;
+  hospitalName?: string;
   code: string;
   name: string;
   category: string;
@@ -25,6 +27,8 @@ export interface Condition {
 export interface Admission {
   id: string;
   patientId: string;
+  hospitalId?: string;
+  hospitalName?: string;
   admissionDate: string;
   dischargeDate: string;
   reason: string;
@@ -47,6 +51,8 @@ export interface Medication {
 export interface Prescription {
   id: string;
   patientId: string;
+  hospitalId?: string;
+  hospitalName?: string;
   encounterId: string;
   admissionId?: string;
   medicationId: string;
@@ -64,6 +70,8 @@ export interface Prescription {
 export interface LabResult {
   id: string;
   patientId: string;
+  hospitalId?: string;
+  hospitalName?: string;
   encounterId: string;
   testId: string;
   date: string;
@@ -77,6 +85,8 @@ export interface LabResult {
 export interface ClinicalNote {
   id: string;
   patientId: string;
+  hospitalId?: string;
+  hospitalName?: string;
   encounterId: string;
   admissionId?: string;
   timestamp: string;
@@ -94,6 +104,8 @@ export interface TimelineEvent {
   patientId: string;
   recordId: string;
   timestamp: string;
+  hospitalId?: string;
+  hospitalName?: string;
   category: "admission" | "encounter" | "prescription" | "medication_change" | "lab_result" | "clinical_note" | "discharge";
   title: string;
   description: string;
@@ -121,6 +133,8 @@ export interface InvestigationClaimEvidence {
   source_type?: string;
   quote?: string;
   note_title?: string;
+  hospital_id?: string;
+  hospital_name?: string;
 }
 
 export interface InvestigationClaim {
@@ -150,6 +164,8 @@ export interface VisitedGraphNode {
   verified: boolean;
   relationship?: string;
   timestamp?: string;
+  hospital_id?: string;
+  hospital_name?: string;
 }
 
 export interface VectorSnippet {
@@ -158,6 +174,8 @@ export interface VectorSnippet {
   timestamp: string;
   score?: number;
   snippet: string;
+  hospital_id?: string;
+  hospital_name?: string;
 }
 
 export interface VerifierCheck {
@@ -203,4 +221,96 @@ export interface SystemHealth {
       patients_indexed: number;
     };
   };
+}
+
+// ==========================================
+// Cross-Hospital Interoperability & Consent
+// ==========================================
+
+export interface Hospital {
+  id: string; // 'HOSP001' | 'HOSP002'
+  name: string; // 'Apollo General Hospital' | 'Bengaluru City Medical Center'
+  code: string; // 'AGH' | 'BCMC'
+  city: string;
+  state: string;
+  type: string;
+  connectedStatus: 'CONNECTED' | 'DISCONNECTED';
+  activeRecordsCount: number;
+  contactEmail: string;
+  endpointUrl: string;
+}
+
+export interface ConsentRequest {
+  request_id: string;
+  patient_id: string;
+  patient_name: string;
+  requesting_hospital_id: string;
+  requesting_hospital_name: string;
+  source_hospital_id: string;
+  source_hospital_name: string;
+  purpose: string;
+  requested_categories: string[];
+  created_at: string;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'EXPIRED';
+  decision_reason?: string;
+}
+
+export interface ConsentGrant {
+  grant_id: string;
+  request_id: string;
+  patient_id: string;
+  requesting_hospital_id: string;
+  source_hospital_id: string;
+  permitted_categories: string[];
+  granted_at: string;
+  expires_at: string;
+  status: 'ACTIVE' | 'REVOKED' | 'EXPIRED';
+  revocation_reason?: string;
+}
+
+export interface CrossHospitalRecord {
+  record_id: string;
+  patient_id: string;
+  hospital_id: string;
+  hospital_name: string;
+  category: 'admission' | 'prescription' | 'lab_result' | 'clinical_note' | 'encounter';
+  encounter_id?: string;
+  timestamp: string;
+  title: string;
+  summary: string;
+  details: Record<string, any>;
+  source_hospital: string;
+  is_external: boolean;
+}
+
+export interface CrossHospitalPatientHistory {
+  patient_id: string;
+  patient_name: string;
+  requesting_hospital_id: string;
+  requesting_hospital_name: string;
+  participating_hospitals: Array<{
+    hospital_id: string;
+    hospital_name: string;
+    is_requesting_hospital: boolean;
+    consent_status: 'NOT_REQUIRED' | 'ACTIVE_GRANT' | 'PENDING_REQUEST' | 'NO_CONSENT';
+    records_count: number;
+  }>;
+  has_external_records: boolean;
+  active_grants_count: number;
+  pending_requests_count: number;
+  timeline: CrossHospitalRecord[];
+  total_records: number;
+}
+
+export interface AuditLog {
+  log_id: string;
+  timestamp: string;
+  actor_id: string;
+  actor_name: string;
+  actor_hospital_id: string;
+  action: string;
+  patient_id: string;
+  source_hospital_id: string;
+  details: string;
+  status: 'SUCCESS' | 'DENIED' | 'FAILED';
 }
