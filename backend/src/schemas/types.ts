@@ -239,6 +239,8 @@ export interface InvestigationClaimEvidence {
   source_type?: string;
   quote?: string;
   note_title?: string;
+  hospital_id?: string;
+  hospital_name?: string;
 }
 
 export interface InvestigationClaim {
@@ -268,6 +270,8 @@ export interface VisitedGraphNode {
   verified: boolean;
   relationship?: string;
   timestamp?: string;
+  hospital_id?: string;
+  hospital_name?: string;
 }
 
 export interface VectorSnippet {
@@ -276,6 +280,8 @@ export interface VectorSnippet {
   timestamp: string;
   score?: number;
   snippet: string;
+  hospital_id?: string;
+  hospital_name?: string;
 }
 
 export interface VerifierCheck {
