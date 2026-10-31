@@ -290,6 +290,29 @@ export class InMemoryGraphEngine {
       matchedEntities,
     };
   }
+
+  /**
+   * Retrieves all registered Hospital nodes in the knowledge graph.
+   */
+  public getHospitalNodes(): GraphNode[] {
+    const hospitals: GraphNode[] = [];
+    for (const node of this.nodes.values()) {
+      if (node.label === 'Hospital') {
+        hospitals.push(node);
+      }
+    }
+    return hospitals;
+  }
+
+  /**
+   * Retrieves records for a patient filtered by originating hospital.
+   */
+  public getPatientRecordsByHospital(patientId: string, hospitalId: string): GraphNode[] {
+    const subGraph = this.getPatientSubGraph(patientId);
+    return subGraph.nodes.filter(
+      (node) => node.properties.hospitalId === hospitalId
+    );
+  }
 }
 
 export const inMemoryGraph = new InMemoryGraphEngine();
