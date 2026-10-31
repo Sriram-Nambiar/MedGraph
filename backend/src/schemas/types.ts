@@ -83,7 +83,7 @@ export interface LabTest {
   id: string; // e.g. "TEST-CREAT"
   code: string; // LOINC code
   name: string;
-  category: "Chemistry" | "Hematology" | "Coagulation" | "Endocrine" | "Cardiac";
+  category: "Chemistry" | "Hematology" | "Coagulation" | "Endocrine" | "Cardiac" | "Renal";
   unit: string;
   normalRangeLow: number;
   normalRangeHigh: number;
@@ -225,6 +225,45 @@ export interface InvestigationClaim {
   explanation?: string;
 }
 
+export interface InvestigationPlan {
+  intent: string;
+  planned_steps: string[];
+  identified_entities?: {
+    medications?: string[];
+    conditions?: string[];
+    lab_tests?: string[];
+    admissions?: string[];
+    [key: string]: string[] | undefined;
+  };
+  temporal_requirements?: string[];
+}
+
+export interface VisitedGraphNode {
+  id: string;
+  label: string;
+  name: string;
+  verified: boolean;
+  relationship?: string;
+  timestamp?: string;
+}
+
+export interface VectorSnippet {
+  record_id: string;
+  note_title?: string;
+  timestamp: string;
+  score?: number;
+  snippet: string;
+}
+
+export interface VerifierCheck {
+  id: string;
+  claim: string;
+  status: 'PASS' | 'FLAG' | 'FAIL';
+  badge_text: string;
+  details: string;
+  matched_records?: string[];
+}
+
 export interface InvestigationResponse {
   answer: string;
   patient_id: string;
@@ -234,4 +273,9 @@ export interface InvestigationResponse {
   key_findings: string[];
   missing_information?: string[];
   contradictions_found?: string[];
+  plan?: InvestigationPlan;
+  visited_nodes?: VisitedGraphNode[];
+  vector_snippets?: VectorSnippet[];
+  verifier_checks?: VerifierCheck[];
+  raw_engine_output?: any;
 }

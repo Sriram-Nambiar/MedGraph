@@ -35,23 +35,24 @@ export class PatientController {
         return;
       }
 
-      const node = inMemoryGraph.getNode(patientId);
+      const pId = patientId as string;
+      const node = inMemoryGraph.getNode(pId);
       if (!node || node.label !== 'Patient') {
         // Try file
-        const pFile = path.resolve(process.cwd(), `../data/synthetic-patients/${patientId}.json`);
+        const pFile = path.resolve(process.cwd(), `../data/synthetic-patients/${pId}.json`);
         if (fs.existsSync(pFile)) {
           const data = JSON.parse(fs.readFileSync(pFile, 'utf-8'));
           res.json({ patient: data.patient, details: data });
           return;
         }
-        res.status(404).json({ error: `Patient with id "${patientId}" not found.` });
+        res.status(404).json({ error: `Patient with id "${pId}" not found.` });
         return;
       }
 
-      const conditions = await graphService.getPatientConditions(patientId);
-      const admissions = await graphService.getPatientAdmissions(patientId);
-      const medications = await graphService.getPatientMedications(patientId);
-      const labResults = await graphService.getPatientLabResults(patientId);
+      const conditions = await graphService.getPatientConditions(pId);
+      const admissions = await graphService.getPatientAdmissions(pId);
+      const medications = await graphService.getPatientMedications(pId);
+      const labResults = await graphService.getPatientLabResults(pId);
 
       res.json({
         patient: node.properties,
@@ -75,7 +76,7 @@ export class PatientController {
         return;
       }
 
-      const timeline = await timelineService.getPatientTimeline(patientId);
+      const timeline = await timelineService.getPatientTimeline(patientId as string);
       res.json({
         patient_id: patientId,
         total_events: timeline.length,
@@ -94,7 +95,7 @@ export class PatientController {
         return;
       }
 
-      const admissions = await graphService.getPatientAdmissions(patientId);
+      const admissions = await graphService.getPatientAdmissions(patientId as string);
       res.json({
         patient_id: patientId,
         count: admissions.length,
@@ -113,7 +114,7 @@ export class PatientController {
         return;
       }
 
-      const graph = await graphService.getPatientGraph(patientId);
+      const graph = await graphService.getPatientGraph(patientId as string);
       res.json({
         patient_id: patientId,
         nodes: graph.nodes,

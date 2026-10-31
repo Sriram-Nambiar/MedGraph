@@ -40,7 +40,7 @@ export class GraphController {
   public async getPatientSubgraph(req: Request, res: Response): Promise<void> {
     try {
       const { patientId } = req.params;
-      const graph = await graphService.getPatientGraph(patientId);
+      const graph = await graphService.getPatientGraph(patientId as string);
       res.json({ patient_id: patientId, ...graph });
     } catch (err: any) {
       res.status(500).json({ error: `Failed to retrieve graph: ${err.message}` });
@@ -50,7 +50,7 @@ export class GraphController {
   public async getPatientMedications(req: Request, res: Response): Promise<void> {
     try {
       const { patientId } = req.params;
-      const medications = await graphService.getPatientMedications(patientId);
+      const medications = await graphService.getPatientMedications(patientId as string);
       res.json({ patient_id: patientId, medications });
     } catch (err: any) {
       res.status(500).json({ error: `Failed to retrieve medications: ${err.message}` });
@@ -61,7 +61,7 @@ export class GraphController {
     try {
       const { patientId } = req.params;
       const testId = req.query.testId as string | undefined;
-      const labs = await graphService.getPatientLabResults(patientId, testId);
+      const labs = await graphService.getPatientLabResults(patientId as string, testId);
       res.json({ patient_id: patientId, labs });
     } catch (err: any) {
       res.status(500).json({ error: `Failed to retrieve labs: ${err.message}` });

@@ -67,7 +67,7 @@ export class VectorController {
   public async getNoteByRecordId(req: Request, res: Response): Promise<void> {
     try {
       const { patientId, recordId } = req.params;
-      const note = vectorStore.getDocumentByRecordId(patientId, recordId);
+      const note = vectorStore.getDocumentByRecordId(patientId as string, recordId as string);
       if (!note) {
         res.status(404).json({ error: `Clinical note record "${recordId}" not found for patient "${patientId}".` });
         return;

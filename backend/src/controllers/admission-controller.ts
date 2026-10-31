@@ -11,7 +11,7 @@ export class AdmissionController {
         return;
       }
 
-      const admissions = await graphService.getPatientAdmissions(patientId);
+      const admissions = await graphService.getPatientAdmissions(patientId as string);
       res.json({
         patient_id: patientId,
         count: admissions.length,
