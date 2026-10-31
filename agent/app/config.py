@@ -5,7 +5,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     # API endpoints for main application
-    api_base_url: str = "http://localhost:3000"
+    api_base_url: str = "http://localhost:5000"
     graph_search_endpoint: str = "/api/graph/search"
     vector_search_endpoint: str = "/api/vector/search"
     admission_endpoint: str = "/api/patients/{patient_id}/admissions"
