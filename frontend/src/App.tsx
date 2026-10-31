@@ -25,10 +25,9 @@ import { Loader2 } from 'lucide-react';
 export function App() {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'timeline' | 'graph' | 'investigation'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'timeline' | 'graph' | 'investigation'>('investigation');
   const [health, setHealth] = useState<SystemHealth | null>(null);
 
-  // Patient Sub-data
   const [patientDetails, setPatientDetails] = useState<any>(null);
   const [timeline, setTimeline] = useState<TimelineEvent[]>([]);
   const [graphData, setGraphData] = useState<{ nodes: GraphNode[]; relationships: GraphRelationship[] }>({
@@ -40,7 +39,6 @@ export function App() {
   const [activeEvidenceRecordId, setActiveEvidenceRecordId] = useState<string | null>(null);
   const [investigationQuestion, setInvestigationQuestion] = useState<string>('');
 
-  // Initial Load: Health and Patient list
   useEffect(() => {
     async function init() {
       try {
@@ -59,7 +57,6 @@ export function App() {
     init();
   }, []);
 
-  // When selected patient changes, load timeline, details, and graph
   useEffect(() => {
     if (!selectedPatient) return;
 
@@ -101,16 +98,16 @@ export function App() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#090a0f] flex flex-col items-center justify-center text-zinc-400 gap-3 font-mono">
-        <Loader2 className="w-8 h-8 text-cyan-400 animate-spin" />
-        <span>Booting MedGraph Clinical Engine...</span>
+      <div className="min-h-screen bg-[#09090b] flex flex-col items-center justify-center text-zinc-500 gap-3 font-mono text-xs">
+        <Loader2 className="w-5 h-5 text-zinc-400 animate-spin" />
+        <span>Loading MedGraph Investigation Engine...</span>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#090a0f] text-slate-100 flex flex-col font-sans selection:bg-cyan-900 selection:text-white">
-      {/* Sticky TopBar */}
+    <div className="min-h-screen bg-[#09090b] text-zinc-200 flex flex-col font-sans selection:bg-zinc-800 selection:text-white">
+      {/* Sleek TopBar */}
       <TopBar
         patients={patients}
         selectedPatient={selectedPatient}
@@ -120,12 +117,20 @@ export function App() {
         health={health}
       />
 
-      {/* Main Content Viewport */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-6 md:p-8">
+      {/* Main Viewport */}
+      <main className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6">
         {selectedPatient ? (
           <>
+            {activeTab === 'investigation' && (
+              <InvestigationView
+                patient={selectedPatient}
+                onOpenEvidence={handleOpenEvidence}
+                initialQuestion={investigationQuestion}
+              />
+            )}
+
             {activeTab === 'overview' && patientDetails && (
-              <div className="space-y-6">
+              <div className="space-y-6 max-w-5xl mx-auto">
                 <PatientOverview
                   patient={selectedPatient}
                   conditions={patientDetails.conditions || []}
@@ -152,19 +157,17 @@ export function App() {
             )}
 
             {activeTab === 'graph' && (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
+              <div className="space-y-3 max-w-5xl mx-auto">
+                <div className="flex items-center justify-between text-xs">
                   <div>
-                    <h2 className="text-base font-bold text-white tracking-tight">
-                      Bi-Directional Knowledge Graph
-                    </h2>
-                    <p className="text-xs text-zinc-400 font-mono mt-0.5">
-                      Visualizing connected clinical entities for {selectedPatient.name} ({selectedPatient.id})
+                    <h2 className="font-semibold text-white">Knowledge Graph</h2>
+                    <p className="text-zinc-500 font-mono text-[11px]">
+                      Connected medical entities for {selectedPatient.name} ({selectedPatient.id})
                     </p>
                   </div>
-                  <div className="text-xs font-mono text-zinc-400 flex items-center gap-3">
+                  <div className="font-mono text-[11px] text-zinc-500 flex items-center gap-3">
                     <span>Nodes: {graphData.nodes.length}</span>
-                    <span>Edges: {graphData.relationships.length}</span>
+                    <span>Relationships: {graphData.relationships.length}</span>
                   </div>
                 </div>
 
@@ -175,31 +178,15 @@ export function App() {
                 />
               </div>
             )}
-
-            {activeTab === 'investigation' && (
-              <InvestigationView
-                patient={selectedPatient}
-                onOpenEvidence={handleOpenEvidence}
-                initialQuestion={investigationQuestion}
-              />
-            )}
           </>
         ) : (
-          <div className="text-center py-20 text-zinc-500 font-mono">
+          <div className="text-center py-20 text-zinc-500 font-mono text-xs">
             No patient selected.
           </div>
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-zinc-800/80 bg-zinc-950/80 py-4 px-6 text-center text-xs text-zinc-500 font-mono">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>MedGraph • Agentic Clinical Investigation Platform</span>
-          <span>Knowledge Graph + GraphRAG + Vector Retrieval • Synthetic Clinical Cohort</span>
-        </div>
-      </footer>
-
-      {/* Evidence Document Modal */}
+      {/* Discrete Evidence Inspector Modal */}
       {selectedPatient && (
         <EvidenceInspectorModal
           patientId={selectedPatient.id}
