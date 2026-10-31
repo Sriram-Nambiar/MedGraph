@@ -1,3 +1,7 @@
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 import logging
 from typing import Optional, List, Dict, Any
 from fastapi import FastAPI, HTTPException

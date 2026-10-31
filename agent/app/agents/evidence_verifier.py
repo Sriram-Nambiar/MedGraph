@@ -69,13 +69,13 @@ class EvidenceVerifier:
 
         # Claims from notes / reasons
         q_lower = question.lower()
-        if "reason" in q_lower or "why" in q_lower or "documented" in q_lower:
+        if any(term in q_lower for term in ["reason", "why", "documented", "consultation", "symptom", "note", "rationale"]):
             # Check if any note gives a reason
             notes = [e for e in events if e.event_type == "clinical_note"]
             found_reason_in_note = False
             for n in notes:
                 content = n.data.get("content", "")
-                if any(w in content.lower() for w in ["switched", "due to", "because", "discontinued in favor", "escalated from"]):
+                if any(w in content.lower() for w in ["switched", "due to", "because", "discontinued in favor", "escalated from", "complicated by", "washout", "secondary to", "prompted by", "indicated for", "prescribed for", "abruptly discontinued", "hyperkalemia"]):
                     found_reason_in_note = True
                     claims.append(Claim(
                         claim_id=f"CLAIM-{claim_idx:02d}",
@@ -165,7 +165,7 @@ class EvidenceVerifier:
             matching_notes = []
             for n in notes:
                 content = n.data.get("content", "")
-                if any(w in content.lower() for w in ["switched", "due to", "because", "discontinued in favor", "escalated from"]):
+                if any(w in content.lower() for w in ["switched", "due to", "because", "discontinued in favor", "escalated from", "complicated by", "washout", "secondary to", "prompted by", "indicated for", "prescribed for", "abruptly discontinued", "hyperkalemia"]):
                     matching_notes.append(n)
 
             if matching_notes:

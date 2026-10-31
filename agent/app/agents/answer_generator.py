@@ -87,6 +87,8 @@ class AnswerGenerator:
             all_timestamps.update(v.timestamps)
 
         for e in events:
+            if e.source_record_ids:
+                all_record_ids.update(e.source_record_ids)
             if e.normalized_timestamp:
                 all_timestamps.add(e.normalized_timestamp)
 

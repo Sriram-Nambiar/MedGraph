@@ -14,6 +14,15 @@ from app.schemas.evidence import GraphRecord, ClinicalNote, AdmissionRecord
 # --- PATIENT P001 (Eleanor Vance - 68F, Heart Failure, Plaque Psoriasis, Hypertension) ---
 P001_ADMISSIONS = [
     AdmissionRecord(
+        admission_id="ADM-100",
+        patient_id="P001",
+        admission_date="2025-08-15T09:00:00Z",
+        discharge_date="2025-08-18T12:00:00Z",
+        reason="Initial cardiology admission for acute decompensated heart failure and hypertension",
+        department="Cardiovascular Care",
+        attending_physician="Dr. Cristina Yang, MD (Cardiologist)"
+    ),
+    AdmissionRecord(
         admission_id="ADM-101",
         patient_id="P001",
         admission_date="2025-09-12T08:30:00Z",
@@ -95,7 +104,7 @@ P001_GRAPH_RECORDS = [
             "status": "Discontinued",
             "reason": "Discontinued by Cardiologist due to severe acute hyperkalemia (Potassium 5.7 mEq/L)"
         },
-        relationships=[{"type": "PRESCRIBED_DURING", "target": "ENC-101"}]
+        relationships=[{"type": "PRESCRIBED_DURING", "target": "ADM-100"}]
     ),
     GraphRecord(
         record_id="RX-102",
@@ -110,7 +119,7 @@ P001_GRAPH_RECORDS = [
             "status": "Active",
             "reason": "Initiated by Cardiologist following 36-hour washout for HFrEF guideline therapy"
         },
-        relationships=[{"type": "PRESCRIBED_DURING", "target": "ENC-101"}]
+        relationships=[{"type": "PRESCRIBED_DURING", "target": "ADM-101"}]
     ),
     GraphRecord(
         record_id="RX-103",
@@ -128,7 +137,23 @@ P001_GRAPH_RECORDS = [
         relationships=[{"type": "PRESCRIBED_DURING", "target": "ENC-102"}]
     ),
 
-    # Labs
+    # Labs (Baseline ADM-100 & Follow-up ADM-101)
+    GraphRecord(
+        record_id="LAB-100",
+        patient_id="P001",
+        record_type="lab_result",
+        timestamp="2025-08-15T10:30:00Z",
+        details={"test_name": "Potassium", "value": 4.3, "unit": "mEq/L", "reference_range": "3.5 - 5.1", "flag": "NORMAL"},
+        relationships=[{"type": "ORDERED_DURING", "target": "ADM-100"}]
+    ),
+    GraphRecord(
+        record_id="LAB-104",
+        patient_id="P001",
+        record_type="lab_result",
+        timestamp="2025-08-15T10:30:00Z",
+        details={"test_name": "B-type Natriuretic Peptide (BNP)", "value": 450.0, "unit": "pg/mL", "reference_range": "< 100", "flag": "HIGH"},
+        relationships=[{"type": "ORDERED_DURING", "target": "ADM-100"}]
+    ),
     GraphRecord(
         record_id="LAB-101",
         patient_id="P001",
