@@ -19,6 +19,7 @@ import {
 import { MedicalWatermarkPattern } from './MedicalWatermarkPattern';
 import { EcgPulseCard } from './EcgPulseCard';
 import { ThreeDHeartCard } from './ThreeDHeartCard';
+import { VoxelHeartbeatStudio } from './VoxelHeartbeatStudio';
 import { Patient, SystemHealth } from '../../types';
 import { NavigationTab } from '../TopBar';
 
@@ -245,6 +246,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               </button>
 
               <button
+                onClick={() => {
+                  const el = document.getElementById('voxel-heartbeat-studio');
+                  el?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="text-xs font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 border border-red-200 shadow-xs"
+              >
+                <Heart className="w-3.5 h-3.5 fill-red-500 text-red-500 animate-pulse" />
+                <span>3D Voxel Heart</span>
+              </button>
+              <button
                 onClick={() => onNavigateTab('3d-graph')}
                 className="text-xs font-bold text-[#3b5998] hover:text-[#162a56] px-3 py-1.5 rounded-lg hover:bg-[#eef4fd] transition-colors hidden md:inline-block"
               >
@@ -442,6 +453,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             ))}
           </div>
         </div>
+      </div>
+
+      {/* ─────────────────────────────────────────────────────────────────────────
+          3.5 INTERACTIVE 3D VOXEL HEARTBEAT STUDIO (Hesam Sanei Voxel Art)
+          ───────────────────────────────────────────────────────────────────────── */}
+      <div className="max-w-[1180px] mx-auto px-4 sm:px-6 mt-14">
+        <VoxelHeartbeatStudio
+          onNavigateToPatient={(patientId) => {
+            const p = activePatients.find((pat) => pat.id === patientId);
+            if (p) onSelectPatient(p);
+            onNavigateTab('investigation');
+          }}
+        />
       </div>
 
       {/* ─────────────────────────────────────────────────────────────────────────
