@@ -166,6 +166,8 @@ export function generateSyntheticDataset() {
     {
       id: 'ADM-101',
       patientId: 'P001',
+      hospitalId: 'HOSP001',
+      hospitalName: 'Apollo General Hospital',
       admissionDate: '2025-09-12T08:30:00Z',
       dischargeDate: '2025-09-16T14:00:00Z',
       reason: 'Acute decompensated heart failure with progressive bilateral lower extremity edema and dyspnea',
@@ -233,6 +235,8 @@ export function generateSyntheticDataset() {
     {
       id: 'ADM-203',
       patientId: 'P002',
+      hospitalId: 'HOSP002',
+      hospitalName: 'Bengaluru City Medical Center',
       admissionDate: '2026-09-02T07:15:00Z',
       dischargeDate: '2026-09-06T13:30:00Z',
       reason: 'Acute lower gastrointestinal bleeding (hematochezia) with hemoglobin drop while on therapeutic anticoagulation',
