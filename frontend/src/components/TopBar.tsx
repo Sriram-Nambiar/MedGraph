@@ -1,8 +1,8 @@
 import React from 'react';
-import { Heart, ChevronDown, Sparkles, Sun, Moon, Home } from 'lucide-react';
+import { Heart, ChevronDown, Sparkles, Sun, Moon, Home, Network } from 'lucide-react';
 import { Patient, SystemHealth } from '../types';
 
-export type NavigationTab = 'landing' | 'overview' | 'timeline' | 'graph' | '3d-graph' | 'investigation';
+export type NavigationTab = 'landing' | 'overview' | 'timeline' | 'graph' | '3d-graph' | 'investigation' | 'hospital-network';
 
 interface TopBarProps {
   patients: Patient[];
@@ -189,6 +189,20 @@ export const TopBar: React.FC<TopBarProps> = ({
             }`}
           >
             Investigation
+          </button>
+          <button
+            onClick={() => setActiveTab('hospital-network')}
+            className={`px-3 py-1 text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 ${
+              activeTab === 'hospital-network'
+                ? 'bg-blue-600 text-white shadow-sm ring-1 ring-blue-400'
+                : isClinical
+                ? 'text-blue-200 hover:text-white hover:bg-blue-900/50'
+                : 'text-zinc-300 hover:text-white'
+            }`}
+          >
+            <Network className="w-3.5 h-3.5 text-cyan-300" />
+            <span className="hidden sm:inline">Hospital Interop</span>
+            <span className="sm:hidden">Interop</span>
           </button>
         </nav>
 
