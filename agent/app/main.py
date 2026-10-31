@@ -23,7 +23,8 @@ logger = logging.getLogger("medgraph.main")
 async def run_investigation(
     patient_id: str,
     user_question: str,
-    thread_id: Optional[str] = None
+    thread_id: Optional[str] = None,
+    requesting_hospital_id: Optional[str] = "HOSP002"
 ) -> FinalAnswer:
     """Entrypoint to run a clinical investigation through the LangGraph pipeline."""
     if not thread_id:
@@ -35,6 +36,7 @@ async def run_investigation(
         "patient_id": patient_id,
         "thread_id": thread_id,
         "user_question": user_question,
+        "requesting_hospital_id": requesting_hospital_id,
         "investigation_plan": None,
         "retrieved_graph_data": [],
         "retrieved_notes": [],
@@ -47,7 +49,7 @@ async def run_investigation(
         "is_sufficient": True,
         "missing_evidence_queries": [],
         "final_answer": None,
-        "status_log": [f"Investigation initiated for patient {patient_id} on thread {thread_id}."]
+        "status_log": [f"Investigation initiated for patient {patient_id} at {requesting_hospital_id} on thread {thread_id}."]
     }
 
     logger.info(f"Invoking MedGraph workflow for patient={patient_id}, thread={thread_id}")
@@ -60,7 +62,8 @@ async def run_investigation(
 async def run_investigation_state(
     patient_id: str,
     user_question: str,
-    thread_id: Optional[str] = None
+    thread_id: Optional[str] = None,
+    requesting_hospital_id: Optional[str] = "HOSP002"
 ) -> dict:
     """Entrypoint returning the complete LangGraph state for audit trail inspection."""
     if not thread_id:
@@ -72,6 +75,7 @@ async def run_investigation_state(
         "patient_id": patient_id,
         "thread_id": thread_id,
         "user_question": user_question,
+        "requesting_hospital_id": requesting_hospital_id,
         "investigation_plan": None,
         "retrieved_graph_data": [],
         "retrieved_notes": [],
@@ -84,7 +88,7 @@ async def run_investigation_state(
         "is_sufficient": True,
         "missing_evidence_queries": [],
         "final_answer": None,
-        "status_log": [f"Investigation initiated for patient {patient_id} on thread {thread_id}."]
+        "status_log": [f"Investigation initiated for patient {patient_id} at {requesting_hospital_id} on thread {thread_id}."]
     }
 
     logger.info(f"Invoking MedGraph workflow with state capture for patient={patient_id}, thread={thread_id}")
@@ -98,39 +102,39 @@ async def resume_investigation(
 ) -> FinalAnswer:
     """Resume an existing investigation thread using LangGraph checkpointing."""
     config = {"configurable": {"thread_id": thread_id}}
-    state_snapshot = await medgraph_workflow.aget_state(config)
 
-    if not state_snapshot or not state_snapshot.values:
-        raise ValueError(f"No checkpointed state found for thread_id '{thread_id}'.")
-
-    current_values = dict(state_snapshot.values)
-
+    resume_input = None
     if followup_question:
-        current_values["user_question"] = followup_question
-        current_values["status_log"] = [f"Resuming thread {thread_id} with follow-up: '{followup_question}'."]
-        final_state = await medgraph_workflow.ainvoke(current_values, config=config)
-        return final_state["final_answer"]
+        resume_input = {
+            "user_question": followup_question,
+            "status_log": [f"Resumed investigation with follow-up: '{followup_question}'"]
+        }
 
-    return current_values.get("final_answer")
+    logger.info(f"Resuming thread {thread_id} with follow-up: {followup_question}")
+    final_state = await medgraph_workflow.ainvoke(resume_input, config=config)
+
+    final_answer: FinalAnswer = final_state["final_answer"]
+    return final_answer
 
 
 if __name__ == "__main__":
-    import sys
+    demo_patient = "P001"
+    demo_question = "Why was lisinopril discontinued and what medication was started instead?"
 
-    patient = sys.argv[1] if len(sys.argv) > 1 else "P001"
-    question = (
-        sys.argv[2]
-        if len(sys.argv) > 2
-        else "What changed between the patient's last two admissions? Were there any medication changes, and is the reason documented?"
-    )
+    print(f"\n{'='*70}\nStarting MedGraph Clinical Investigation (LangGraph)\n{'='*70}")
+    print(f"Patient ID: {demo_patient}")
+    print(f"Question:   {demo_question}\n{'-'*70}\n")
 
-    print("\n" + "=" * 80)
-    print("MEDGRAPH: AGENTIC CLINICAL INVESTIGATION ENGINE")
-    print("=" * 80)
-    print(f"Patient ID: {patient}")
-    print(f"Question:   {question}")
-    print("-" * 80 + "\n")
+    result = asyncio.run(run_investigation(demo_patient, demo_question))
 
-    result = asyncio.run(run_investigation(patient_id=patient, user_question=question))
+    print(f"\nDIRECT ANSWER:\n{result.direct_answer}\n")
+    print(f"VERIFICATION STATUS: {result.all_claims_verified} (Summary: {result.verification_summary})\n")
+    print("KEY FINDINGS:")
+    for kf in result.key_findings:
+        print(f"  * {kf}")
 
-    print(json.dumps(result.model_dump(), indent=2))
+    print("\nCLAIMS VERIFICATION AUDIT TRAIL:")
+    for cv in result.claims_verification:
+        print(f"  [{cv.status}] {cv.claim_id}: {cv.statement}")
+        print(f"         Records: {cv.supporting_record_ids or cv.contradicting_record_ids}")
+        print(f"         Evidence: {cv.evidence_text}\n")

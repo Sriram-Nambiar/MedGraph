@@ -32,11 +32,13 @@ class InvestigateRequest(BaseModel):
     patient_id: str = Field(..., json_schema_extra={"example": "P001"})
     thread_id: Optional[str] = Field(None, json_schema_extra={"example": "INV-101"})
     question: str = Field(..., json_schema_extra={"example": "What changed between the last two admissions?"})
+    requesting_hospital_id: Optional[str] = Field("HOSP002", json_schema_extra={"example": "HOSP002"})
 
 
 def format_response_for_backend(final_state: Dict[str, Any], thread_id: Optional[str] = None) -> Dict[str, Any]:
     """Format complete LangGraph final_state into the InvestigationResponse schema
-    with full Audit Trail (plan, visited_nodes, vector_snippets, verifier_checks).
+    with full Audit Trail (plan, visited_nodes, vector_snippets, verifier_checks)
+    and cross-hospital provenance badges.
     """
     final_answer: FinalAnswer = final_state["final_answer"]
     summary = final_answer.verification_summary
@@ -54,10 +56,14 @@ def format_response_for_backend(final_state: Dict[str, Any], thread_id: Optional
     for adm in final_state.get("retrieved_admissions", []):
         adm_id = getattr(adm, "admission_id", None) or (adm.get("admission_id") if isinstance(adm, dict) else None)
         if adm_id:
+            hid = getattr(adm, "hospital_id", None) or (adm.get("hospital_id") if isinstance(adm, dict) else None) or "HOSP001"
+            hname = getattr(adm, "hospital_name", None) or (adm.get("hospital_name") if isinstance(adm, dict) else None) or ("Bengaluru City Medical Center" if hid == "HOSP002" else "Apollo General Hospital")
             record_map[adm_id] = {
                 "timestamp": getattr(adm, "admission_date", "") or (adm.get("admission_date", "") if isinstance(adm, dict) else ""),
                 "quote": f"Admission {adm_id}: {getattr(adm, 'reason', '') or (adm.get('reason', '') if isinstance(adm, dict) else '')}",
-                "source_type": "admission"
+                "source_type": "admission",
+                "hospital_id": hid,
+                "hospital_name": hname,
             }
     for rec in final_state.get("retrieved_graph_data", []):
         rec_id = getattr(rec, "record_id", None) or (rec.get("record_id") if isinstance(rec, dict) else None)
@@ -67,10 +73,14 @@ def format_response_for_backend(final_state: Dict[str, Any], thread_id: Optional
             name = details.get("name") or details.get("medication_name") or details.get("test_name") or rec_id
             dose = details.get("dosage") or details.get("value") or ""
             quote = f"{name} ({dose})".strip() if dose else str(name)
+            hid = getattr(rec, "hospital_id", None) or (rec.get("hospital_id") if isinstance(rec, dict) else None) or "HOSP001"
+            hname = getattr(rec, "hospital_name", None) or (rec.get("hospital_name") if isinstance(rec, dict) else None) or ("Bengaluru City Medical Center" if hid == "HOSP002" else "Apollo General Hospital")
             record_map[rec_id] = {
                 "timestamp": ts,
                 "quote": quote,
-                "source_type": getattr(rec, "record_type", "graph")
+                "source_type": getattr(rec, "record_type", "graph"),
+                "hospital_id": hid,
+                "hospital_name": hname,
             }
     for note in final_state.get("retrieved_notes", []):
         note_id = getattr(note, "record_id", None) or (note.get("record_id") if isinstance(note, dict) else None)
@@ -78,11 +88,15 @@ def format_response_for_backend(final_state: Dict[str, Any], thread_id: Optional
             ts = getattr(note, "timestamp", "") or (note.get("timestamp", "") if isinstance(note, dict) else "")
             content = getattr(note, "content", "") or (note.get("content", "") if isinstance(note, dict) else "")
             title = getattr(note, "note_type", "Clinical Note") or (note.get("note_type", "Clinical Note") if isinstance(note, dict) else "Clinical Note")
+            hid = getattr(note, "hospital_id", None) or (note.get("hospital_id") if isinstance(note, dict) else None) or "HOSP001"
+            hname = getattr(note, "hospital_name", None) or (note.get("hospital_name") if isinstance(note, dict) else None) or ("Bengaluru City Medical Center" if hid == "HOSP002" else "Apollo General Hospital")
             record_map[note_id] = {
                 "timestamp": ts,
                 "quote": content[:240] + ("..." if len(content) > 240 else ""),
                 "note_title": title.replace("_", " ").title(),
-                "source_type": "clinical_note"
+                "source_type": "clinical_note",
+                "hospital_id": hid,
+                "hospital_name": hname,
             }
 
     formatted_claims = []
@@ -98,7 +112,9 @@ def format_response_for_backend(final_state: Dict[str, Any], thread_id: Optional
                 "timestamp": ts,
                 "quote": quote,
                 "source_type": rec_meta.get("source_type", "graph_record"),
-                "note_title": rec_meta.get("note_title")
+                "note_title": rec_meta.get("note_title"),
+                "hospital_id": rec_meta.get("hospital_id", "HOSP001"),
+                "hospital_name": rec_meta.get("hospital_name", "Apollo General Hospital")
             })
 
         status_str = "CONTRADICTORY" if c.status == "CONTRADICTED" else c.status
@@ -140,13 +156,17 @@ def format_response_for_backend(final_state: Dict[str, Any], thread_id: Optional
         adm_id = getattr(adm, "admission_id", None) or (adm.get("admission_id") if isinstance(adm, dict) else None)
         if adm_id and adm_id not in seen_ids:
             seen_ids.add(adm_id)
+            hid = getattr(adm, "hospital_id", None) or (adm.get("hospital_id") if isinstance(adm, dict) else None) or "HOSP001"
+            hname = getattr(adm, "hospital_name", None) or (adm.get("hospital_name") if isinstance(adm, dict) else None) or ("Bengaluru City Medical Center" if hid == "HOSP002" else "Apollo General Hospital")
             visited_nodes.append({
                 "id": adm_id,
                 "label": "Admission",
                 "name": f"Hospital Admission ({adm_id})",
                 "verified": True,
                 "relationship": "HAS_ADMISSION",
-                "timestamp": getattr(adm, "admission_date", "") or (adm.get("admission_date", "") if isinstance(adm, dict) else "")
+                "timestamp": getattr(adm, "admission_date", "") or (adm.get("admission_date", "") if isinstance(adm, dict) else ""),
+                "hospital_id": hid,
+                "hospital_name": hname,
             })
 
     for rec in final_state.get("retrieved_graph_data", []):
@@ -162,13 +182,17 @@ def format_response_for_backend(final_state: Dict[str, Any], thread_id: Optional
                 or details.get("condition_name")
                 or f"{rec_type.capitalize()} {rec_id}"
             )
+            hid = getattr(rec, "hospital_id", None) or (rec.get("hospital_id") if isinstance(rec, dict) else None) or "HOSP001"
+            hname = getattr(rec, "hospital_name", None) or (rec.get("hospital_name") if isinstance(rec, dict) else None) or ("Bengaluru City Medical Center" if hid == "HOSP002" else "Apollo General Hospital")
             visited_nodes.append({
                 "id": rec_id,
                 "label": rec_type.capitalize() if rec_type else "GraphEntity",
                 "name": str(name),
                 "verified": True,
                 "relationship": "TRAVERSED_EDGE",
-                "timestamp": getattr(rec, "timestamp", "") or (rec.get("timestamp", "") if isinstance(rec, dict) else "")
+                "timestamp": getattr(rec, "timestamp", "") or (rec.get("timestamp", "") if isinstance(rec, dict) else ""),
+                "hospital_id": hid,
+                "hospital_name": hname,
             })
 
     # 3. The vector text snippet retrieved
@@ -179,13 +203,17 @@ def format_response_for_backend(final_state: Dict[str, Any], thread_id: Optional
         note_type = getattr(note, "note_type", "Clinical Note") or (note.get("note_type", "Clinical Note") if isinstance(note, dict) else "Clinical Note")
         score = getattr(note, "relevance_score", 0.94) or (note.get("relevance_score", 0.94) if isinstance(note, dict) else 0.94)
         ts = getattr(note, "timestamp", "") or (note.get("timestamp", "") if isinstance(note, dict) else "")
+        hid = getattr(note, "hospital_id", None) or (note.get("hospital_id") if isinstance(note, dict) else None) or "HOSP001"
+        hname = getattr(note, "hospital_name", None) or (note.get("hospital_name") if isinstance(note, dict) else None) or ("Bengaluru City Medical Center" if hid == "HOSP002" else "Apollo General Hospital")
 
         vector_snippets.append({
             "record_id": rec_id,
-            "note_title": note_type.replace("_", " ").title(),
+            "note_title": f"{note_type.replace('_', ' ').title()} ({hname})",
             "timestamp": ts,
             "score": round(float(score), 2) if score else 0.93,
-            "snippet": content[:260] + ("..." if len(content) > 260 else "")
+            "snippet": content[:260] + ("..." if len(content) > 260 else ""),
+            "hospital_id": hid,
+            "hospital_name": hname,
         })
 
     # 4. The Verifier's check status
@@ -238,12 +266,13 @@ def health_check():
 @app.post("/investigate")
 @app.post("/api/investigate")
 async def investigate(req: InvestigateRequest):
-    """Investigation endpoint called by Person 1's backend."""
+    """Investigation endpoint called by Express backend."""
     try:
         final_state = await run_investigation_state(
             patient_id=req.patient_id,
             user_question=req.question,
-            thread_id=req.thread_id
+            thread_id=req.thread_id,
+            requesting_hospital_id=req.requesting_hospital_id
         )
         return format_response_for_backend(final_state, req.thread_id)
     except ValueError as e:

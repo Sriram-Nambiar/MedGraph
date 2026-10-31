@@ -1,5 +1,5 @@
 import logging
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 import httpx
 
 from app.config import settings
@@ -22,7 +22,9 @@ class MedGraphApiClient:
         self.base_url = base_url.rstrip("/")
         self.timeout = timeout
 
-    async def search_graph(self, patient_id: str, query: str) -> List[GraphRecord]:
+    async def search_graph(
+        self, patient_id: str, query: str, requesting_hospital_id: Optional[str] = "HOSP002"
+    ) -> List[GraphRecord]:
         """Call POST /api/graph/search or query MockDataRepository if in mock mode."""
         mode = settings.get_effective_retrieval_mode()
         if mode == "mock":
@@ -30,10 +32,15 @@ class MedGraphApiClient:
             return MockDataRepository.search_graph(patient_id, query)
 
         url = f"{self.base_url}{settings.graph_search_endpoint}"
-        payload = GraphSearchRequest(patient_id=patient_id, query=query).model_dump()
+        payload = GraphSearchRequest(
+            patient_id=patient_id,
+            query=query,
+            requesting_hospital_id=requesting_hospital_id,
+        ).model_dump()
+        headers = {"x-requesting-hospital-id": requesting_hospital_id or "HOSP002"}
         try:
             async with httpx.AsyncClient(timeout=self.timeout) as client:
-                resp = await client.post(url, json=payload)
+                resp = await client.post(url, json=payload, headers=headers)
                 resp.raise_for_status()
                 data = resp.json()
 
@@ -50,11 +57,15 @@ class MedGraphApiClient:
                     rec_id = n.get("id") or props.get("id") or "UNKNOWN"
                     rec_type = (n.get("label") or "entity").lower()
                     ts = props.get("timestamp") or props.get("date") or props.get("startDate") or props.get("onsetDate") or props.get("admissionDate")
+                    hid = props.get("hospitalId") or props.get("hospital_id") or n.get("hospitalId") or "HOSP001"
+                    hname = props.get("hospitalName") or ("Bengaluru City Medical Center" if hid == "HOSP002" else "Apollo General Hospital")
                     records.append(GraphRecord(
                         record_id=rec_id,
                         patient_id=patient_id,
                         record_type=rec_type,
                         timestamp=ts,
+                        hospital_id=hid,
+                        hospital_name=hname,
                         details=props,
                         relationships=[],
                         source="graph"
@@ -64,7 +75,9 @@ class MedGraphApiClient:
             logger.error(f"Live graph API call to {url} failed: {e}")
             raise RuntimeError(f"Failed to retrieve graph records from live Express backend at {url}: {e}")
 
-    async def search_vector(self, patient_id: str, query: str, top_k: int = 5) -> List[ClinicalNote]:
+    async def search_vector(
+        self, patient_id: str, query: str, top_k: int = 5, requesting_hospital_id: Optional[str] = "HOSP002"
+    ) -> List[ClinicalNote]:
         """Call POST /api/vector/search or query MockDataRepository if in mock mode."""
         mode = settings.get_effective_retrieval_mode()
         if mode == "mock":
@@ -72,10 +85,16 @@ class MedGraphApiClient:
             return MockDataRepository.search_notes(patient_id, query, top_k=top_k)
 
         url = f"{self.base_url}{settings.vector_search_endpoint}"
-        payload = VectorSearchRequest(patient_id=patient_id, query=query, top_k=top_k).model_dump()
+        payload = VectorSearchRequest(
+            patient_id=patient_id,
+            query=query,
+            top_k=top_k,
+            requesting_hospital_id=requesting_hospital_id,
+        ).model_dump()
+        headers = {"x-requesting-hospital-id": requesting_hospital_id or "HOSP002"}
         try:
             async with httpx.AsyncClient(timeout=self.timeout) as client:
-                resp = await client.post(url, json=payload)
+                resp = await client.post(url, json=payload, headers=headers)
                 resp.raise_for_status()
                 data = resp.json()
 
@@ -85,9 +104,13 @@ class MedGraphApiClient:
                 rec_id = item.get("record_id") or item.get("id") or "NOTE-UNKNOWN"
                 content = item.get("text") or item.get("content") or ""
                 score = item.get("similarity_score") if item.get("similarity_score") is not None else item.get("relevance_score")
+                hid = item.get("hospital_id") or item.get("hospitalId") or "HOSP001"
+                hname = item.get("hospital_name") or ("Bengaluru City Medical Center" if hid == "HOSP002" else "Apollo General Hospital")
                 notes.append(ClinicalNote(
                     record_id=rec_id,
                     patient_id=item.get("patient_id") or patient_id,
+                    hospital_id=hid,
+                    hospital_name=hname,
                     timestamp=item.get("timestamp"),
                     author=item.get("author") or item.get("title") or "Clinician",
                     note_type=item.get("note_type") or "clinical_note",
@@ -100,7 +123,9 @@ class MedGraphApiClient:
             logger.error(f"Live vector API call to {url} failed: {e}")
             raise RuntimeError(f"Failed to retrieve clinical notes from live Express backend at {url}: {e}")
 
-    async def get_admissions(self, patient_id: str) -> List[AdmissionRecord]:
+    async def get_admissions(
+        self, patient_id: str, requesting_hospital_id: Optional[str] = "HOSP002"
+    ) -> List[AdmissionRecord]:
         """Call GET /api/patients/{patient_id}/admissions or query MockDataRepository if in mock mode."""
         mode = settings.get_effective_retrieval_mode()
         if mode == "mock":
@@ -109,9 +134,10 @@ class MedGraphApiClient:
 
         endpoint = settings.admission_endpoint.format(patient_id=patient_id)
         url = f"{self.base_url}{endpoint}"
+        headers = {"x-requesting-hospital-id": requesting_hospital_id or "HOSP002"}
         try:
             async with httpx.AsyncClient(timeout=self.timeout) as client:
-                resp = await client.get(url)
+                resp = await client.get(url, headers=headers)
                 resp.raise_for_status()
                 data = resp.json()
 
@@ -122,9 +148,13 @@ class MedGraphApiClient:
                 adm_date = a.get("admission_date") or a.get("admissionDate") or ""
                 dis_date = a.get("discharge_date") or a.get("dischargeDate")
                 doctor = a.get("attending_physician") or a.get("attendingDoctorId")
+                hid = a.get("hospital_id") or a.get("hospitalId") or "HOSP001"
+                hname = a.get("hospital_name") or ("Bengaluru City Medical Center" if hid == "HOSP002" else "Apollo General Hospital")
                 admissions.append(AdmissionRecord(
                     admission_id=adm_id,
                     patient_id=a.get("patient_id") or a.get("patientId") or patient_id,
+                    hospital_id=hid,
+                    hospital_name=hname,
                     admission_date=adm_date,
                     discharge_date=dis_date,
                     reason=a.get("reason"),

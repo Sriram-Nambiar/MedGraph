@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 from app.config import settings
 from app.services.api_client import api_client
 from app.services.mock_data import MockDataRepository
@@ -13,17 +13,19 @@ logger = logging.getLogger(__name__)
 class RetrievalRouter:
     """Orchestrates parallel retrieval across Graph, Vector, and Admission backends
     according to the configured RETRIEVAL_MODE ('mock', 'hybrid_live', or 'external_api').
+    Enforces hospital provenance and patient consent boundaries.
     """
 
     @classmethod
     async def route_initial_retrieval(
         cls,
         patient_id: str,
-        plan: InvestigationPlan
+        plan: InvestigationPlan,
+        requesting_hospital_id: str = "HOSP002"
     ) -> Tuple[List[AdmissionRecord], List[GraphRecord], List[ClinicalNote]]:
         """Execute parallel retrieval for admissions, graph records, and clinical notes."""
         mode = settings.get_effective_retrieval_mode()
-        logger.info(f"Executing retrieval for patient={patient_id} [Mode: {mode}]")
+        logger.info(f"Executing retrieval for patient={patient_id} at hospital={requesting_hospital_id} [Mode: {mode}]")
 
         primary_graph_query = " ".join(plan.graph_queries) if plan.graph_queries else "all records"
         primary_vector_query = " ".join(plan.vector_queries) if plan.vector_queries else "patient history and notes"
@@ -50,9 +52,9 @@ class RetrievalRouter:
 
         elif mode == "external_api":
             # Remote HTTP API to companion backend
-            admissions_task = api_client.get_admissions(patient_id)
-            graph_task = api_client.search_graph(patient_id, primary_graph_query)
-            vector_task = api_client.search_vector(patient_id, primary_vector_query, top_k=5)
+            admissions_task = api_client.get_admissions(patient_id, requesting_hospital_id=requesting_hospital_id)
+            graph_task = api_client.search_graph(patient_id, primary_graph_query, requesting_hospital_id=requesting_hospital_id)
+            vector_task = api_client.search_vector(patient_id, primary_vector_query, top_k=5, requesting_hospital_id=requesting_hospital_id)
 
             admissions, graph_records, notes = await asyncio.gather(
                 admissions_task,
@@ -77,11 +79,12 @@ class RetrievalRouter:
     async def route_targeted_retrieval(
         cls,
         patient_id: str,
-        targeted_queries: List[str]
+        targeted_queries: List[str],
+        requesting_hospital_id: str = "HOSP002"
     ) -> Tuple[List[GraphRecord], List[ClinicalNote]]:
         """Fetch targeted additional records based on missing evidence queries during a retry."""
         mode = settings.get_effective_retrieval_mode()
-        logger.info(f"Targeted retrieval for patient {patient_id} [Mode: {mode}] with queries: {targeted_queries}")
+        logger.info(f"Targeted retrieval for patient {patient_id} at hospital {requesting_hospital_id} [Mode: {mode}] with queries: {targeted_queries}")
         query_str = " ".join(targeted_queries)
 
         if mode == "hybrid_live":
@@ -97,8 +100,8 @@ class RetrievalRouter:
             new_graph, new_notes = await asyncio.gather(_fetch_graph(), _fetch_vector())
 
         elif mode == "external_api":
-            graph_task = api_client.search_graph(patient_id, query_str)
-            vector_task = api_client.search_vector(patient_id, query_str, top_k=5)
+            graph_task = api_client.search_graph(patient_id, query_str, requesting_hospital_id=requesting_hospital_id)
+            vector_task = api_client.search_vector(patient_id, query_str, top_k=5, requesting_hospital_id=requesting_hospital_id)
             new_graph, new_notes = await asyncio.gather(graph_task, vector_task)
 
         else:

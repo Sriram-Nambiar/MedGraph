@@ -21,6 +21,7 @@ class InvestigationState(TypedDict):
     patient_id: str
     thread_id: str
     user_question: str
+    requesting_hospital_id: Optional[str]
 
     # Planning
     investigation_plan: Optional[InvestigationPlan]

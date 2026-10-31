@@ -36,9 +36,12 @@ async def retrieve_records(state: InvestigationState) -> Dict[str, Any]:
     """Node: Retrieve admissions, graph entities, and clinical notes in parallel."""
     patient_id = state["patient_id"]
     plan = state["investigation_plan"]
+    req_hosp = state.get("requesting_hospital_id") or "HOSP002"
 
-    logger.info(f"[Node: retrieve_records] Executing initial retrieval for patient={patient_id}")
-    admissions, graph_records, notes = await RetrievalRouter.route_initial_retrieval(patient_id, plan)
+    logger.info(f"[Node: retrieve_records] Executing initial retrieval for patient={patient_id} at {req_hosp}")
+    admissions, graph_records, notes = await RetrievalRouter.route_initial_retrieval(
+        patient_id, plan, requesting_hospital_id=req_hosp
+    )
 
     return {
         "retrieved_admissions": admissions,
@@ -137,11 +140,14 @@ async def targeted_retrieval_node(state: InvestigationState) -> Dict[str, Any]:
     patient_id = state["patient_id"]
     missing_queries = state.get("missing_evidence_queries", [])
     current_retry = state.get("retry_count", 0)
+    req_hosp = state.get("requesting_hospital_id") or "HOSP002"
 
     next_retry = current_retry + 1
-    logger.info(f"[Node: targeted_retrieval_node] Executing retry {next_retry}/{settings.max_retries}")
+    logger.info(f"[Node: targeted_retrieval_node] Executing retry {next_retry}/{settings.max_retries} at {req_hosp}")
 
-    new_graph, new_notes = await RetrievalRouter.route_targeted_retrieval(patient_id, missing_queries)
+    new_graph, new_notes = await RetrievalRouter.route_targeted_retrieval(
+        patient_id, missing_queries, requesting_hospital_id=req_hosp
+    )
 
     return {
         "retry_count": next_retry,
