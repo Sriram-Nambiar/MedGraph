@@ -77,8 +77,9 @@
     "department": "General Medicine",
     "doctorId": "DOC-101",
     "reason": "Admission for hematochezia and acute drop in hemoglobin",
-    "hospitalId": "HOSP001",
-    "hospitalName": "Apollo General Hospital"
+    "hospitalId": "HOSP002",
+    "hospitalName": "Bengaluru City Medical Center",
+    "source": "Bengaluru City Medical Center EHR"
   },
   {
     "id": "ENC-301",

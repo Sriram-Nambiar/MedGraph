@@ -135,8 +135,9 @@
     "authorId": "DOC-101",
     "text": "Patient woke with lightheadedness and passed two large maroon stools with clots (hematochezia).\nAdmission Hemoglobin: 8.4 g/dL (down from baseline 14.2 g/dL).\nApixaban immediately held. Transfused 1 unit packed red blood cells. Urgent gastroenterology consult requested.",
     "sourceRecordId": "REC-P002-008",
-    "hospitalId": "HOSP001",
-    "hospitalName": "Apollo General Hospital"
+    "hospitalId": "HOSP002",
+    "hospitalName": "Bengaluru City Medical Center",
+    "source": "BCMC Clinical Information System"
   },
   {
     "id": "NOTE-209",
@@ -150,8 +151,9 @@
     "text": "Colonoscopy revealed diverticular hemorrhage in sigmoid colon, successfully treated with endoscopic hemoclips. Hemoglobin stable at 10.1 g/dL without further transfusion.\nGiven unprovoked PE history 8 months ago, anticoagulation cannot be completely stopped. Multi-disciplinary team consensus decided to resume Apixaban at a reduced dose of 2.5 mg BID with close monitoring.",
     "sourceRecordId": "REC-P002-009",
     "metaAnnotation": "Explains dose reduction of Apixaban from 5mg BID to 2.5mg BID.",
-    "hospitalId": "HOSP001",
-    "hospitalName": "Apollo General Hospital"
+    "hospitalId": "HOSP002",
+    "hospitalName": "Bengaluru City Medical Center",
+    "source": "BCMC Clinical Information System"
   },
   {
     "id": "NOTE-301",

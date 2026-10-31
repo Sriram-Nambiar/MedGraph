@@ -10,7 +10,10 @@
     "attendingDoctorId": "DOC-102",
     "dischargeDisposition": "Discharged Home",
     "primaryConditionId": "COND-101",
-    "dischargeSummaryId": "NOTE-101"
+    "dischargeSummaryId": "NOTE-101",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital",
+    "source": "Apollo General Hospital EHR"
   },
   {
     "id": "ADM-201",
@@ -23,7 +26,10 @@
     "attendingDoctorId": "DOC-101",
     "dischargeDisposition": "Discharged Home",
     "primaryConditionId": "COND-201",
-    "dischargeSummaryId": "NOTE-203"
+    "dischargeSummaryId": "NOTE-203",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital",
+    "source": "Apollo General Hospital EHR"
   },
   {
     "id": "ADM-202",
@@ -36,7 +42,10 @@
     "attendingDoctorId": "DOC-101",
     "dischargeDisposition": "Discharged Home",
     "primaryConditionId": "COND-202",
-    "dischargeSummaryId": "NOTE-206"
+    "dischargeSummaryId": "NOTE-206",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital",
+    "source": "Apollo General Hospital EHR"
   },
   {
     "id": "ADM-203",
@@ -49,7 +58,10 @@
     "attendingDoctorId": "DOC-101",
     "dischargeDisposition": "Discharged Home",
     "primaryConditionId": "COND-204",
-    "dischargeSummaryId": "NOTE-209"
+    "dischargeSummaryId": "NOTE-209",
+    "hospitalId": "HOSP002",
+    "hospitalName": "Bengaluru City Medical Center",
+    "source": "Bengaluru City Medical Center - Emergency Inpatient"
   },
   {
     "id": "ADM-301",
@@ -62,7 +74,10 @@
     "attendingDoctorId": "DOC-103",
     "dischargeDisposition": "Discharged Home",
     "primaryConditionId": "COND-302",
-    "dischargeSummaryId": "NOTE-304"
+    "dischargeSummaryId": "NOTE-304",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital",
+    "source": "Apollo General Hospital EHR"
   },
   {
     "id": "ADM-302",
@@ -75,7 +90,10 @@
     "attendingDoctorId": "DOC-104",
     "dischargeDisposition": "Discharged Home",
     "primaryConditionId": "COND-301",
-    "dischargeSummaryId": "NOTE-307"
+    "dischargeSummaryId": "NOTE-307",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital",
+    "source": "Apollo General Hospital EHR"
   },
   {
     "id": "ADM-401",
@@ -87,7 +105,10 @@
     "department": "Cardiovascular Care",
     "attendingDoctorId": "DOC-102",
     "dischargeDisposition": "Discharged Home",
-    "primaryConditionId": "COND-401"
+    "primaryConditionId": "COND-401",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital",
+    "source": "Apollo General Hospital EHR"
   },
   {
     "id": "ADM-402",
@@ -100,7 +121,10 @@
     "attendingDoctorId": "DOC-108",
     "dischargeDisposition": "Discharged Home",
     "primaryConditionId": "COND-403",
-    "dischargeSummaryId": "NOTE-406"
+    "dischargeSummaryId": "NOTE-406",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital",
+    "source": "Apollo General Hospital EHR"
   },
   {
     "id": "ADM-501",
@@ -113,7 +137,10 @@
     "attendingDoctorId": "DOC-107",
     "dischargeDisposition": "Transferred to Rehab",
     "primaryConditionId": "COND-501",
-    "dischargeSummaryId": "NOTE-506"
+    "dischargeSummaryId": "NOTE-506",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital",
+    "source": "Apollo General Hospital EHR"
   },
   {
     "id": "ADM-502",
@@ -126,6 +153,9 @@
     "attendingDoctorId": "DOC-101",
     "dischargeDisposition": "Discharged Home",
     "primaryConditionId": "COND-502",
-    "dischargeSummaryId": "NOTE-509"
+    "dischargeSummaryId": "NOTE-509",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital",
+    "source": "Apollo General Hospital EHR"
   }
 ]

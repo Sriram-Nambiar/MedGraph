@@ -130,8 +130,9 @@
     "unit": "%",
     "flag": "High",
     "sourceRecordId": "NOTE-207",
-    "hospitalId": "HOSP001",
-    "hospitalName": "Apollo General Hospital"
+    "hospitalId": "HOSP002",
+    "hospitalName": "Bengaluru City Medical Center",
+    "source": "BCMC Pathology Laboratory"
   },
   {
     "id": "LAB-208",
@@ -143,8 +144,9 @@
     "unit": "g/dL",
     "flag": "Critical Low",
     "sourceRecordId": "NOTE-208",
-    "hospitalId": "HOSP001",
-    "hospitalName": "Apollo General Hospital"
+    "hospitalId": "HOSP002",
+    "hospitalName": "Bengaluru City Medical Center",
+    "source": "BCMC Pathology Laboratory"
   },
   {
     "id": "LAB-209",
@@ -156,8 +158,9 @@
     "unit": "g/dL",
     "flag": "Low",
     "sourceRecordId": "NOTE-209",
-    "hospitalId": "HOSP001",
-    "hospitalName": "Apollo General Hospital"
+    "hospitalId": "HOSP002",
+    "hospitalName": "Bengaluru City Medical Center",
+    "source": "BCMC Pathology Laboratory"
   },
   {
     "id": "LAB-301",

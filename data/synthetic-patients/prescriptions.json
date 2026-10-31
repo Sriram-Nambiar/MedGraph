@@ -135,8 +135,9 @@
     "action": "Dose Decreased",
     "reason": "Resumed at reduced dose following lower GI bleed stabilization and colonoscopy hemostasis",
     "sourceRecordId": "NOTE-209",
-    "hospitalId": "HOSP001",
-    "hospitalName": "Apollo General Hospital"
+    "hospitalId": "HOSP002",
+    "hospitalName": "Bengaluru City Medical Center",
+    "source": "BCMC Inpatient Pharmacy"
   },
   {
     "id": "RX-301",
