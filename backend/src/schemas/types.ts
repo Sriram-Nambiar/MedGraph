@@ -23,16 +23,21 @@ export interface Encounter {
   id: string; // e.g. "ENC-001"
   patientId: string;
   admissionId?: string; // linked if part of an admission
+  hospitalId?: string;
+  hospitalName?: string;
   type: "inpatient_admission" | "outpatient_clinic" | "emergency_visit" | "specialist_consult" | "telehealth";
   date: string;
   department: string;
   doctorId: string;
   reason: string;
+  source?: string;
 }
 
 export interface Admission {
   id: string; // e.g. "ADM-001"
   patientId: string;
+  hospitalId?: string;
+  hospitalName?: string;
   admissionDate: string;
   dischargeDate: string;
   reason: string;
@@ -42,16 +47,20 @@ export interface Admission {
   dischargeDisposition: "Discharged Home" | "Transferred to Rehab" | "Follow-up in Outpatient";
   primaryConditionId: string;
   dischargeSummaryId?: string;
+  source?: string;
 }
 
 export interface Condition {
   id: string; // e.g. "COND-001"
   patientId: string;
+  hospitalId?: string;
+  hospitalName?: string;
   code: string; // ICD-10 code
   name: string;
   category: "Cardiovascular" | "Renal" | "Endocrine" | "Hematology" | "Neurology" | "Respiratory" | "Musculoskeletal" | "Dermatology";
   status: "Active" | "Resolved" | "Recurrent" | "Chronic";
   onsetDate: string;
+  source?: string;
 }
 
 export interface Medication {
@@ -67,6 +76,8 @@ export interface Prescription {
   patientId: string;
   encounterId: string;
   admissionId?: string;
+  hospitalId?: string;
+  hospitalName?: string;
   medicationId: string;
   dosage: string;
   frequency: string;
@@ -77,6 +88,7 @@ export interface Prescription {
   action: "Initiated" | "Maintained" | "Dose Increased" | "Dose Decreased" | "Discontinued" | "Held";
   reason: string;
   sourceRecordId: string;
+  source?: string;
 }
 
 export interface LabTest {
@@ -93,6 +105,8 @@ export interface LabResult {
   id: string; // e.g. "LAB-101"
   patientId: string;
   encounterId: string;
+  hospitalId?: string;
+  hospitalName?: string;
   testId: string;
   date: string;
   value: number;
@@ -100,6 +114,7 @@ export interface LabResult {
   flag: "Normal" | "High" | "Low" | "Critical High" | "Critical Low";
   sourceRecordId: string;
   notes?: string;
+  source?: string;
 }
 
 export interface ClinicalNote {
@@ -107,6 +122,8 @@ export interface ClinicalNote {
   patientId: string;
   encounterId: string;
   admissionId?: string;
+  hospitalId?: string;
+  hospitalName?: string;
   timestamp: string;
   noteType: "Admission Note" | "Progress Note" | "Discharge Summary" | "Consultation Note" | "Nursing Note" | "Triage Note";
   title: string;
@@ -115,23 +132,29 @@ export interface ClinicalNote {
   sourceRecordId: string;
   isContradictoryOrMissing?: boolean;
   metaAnnotation?: string;
+  source?: string;
 }
 
 export interface TimelineEvent {
   id: string;
   patientId: string;
   recordId: string;
+  hospitalId?: string;
+  hospitalName?: string;
   timestamp: string;
   category: "admission" | "encounter" | "prescription" | "medication_change" | "lab_result" | "clinical_note" | "discharge";
   title: string;
   description: string;
   details: Record<string, any>;
   sourceRecordId: string;
+  source?: string;
 }
 
 export interface VectorDocument {
   record_id: string;
   patient_id: string;
+  hospital_id?: string;
+  hospital_name?: string;
   encounter_id: string;
   admission_id?: string;
   timestamp: string;
