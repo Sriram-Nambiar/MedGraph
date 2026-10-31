@@ -9,7 +9,9 @@
     "title": "Cardiology Summary: Acute Heart Failure & ACE-Inhibitor Washout",
     "authorId": "DOC-102",
     "text": "Cardiology Inpatient Summary: Patient Eleanor Vance admitted for acute decompensated heart failure (EF 32%) complicated by severe hyperkalemia (Potassium 5.7 mEq/L) on Lisinopril 20 mg. Lisinopril was abruptly discontinued. Following aggressive potassium normalization and a 36-hour washout period, initiated Sacubitril/Valsartan (Entresto) 24/26 mg BID. Condition stable at discharge.",
-    "sourceRecordId": "REC-P001-001"
+    "sourceRecordId": "REC-P001-001",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-102",
@@ -20,7 +22,9 @@
     "title": "Dermatology Clinic: Plaque Psoriasis Assessment",
     "authorId": "DOC-109",
     "text": "Dermatology Clinic Outpatient Note: Patient Eleanor Vance evaluated by Dr. Maya Lin for extensive silvery erythematous plaques over bilateral elbows and knees consistent with plaque psoriasis. Prescribed Clobetasol Propionate 0.05% topical cream twice daily. Patient instructed on proper topical application and monitoring for skin atrophy.",
-    "sourceRecordId": "REC-P001-002"
+    "sourceRecordId": "REC-P001-002",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-201",
@@ -32,7 +36,9 @@
     "title": "Emergency H&P: Acute Popliteal DVT",
     "authorId": "DOC-101",
     "text": "Marcus Thorne is a 54-year-old male presenting with painful swelling of the right calf and popliteal fossa following a 14-hour international flight.\nVenous Doppler ultrasound confirms extensive occlusive thrombus in the right popliteal and posterior tibial veins.\nBaseline labs: INR 1.0, Platelets 240k.\nStarted on Enoxaparin 1 mg/kg BID bridge and Warfarin 5 mg daily.",
-    "sourceRecordId": "REC-P002-001"
+    "sourceRecordId": "REC-P002-001",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-202",
@@ -44,7 +50,9 @@
     "title": "Inpatient Medicine Progress Note",
     "authorId": "DOC-101",
     "text": "Patient ambulatory with compression stockings. Warfarin dose maintained at 5 mg daily. INR today is 1.4. Continuing Lovenox bridging.",
-    "sourceRecordId": "REC-P002-002"
+    "sourceRecordId": "REC-P002-002",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-203",
@@ -56,7 +64,9 @@
     "title": "Discharge Summary - ADM-201 DVT Initiation",
     "authorId": "DOC-101",
     "text": "Patient discharged with INR 2.1. Lovenox discontinued. Instructions provided for weekly INR monitoring at Anticoagulation Clinic. Maintain Warfarin 5 mg daily.",
-    "sourceRecordId": "REC-P002-003"
+    "sourceRecordId": "REC-P002-003",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-204",
@@ -67,7 +77,9 @@
     "title": "Anticoagulation Clinic Note: Subtherapeutic INR",
     "authorId": "DOC-101",
     "text": "INR check today reveals subtherapeutic result: 1.4. Patient reports missing two doses last week due to work travel and increased dietary vitamin K (green salads).\nWarfarin dose adjusted to 7.5 mg on Mondays/Thursdays, 5 mg other days. Recheck INR in 10 days.",
-    "sourceRecordId": "REC-P002-004"
+    "sourceRecordId": "REC-P002-004",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-205",
@@ -81,7 +93,9 @@
     "text": "CLINICAL EVALUATION:\nPatient presents with sudden-onset sharp right-sided pleuritic chest pain and shortness of breath.\nCT Pulmonary Angiogram shows bilateral subsegmental pulmonary emboli.\nCONTRADICTION IN RECORD:\nAttending Physician Dr. House writes: \"Patient has suffered recurrent venous thromboembolism while supposedly on anticoagulation. Laboratory testing shows INR is critically subtherapeutic at 1.5, demonstrating failure and unreliability of Warfarin therapy.\"\n(NOTE: Electronic Laboratory result LAB-205 from the exact same morning shows INR 2.8!).\nPLAN:\nPermanently discontinue Warfarin. Switch to Direct Oral Anticoagulant: Apixaban (Eliquis) 10 mg BID x 7 days followed by 5 mg BID maintenance. Metformin held temporarily due to iodinated CT contrast exposure.",
     "sourceRecordId": "REC-P002-005",
     "isContradictoryOrMissing": true,
-    "metaAnnotation": "Severe contradiction: Physician writes INR is 1.5, but official lab LAB-205 reports INR 2.8."
+    "metaAnnotation": "Severe contradiction: Physician writes INR is 1.5, but official lab LAB-205 reports INR 2.8.",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-206",
@@ -93,7 +107,9 @@
     "title": "Discharge Summary - ADM-202 Switch to Apixaban",
     "authorId": "DOC-101",
     "text": "Patient chest pain fully resolved. Oxygen saturation 98% room air.\nDischarged on Apixaban 5 mg BID (following 7-day loading phase).\nWarfarin discontinued. Metformin resumed at 1000 mg BID as creatinine normalized to 1.1 mg/dL.",
-    "sourceRecordId": "REC-P002-006"
+    "sourceRecordId": "REC-P002-006",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-207",
@@ -104,7 +120,9 @@
     "title": "Outpatient Follow-Up: Apixaban Tolerance",
     "authorId": "DOC-101",
     "text": "Patient reports excellent compliance with Apixaban 5 mg BID. No recurrent leg swelling or dyspnea. No bruising or bleeding noted. HbA1c 7.8%.",
-    "sourceRecordId": "REC-P002-007"
+    "sourceRecordId": "REC-P002-007",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-208",
@@ -116,7 +134,9 @@
     "title": "H&P: Lower GI Bleed on Apixaban",
     "authorId": "DOC-101",
     "text": "Patient woke with lightheadedness and passed two large maroon stools with clots (hematochezia).\nAdmission Hemoglobin: 8.4 g/dL (down from baseline 14.2 g/dL).\nApixaban immediately held. Transfused 1 unit packed red blood cells. Urgent gastroenterology consult requested.",
-    "sourceRecordId": "REC-P002-008"
+    "sourceRecordId": "REC-P002-008",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-209",
@@ -129,7 +149,9 @@
     "authorId": "DOC-101",
     "text": "Colonoscopy revealed diverticular hemorrhage in sigmoid colon, successfully treated with endoscopic hemoclips. Hemoglobin stable at 10.1 g/dL without further transfusion.\nGiven unprovoked PE history 8 months ago, anticoagulation cannot be completely stopped. Multi-disciplinary team consensus decided to resume Apixaban at a reduced dose of 2.5 mg BID with close monitoring.",
     "sourceRecordId": "REC-P002-009",
-    "metaAnnotation": "Explains dose reduction of Apixaban from 5mg BID to 2.5mg BID."
+    "metaAnnotation": "Explains dose reduction of Apixaban from 5mg BID to 2.5mg BID.",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-301",
@@ -140,7 +162,9 @@
     "title": "Neuroimmunology Semi-Annual MS Review",
     "authorId": "DOC-104",
     "text": "Sarah Chen is a 42-year-old female with RRMS diagnosed in 2019. EDSS score is stable at 2.5.\nCurrently receiving Ocrelizumab 600 mg IV every 6 months, next infusion scheduled for late October 2025.\nTaking Baclofen 10 mg TID for spasticity. Uses intermittent self-catheterization for neurogenic bladder.",
-    "sourceRecordId": "REC-P003-001"
+    "sourceRecordId": "REC-P003-001",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-302",
@@ -154,7 +178,9 @@
     "text": "Patient brought to ED with shivering rigors, severe flank pain, confusion, and hypotension (BP 82/50 mmHg).\nCONTRADICTION IN VITALS & RECORD:\nTriage nurse record lists emergency entrance temperature as 39.4\u00b0C (102.9\u00b0F) with heart rate 128 bpm.\nHowever, attending physician Dr. Chase notes in the assessment: \"Patient has remained entirely afebrile throughout presentation (max temp 37.1\u00b0C), likely blunted by immunosuppression.\"\nLabs show WBC 16.4 x 10^9/L with 88% neutrophils, CRP 85 mg/L.\nUrine analysis strongly positive for nitrites and leukocyte esterase.\nDiagnosis: Urosepsis with septic shock.\nACTION: Upcoming scheduled Ocrelizumab infusion is CANCELLED AND HELD due to severe life-threatening active bacterial infection.\nInitiated IV Ceftriaxone 2g daily and aggressive fluid resuscitation.",
     "sourceRecordId": "REC-P003-002",
     "isContradictoryOrMissing": true,
-    "metaAnnotation": "Contradiction: Triage temp 39.4\u00b0C vs Doctor Chase note claiming patient was afebrile at 37.1\u00b0C."
+    "metaAnnotation": "Contradiction: Triage temp 39.4\u00b0C vs Doctor Chase note claiming patient was afebrile at 37.1\u00b0C.",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-303",
@@ -168,7 +194,9 @@
     "text": "Blood cultures grew Escherichia coli.\nMISSING RECORD: The attending note states: \"Specific antibiotic minimum inhibitory concentration (MIC) sensitivities are attached to the chart.\" However, no microbiology sensitivity report is present in the electronic document repository.\nEmpirically responding well to Ceftriaxone. Afebrile for 24 hours.",
     "sourceRecordId": "REC-P003-003",
     "isContradictoryOrMissing": true,
-    "metaAnnotation": "Missing record: MIC sensitivity report referenced but absent."
+    "metaAnnotation": "Missing record: MIC sensitivity report referenced but absent.",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-304",
@@ -180,7 +208,9 @@
     "title": "Discharge Summary - ADM-301 Sepsis Resolution",
     "authorId": "DOC-103",
     "text": "Urosepsis resolved. WBC down to 7.2.\nDischarged on oral Ciprofloxacin 500 mg BID x 7 days.\nIMPORTANT: Ocrelizumab infusion remains on hold. Patient advised not to receive anti-CD20 immunosuppression until cleared by neurology and infectious disease in at least 6 weeks.",
-    "sourceRecordId": "REC-P003-004"
+    "sourceRecordId": "REC-P003-004",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-305",
@@ -192,7 +222,9 @@
     "title": "Neurology H&P: Acute MS Relapse",
     "authorId": "DOC-105",
     "text": "Patient admitted with 3-day history of worsening lower extremity weakness, numbness from T10 dermatome down, and inability to ambulate without assistance.\nInfection workup is negative: WBC normal (8.1), CRP normal (4.2), urinalysis negative.\nBrain and spine MRI demonstrates an active new gadolinium-enhancing demyelinating plaque in the thoracic spinal cord (T8).\nImpression: True acute MS relapse in setting of delayed disease-modifying therapy.\nPlan: IV Methylprednisolone (Solu-Medrol) 1000 mg daily x 3 days followed by oral prednisone taper.",
-    "sourceRecordId": "REC-P003-005"
+    "sourceRecordId": "REC-P003-005",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-306",
@@ -204,7 +236,9 @@
     "title": "Neurology Progress Note: High-Dose Steroid Response",
     "authorId": "DOC-105",
     "text": "Completed 3-day course of IV Solu-Medrol 1g daily. Strength in left lower extremity significantly improved from 2/5 to 4/5. Ambulation restored with walker. Plan discharge on oral taper.",
-    "sourceRecordId": "REC-P003-006"
+    "sourceRecordId": "REC-P003-006",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-307",
@@ -216,7 +250,9 @@
     "title": "Discharge Summary - ADM-302 MS Flare",
     "authorId": "DOC-105",
     "text": "Acute relapse treated successfully. Ocrelizumab therapy cleared to resume in 4 weeks given absence of active infection and urgent need to prevent further neurological accrual.",
-    "sourceRecordId": "REC-P003-007"
+    "sourceRecordId": "REC-P003-007",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-401",
@@ -230,7 +266,9 @@
     "text": "71-year-old male with severe COPD on Spiriva who presents with severe wheezing and productive cough.\nCONTRADICTION IN SOCIAL HISTORY:\nIntake record states: \"Patient has an active 45 pack-year smoking history, currently smoking 0.5 packs per day.\"\nECG demonstrates rapid atrial fibrillation with heart rate 145 bpm.\nBaseline TSH is normal at 2.4 uIU/mL.\nStarted on IV Solu-Medrol, Duonebs, and oral Amiodarone 200 mg daily for rate and rhythm control.",
     "sourceRecordId": "REC-P004-001",
     "isContradictoryOrMissing": true,
-    "metaAnnotation": "Documents active smoking history (contradicts later note NOTE-405). Baseline normal TSH."
+    "metaAnnotation": "Documents active smoking history (contradicts later note NOTE-405). Baseline normal TSH.",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-402",
@@ -244,7 +282,9 @@
     "text": "Patient converted to sinus rhythm with rate 78 bpm on Amiodarone 200 mg daily. Wheezing markedly improved.\nMISSING SUMMARY: Note mentions patient will be discharged on June 25, 2025; however NO DISCHARGE SUMMARY was ever filed for this admission (ADM-401).",
     "sourceRecordId": "REC-P004-002",
     "isContradictoryOrMissing": true,
-    "metaAnnotation": "Missing document: ADM-401 has no filed discharge summary."
+    "metaAnnotation": "Missing document: ADM-401 has no filed discharge summary.",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-403",
@@ -256,7 +296,9 @@
     "authorId": "DOC-101",
     "text": "Spirometry demonstrates persistent severe obstruction (FEV1 44% predicted). Given two exacerbations in the past 12 months, Spiriva monotherapy is insufficient.\nDiscontinuing Spiriva. Starting triple therapy with Trelegy Ellipta (Fluticasone furoate/Umeclidinium/Vilanterol) 100/62.5/25 mcg once daily. Continue Amiodarone as prescribed by cardiology.",
     "sourceRecordId": "REC-P004-003",
-    "metaAnnotation": "Explains medication change from Spiriva to Trelegy Ellipta."
+    "metaAnnotation": "Explains medication change from Spiriva to Trelegy Ellipta.",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-404",
@@ -268,7 +310,9 @@
     "title": "Emergency H&P: Severe Thyrotoxicosis / Thyroid Storm",
     "authorId": "DOC-108",
     "text": "Patient admitted with severe heat intolerance, fine bilateral hand tremor, 15 lb unintentional weight loss, and palpitations with recurrent rapid atrial fibrillation (HR 138 bpm).\nEndocrine labs:\n- TSH: < 0.01 uIU/mL (severely suppressed, down from baseline 2.4)\n- Free T4: 3.8 ng/dL (markedly elevated)\nDiagnosis: Amiodarone-Induced Thyrotoxicosis (AIT), likely Type 2 destructive thyroiditis from chronic iodine load of Amiodarone therapy.",
-    "sourceRecordId": "REC-P004-004"
+    "sourceRecordId": "REC-P004-004",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-405",
@@ -282,7 +326,9 @@
     "text": "CONTRADICTION IN SOCIAL HISTORY:\nChart note states: \"Patient is a lifelong non-smoker for over 20 years.\" (Directly contradicts NOTE-401 documenting active smoking).\nMEDICATION CHANGES:\n1. Amiodarone is STOPPED IMMEDIATELY. It is contraindicated in active destructive thyroiditis.\n2. Initiated Metoprolol Succinate 50 mg daily for rate control.\n3. Started oral Prednisone 40 mg daily for treatment of Type 2 AIT.",
     "sourceRecordId": "REC-P004-005",
     "isContradictoryOrMissing": true,
-    "metaAnnotation": "Contradiction in smoking history. Documents Amiodarone discontinuation and switch to Metoprolol."
+    "metaAnnotation": "Contradiction in smoking history. Documents Amiodarone discontinuation and switch to Metoprolol.",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-406",
@@ -294,7 +340,9 @@
     "title": "Discharge Summary - ADM-402 Thyrotoxicosis",
     "authorId": "DOC-108",
     "text": "Tremor improved, resting heart rate controlled at 76 bpm on Metoprolol 50 mg daily.\nAmiodarone is permanently added to patient's allergy/intolerance list.\nContinue Prednisone taper over 6 weeks. Trelegy Ellipta continued for COPD.",
-    "sourceRecordId": "REC-P004-006"
+    "sourceRecordId": "REC-P004-006",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-407",
@@ -305,7 +353,9 @@
     "title": "Endocrinology Follow-Up: Thyrotoxicosis Resolution",
     "authorId": "DOC-108",
     "text": "TSH has normalized to 0.85 uIU/mL. Free T4 is 1.1 ng/dL. Patient is off steroids. Metoprolol maintains rate control in sinus rhythm.",
-    "sourceRecordId": "REC-P004-007"
+    "sourceRecordId": "REC-P004-007",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-501",
@@ -317,7 +367,9 @@
     "title": "Orthopedic Trauma H&P: Right Femoral Neck Fracture",
     "authorId": "DOC-107",
     "text": "80-year-old female tripped over a rug sustaining right hip pain and inability to bear weight.\nRadiographs show subcapital displaced right femoral neck fracture.\nScheduled for urgent right cemented hemiarthroplasty. Scheduled Acetaminophen 650 mg q6h. Oxycodone 5-10 mg q4h PRN prescribed for post-op severe breakthrough pain.",
-    "sourceRecordId": "REC-P005-001"
+    "sourceRecordId": "REC-P005-001",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-502",
@@ -329,7 +381,9 @@
     "title": "Operative & Post-Op Day 1 Note",
     "authorId": "DOC-107",
     "text": "Right hemiarthroplasty completed without surgical complications. Hemoglobin 9.1 g/dL. Pain controlled with Oxycodone 10 mg every 4 hours.",
-    "sourceRecordId": "REC-P005-002"
+    "sourceRecordId": "REC-P005-002",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-503",
@@ -343,7 +397,9 @@
     "text": "CONTRADICTORY RECORD:\nNurse reports: \"Patient acutely confused, thrashing in bed, attempting to climb out of bed, pulling at Foley catheter and IV line. Screaming that spiders and insects are crawling across the ceiling. Visual hallucinations present. CAM-ICU positive for delirium.\"",
     "sourceRecordId": "REC-P005-003",
     "isContradictoryOrMissing": true,
-    "metaAnnotation": "Contradiction: Nursing documents acute hallucinations and severe delirium."
+    "metaAnnotation": "Contradiction: Nursing documents acute hallucinations and severe delirium.",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-504",
@@ -357,7 +413,9 @@
     "text": "CONTRADICTORY RECORD:\nPhysician writes 45 minutes later: \"Patient is resting quietly in bed, alert and oriented x 3, pleasant and cooperative, answering all questions appropriately with zero evidence of agitation or confusion.\"\n(NOTE: Striking clinical discrepancy with nursing report NOTE-503).",
     "sourceRecordId": "REC-P005-004",
     "isContradictoryOrMissing": true,
-    "metaAnnotation": "Severe contradiction: Physician claims patient is alert x3 with zero confusion 45m after nursing reports hallucinations."
+    "metaAnnotation": "Severe contradiction: Physician claims patient is alert x3 with zero confusion 45m after nursing reports hallucinations.",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-505",
@@ -370,7 +428,9 @@
     "authorId": "DOC-101",
     "text": "Geriatrics consulted for post-operative delirium.\nAssessment: Opioid-induced delirium / hallucinations likely exacerbated by full mu-opioid agonist Oxycodone in an elderly patient with borderline cognitive reserve.\nMEDICATION CHANGE:\n1. Oxycodone is completely DISCONTINUED.\n2. Switched to low-dose Tramadol 25 mg q6h PRN only for severe breakthrough pain.\n3. Maximize scheduled Acetaminophen 650 mg q6h. Implement delirium precautions, daytime sunlight exposure, family presence.",
     "sourceRecordId": "REC-P005-005",
-    "metaAnnotation": "Explains discontinuation of Oxycodone and switch to low-dose Tramadol."
+    "metaAnnotation": "Explains discontinuation of Oxycodone and switch to low-dose Tramadol.",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-506",
@@ -382,7 +442,9 @@
     "title": "Discharge Summary - ADM-501 Hip Repair & Rehab Transfer",
     "authorId": "DOC-107",
     "text": "Delirium cleared completely following Oxycodone discontinuation. Mentation at baseline.\nTransferred to Subacute Rehabilitation facility for physical therapy.",
-    "sourceRecordId": "REC-P005-006"
+    "sourceRecordId": "REC-P005-006",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-507",
@@ -394,7 +456,9 @@
     "title": "H&P: Acute Anticholinergic Toxicity & Urinary Retention",
     "authorId": "DOC-101",
     "text": "Patient brought to emergency department by daughter for acute confusion, speech stumbling, dilated pupils, dry flushed skin, and lower abdominal distension.\nBladder scan reveals 850 mL acute urinary retention. Foley catheter placed with immediate relief.\nMedication reconciliation reveals patient was self-administering over-the-counter Diphenhydramine (Benadryl) 50 mg every night for severe insomnia over the past 2 weeks.\nDiagnosis: Anticholinergic toxidrome and urinary retention secondary to Diphenhydramine in high-risk elderly patient.",
-    "sourceRecordId": "REC-P005-007"
+    "sourceRecordId": "REC-P005-007",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-508",
@@ -406,7 +470,9 @@
     "title": "Medicine Progress Note: Anticholinergic Washout",
     "authorId": "DOC-101",
     "text": "Benadryl discontinued immediately. Cognitive symptoms and confusion resolving rapidly as anticholinergic clears. Foley removed, voiding spontaneously. Initiated Melatonin 3 mg at bedtime for non-anticholinergic insomnia management.",
-    "sourceRecordId": "REC-P005-008"
+    "sourceRecordId": "REC-P005-008",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "NOTE-509",
@@ -418,6 +484,22 @@
     "title": "Discharge Summary - ADM-502 Benadryl Discontinuation",
     "authorId": "DOC-101",
     "text": "Patient discharged home in stable condition. Daughter educated on Beers Criteria medications and dangerous anticholinergics (Benadryl, dimenhydrinate) to strictly avoid in elderly patients.",
-    "sourceRecordId": "REC-P005-009"
+    "sourceRecordId": "REC-P005-009",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
+  },
+  {
+    "id": "NOTE-104-B",
+    "patientId": "P001",
+    "encounterId": "ENC-103-B",
+    "timestamp": "2026-02-18T11:00:00Z",
+    "noteType": "Progress Note",
+    "title": "Cardiology Progress Note - Dr. Ananya Sen (BCMC)",
+    "authorId": "DOC-110-BCMC",
+    "hospitalId": "HOSP002",
+    "hospitalName": "Bengaluru City Medical Center",
+    "source": "BCMC Clinical Information System",
+    "text": "PATIENT: Eleanor Vance (68y F) | MRN-847291 | CLINIC: Bengaluru City Medical Center Cardiology\nSUBJECTIVE: Patient recently relocated from Hyderabad to Bengaluru to stay closer to her family. She established outpatient cardiovascular care here at Bengaluru City Medical Center today. She reports feeling clinically stable on Sacubitril/Valsartan (Entresto) 24/26 mg BID with improved exertional tolerance and no orthopnea. Denies dry cough, angioedema, chest pressure, or lightheadedness.\nOBJECTIVE: BP 124/78 mmHg, HR 68 bpm regular, O2 Sat 98% on room air. Lungs: Clear to auscultation bilaterally. Heart: Regular rate and rhythm, no S3 gallop. Extremities: Trace pretibial edema (improved from previous 2+ bilateral edema). LABS (Today at BCMC Central Lab): Serum Potassium: 4.6 mEq/L (Normal, 3.5-5.1 mEq/L), Creatinine: 1.3 mg/dL, eGFR: 58 mL/min/1.73m2, BNP: 380 pg/mL (significantly improved from prior 1420 pg/mL at Apollo General Hospital).\nASSESSMENT & PLAN: Chronic systolic heart failure (HFrEF, EF 32%), clinically compensated. Potassium has completely normalized at 4.6 mEq/L following the Lisinopril discontinuation and Entresto transition managed at Apollo General Hospital. Maintained Sacubitril/Valsartan (Entresto) 24/26 mg BID oral. Requested cross-hospital electronic records transfer from Apollo General Hospital (HOSP001) through the MedGraph interoperability gateway to verify historical ACE-inhibitor hyperkalemia timeline.",
+    "sourceRecordId": "NOTE-104-B"
   }
 ]

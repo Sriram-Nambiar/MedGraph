@@ -7,7 +7,9 @@
     "date": "2025-09-12T08:30:00Z",
     "department": "Cardiovascular Care",
     "doctorId": "DOC-102",
-    "reason": "Cardiologist visit: Inpatient heart failure management & ACE-inhibitor washout"
+    "reason": "Cardiologist visit: Inpatient heart failure management & ACE-inhibitor washout",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "ENC-102",
@@ -16,7 +18,9 @@
     "date": "2025-11-20T14:00:00Z",
     "department": "Dermatology Clinic",
     "doctorId": "DOC-109",
-    "reason": "Dermatologist visit: Outpatient evaluation and topical therapy for severe plaque psoriasis"
+    "reason": "Dermatologist visit: Outpatient evaluation and topical therapy for severe plaque psoriasis",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "ENC-201",
@@ -26,7 +30,9 @@
     "date": "2025-07-10T13:00:00Z",
     "department": "General Medicine",
     "doctorId": "DOC-101",
-    "reason": "Admission for right leg acute DVT anticoagulation initiation"
+    "reason": "Admission for right leg acute DVT anticoagulation initiation",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "ENC-202",
@@ -35,7 +41,9 @@
     "date": "2025-08-22T10:00:00Z",
     "department": "Anticoagulation Clinic",
     "doctorId": "DOC-101",
-    "reason": "Labile INR monitoring and Warfarin dosage adjustment"
+    "reason": "Labile INR monitoring and Warfarin dosage adjustment",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "ENC-203",
@@ -45,7 +53,9 @@
     "date": "2026-01-14T09:20:00Z",
     "department": "General Medicine",
     "doctorId": "DOC-101",
-    "reason": "Emergency admission for bilateral pulmonary embolism on Warfarin"
+    "reason": "Emergency admission for bilateral pulmonary embolism on Warfarin",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "ENC-204",
@@ -54,7 +64,9 @@
     "date": "2026-03-30T15:00:00Z",
     "department": "Primary Care",
     "doctorId": "DOC-101",
-    "reason": "Follow-up on Apixaban therapy and glycemic control"
+    "reason": "Follow-up on Apixaban therapy and glycemic control",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "ENC-205",
@@ -64,7 +76,9 @@
     "date": "2026-09-02T07:15:00Z",
     "department": "General Medicine",
     "doctorId": "DOC-101",
-    "reason": "Admission for hematochezia and acute drop in hemoglobin"
+    "reason": "Admission for hematochezia and acute drop in hemoglobin",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "ENC-301",
@@ -73,7 +87,9 @@
     "date": "2025-05-10T11:00:00Z",
     "department": "Neuroimmunology",
     "doctorId": "DOC-104",
-    "reason": "Routine MS monitoring and pre-infusion assessment"
+    "reason": "Routine MS monitoring and pre-infusion assessment",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "ENC-302",
@@ -83,7 +99,9 @@
     "date": "2025-10-14T17:40:00Z",
     "department": "Infectious Diseases",
     "doctorId": "DOC-103",
-    "reason": "Emergency admission for septic shock secondary to UTI"
+    "reason": "Emergency admission for septic shock secondary to UTI",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "ENC-303",
@@ -92,7 +110,9 @@
     "date": "2025-12-04T13:30:00Z",
     "department": "Infectious Diseases",
     "doctorId": "DOC-103",
-    "reason": "Post-sepsis test of cure follow-up"
+    "reason": "Post-sepsis test of cure follow-up",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "ENC-304",
@@ -102,7 +122,9 @@
     "date": "2026-04-02T14:10:00Z",
     "department": "Neurology",
     "doctorId": "DOC-105",
-    "reason": "Admission for severe MS acute relapse management"
+    "reason": "Admission for severe MS acute relapse management",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "ENC-401",
@@ -112,7 +134,9 @@
     "date": "2025-06-20T06:45:00Z",
     "department": "Cardiovascular Care",
     "doctorId": "DOC-102",
-    "reason": "Admission for acute COPD exacerbation and AF with rapid ventricular rate"
+    "reason": "Admission for acute COPD exacerbation and AF with rapid ventricular rate",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "ENC-402",
@@ -121,7 +145,9 @@
     "date": "2025-11-12T10:15:00Z",
     "department": "Pulmonology Outpatient",
     "doctorId": "DOC-101",
-    "reason": "Pulmonary function test and inhaler therapy escalation"
+    "reason": "Pulmonary function test and inhaler therapy escalation",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "ENC-403",
@@ -131,7 +157,9 @@
     "date": "2026-03-10T08:00:00Z",
     "department": "Endocrinology & Metabolism",
     "doctorId": "DOC-108",
-    "reason": "Admission for thyroid storm / severe thyrotoxicosis"
+    "reason": "Admission for thyroid storm / severe thyrotoxicosis",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "ENC-404",
@@ -140,7 +168,9 @@
     "date": "2026-07-22T14:00:00Z",
     "department": "Endocrinology Outpatient",
     "doctorId": "DOC-108",
-    "reason": "Evaluation of thyroid function post-amiodarone cessation"
+    "reason": "Evaluation of thyroid function post-amiodarone cessation",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "ENC-501",
@@ -150,7 +180,9 @@
     "date": "2025-08-01T12:00:00Z",
     "department": "Orthopedic Surgery",
     "doctorId": "DOC-107",
-    "reason": "Trauma admission for surgical repair of right femoral neck fracture"
+    "reason": "Trauma admission for surgical repair of right femoral neck fracture",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "ENC-502",
@@ -159,7 +191,9 @@
     "date": "2025-10-18T11:00:00Z",
     "department": "Orthopedic Outpatient",
     "doctorId": "DOC-107",
-    "reason": "Two-month post-hemiarthroplasty physical rehabilitation review"
+    "reason": "Two-month post-hemiarthroplasty physical rehabilitation review",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "ENC-503",
@@ -169,6 +203,21 @@
     "date": "2026-05-15T10:30:00Z",
     "department": "General Medicine",
     "doctorId": "DOC-101",
-    "reason": "Admission for acute confusion, urinary retention, and agitation"
+    "reason": "Admission for acute confusion, urinary retention, and agitation",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
+  },
+  {
+    "id": "ENC-103-B",
+    "patientId": "P001",
+    "type": "outpatient_clinic",
+    "date": "2026-02-18T10:00:00Z",
+    "department": "Cardiovascular Care",
+    "doctorId": "DOC-110-BCMC",
+    "doctorName": "Dr. Ananya Sen (Cardiologist, BCMC)",
+    "reason": "Outpatient follow-up for chronic systolic heart failure and renal monitoring after relocation to Bengaluru",
+    "hospitalId": "HOSP002",
+    "hospitalName": "Bengaluru City Medical Center",
+    "source": "Bengaluru City Medical Center EHR"
   }
 ]

@@ -9,7 +9,9 @@
     "unit": "mEq/L",
     "flag": "Critical High",
     "sourceRecordId": "NOTE-101",
-    "notes": "Critical hyperkalemia prompting Lisinopril discontinuation"
+    "notes": "Critical hyperkalemia prompting Lisinopril discontinuation",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "LAB-102",
@@ -21,7 +23,9 @@
     "unit": "mg/dL",
     "flag": "High",
     "sourceRecordId": "NOTE-101",
-    "notes": "Acute creatinine elevation reflecting acute renal injury"
+    "notes": "Acute creatinine elevation reflecting acute renal injury",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "LAB-103",
@@ -33,7 +37,9 @@
     "unit": "pg/mL",
     "flag": "Critical High",
     "sourceRecordId": "NOTE-101",
-    "notes": "Markedly elevated BNP confirming acute systolic heart failure decompensation"
+    "notes": "Markedly elevated BNP confirming acute systolic heart failure decompensation",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "LAB-201",
@@ -44,7 +50,9 @@
     "value": 1,
     "unit": "ratio",
     "flag": "Normal",
-    "sourceRecordId": "NOTE-201"
+    "sourceRecordId": "NOTE-201",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "LAB-202",
@@ -55,7 +63,9 @@
     "value": 240,
     "unit": "x10^9/L",
     "flag": "Normal",
-    "sourceRecordId": "NOTE-201"
+    "sourceRecordId": "NOTE-201",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "LAB-203",
@@ -66,7 +76,9 @@
     "value": 2.1,
     "unit": "ratio",
     "flag": "Normal",
-    "sourceRecordId": "NOTE-203"
+    "sourceRecordId": "NOTE-203",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "LAB-204",
@@ -77,7 +89,9 @@
     "value": 1.4,
     "unit": "ratio",
     "flag": "Low",
-    "sourceRecordId": "NOTE-204"
+    "sourceRecordId": "NOTE-204",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "LAB-205",
@@ -89,7 +103,9 @@
     "unit": "ratio",
     "flag": "High",
     "sourceRecordId": "NOTE-205",
-    "notes": "Electronic lab analyzer output shows INR 2.8; however attending physician chart note NOTE-205 explicitly documents INR as 1.5."
+    "notes": "Electronic lab analyzer output shows INR 2.8; however attending physician chart note NOTE-205 explicitly documents INR as 1.5.",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "LAB-206",
@@ -100,7 +116,9 @@
     "value": 1.5,
     "unit": "mg/dL",
     "flag": "High",
-    "sourceRecordId": "NOTE-205"
+    "sourceRecordId": "NOTE-205",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "LAB-207",
@@ -111,7 +129,9 @@
     "value": 7.8,
     "unit": "%",
     "flag": "High",
-    "sourceRecordId": "NOTE-207"
+    "sourceRecordId": "NOTE-207",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "LAB-208",
@@ -122,7 +142,9 @@
     "value": 8.4,
     "unit": "g/dL",
     "flag": "Critical Low",
-    "sourceRecordId": "NOTE-208"
+    "sourceRecordId": "NOTE-208",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "LAB-209",
@@ -133,7 +155,9 @@
     "value": 10.1,
     "unit": "g/dL",
     "flag": "Low",
-    "sourceRecordId": "NOTE-209"
+    "sourceRecordId": "NOTE-209",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "LAB-301",
@@ -144,7 +168,9 @@
     "value": 16.4,
     "unit": "x10^9/L",
     "flag": "Critical High",
-    "sourceRecordId": "NOTE-302"
+    "sourceRecordId": "NOTE-302",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "LAB-302",
@@ -155,7 +181,9 @@
     "value": 85,
     "unit": "mg/L",
     "flag": "Critical High",
-    "sourceRecordId": "NOTE-302"
+    "sourceRecordId": "NOTE-302",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "LAB-303",
@@ -166,7 +194,9 @@
     "value": 1.4,
     "unit": "mg/dL",
     "flag": "High",
-    "sourceRecordId": "NOTE-302"
+    "sourceRecordId": "NOTE-302",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "LAB-304",
@@ -177,7 +207,9 @@
     "value": 7.2,
     "unit": "x10^9/L",
     "flag": "Normal",
-    "sourceRecordId": "NOTE-304"
+    "sourceRecordId": "NOTE-304",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "LAB-305",
@@ -188,7 +220,9 @@
     "value": 8.1,
     "unit": "x10^9/L",
     "flag": "Normal",
-    "sourceRecordId": "NOTE-305"
+    "sourceRecordId": "NOTE-305",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "LAB-306",
@@ -199,7 +233,9 @@
     "value": 4.2,
     "unit": "mg/L",
     "flag": "Normal",
-    "sourceRecordId": "NOTE-305"
+    "sourceRecordId": "NOTE-305",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "LAB-401",
@@ -210,7 +246,9 @@
     "value": 2.4,
     "unit": "uIU/mL",
     "flag": "Normal",
-    "sourceRecordId": "NOTE-401"
+    "sourceRecordId": "NOTE-401",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "LAB-402",
@@ -221,7 +259,9 @@
     "value": 8,
     "unit": "ng/L",
     "flag": "Normal",
-    "sourceRecordId": "NOTE-401"
+    "sourceRecordId": "NOTE-401",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "LAB-403",
@@ -232,7 +272,9 @@
     "value": 0.01,
     "unit": "uIU/mL",
     "flag": "Critical Low",
-    "sourceRecordId": "NOTE-404"
+    "sourceRecordId": "NOTE-404",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "LAB-404",
@@ -243,7 +285,9 @@
     "value": 3.8,
     "unit": "ng/dL",
     "flag": "Critical High",
-    "sourceRecordId": "NOTE-404"
+    "sourceRecordId": "NOTE-404",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "LAB-405",
@@ -254,7 +298,9 @@
     "value": 0.85,
     "unit": "uIU/mL",
     "flag": "Normal",
-    "sourceRecordId": "NOTE-407"
+    "sourceRecordId": "NOTE-407",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "LAB-501",
@@ -265,7 +311,9 @@
     "value": 11.2,
     "unit": "g/dL",
     "flag": "Low",
-    "sourceRecordId": "NOTE-501"
+    "sourceRecordId": "NOTE-501",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "LAB-502",
@@ -276,7 +324,9 @@
     "value": 9.1,
     "unit": "g/dL",
     "flag": "Low",
-    "sourceRecordId": "NOTE-502"
+    "sourceRecordId": "NOTE-502",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "LAB-503",
@@ -287,7 +337,9 @@
     "value": 138,
     "unit": "mEq/L",
     "flag": "Normal",
-    "sourceRecordId": "NOTE-507"
+    "sourceRecordId": "NOTE-507",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "LAB-504",
@@ -298,7 +350,9 @@
     "value": 24,
     "unit": "mg/dL",
     "flag": "High",
-    "sourceRecordId": "NOTE-507"
+    "sourceRecordId": "NOTE-507",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
   },
   {
     "id": "LAB-505",
@@ -309,6 +363,38 @@
     "value": 1.1,
     "unit": "mg/dL",
     "flag": "Normal",
-    "sourceRecordId": "NOTE-507"
+    "sourceRecordId": "NOTE-507",
+    "hospitalId": "HOSP001",
+    "hospitalName": "Apollo General Hospital"
+  },
+  {
+    "id": "LAB-104-B",
+    "patientId": "P001",
+    "encounterId": "ENC-103-B",
+    "testId": "TEST-K",
+    "date": "2026-02-18T10:30:00Z",
+    "value": 4.6,
+    "unit": "mEq/L",
+    "flag": "Normal",
+    "sourceRecordId": "NOTE-104-B",
+    "hospitalId": "HOSP002",
+    "hospitalName": "Bengaluru City Medical Center",
+    "source": "BCMC Central Pathology Laboratory",
+    "notes": "Potassium normalized under Entresto maintenance therapy"
+  },
+  {
+    "id": "LAB-105-B",
+    "patientId": "P001",
+    "encounterId": "ENC-103-B",
+    "testId": "TEST-BNP",
+    "date": "2026-02-18T10:30:00Z",
+    "value": 380,
+    "unit": "pg/mL",
+    "flag": "High",
+    "sourceRecordId": "NOTE-104-B",
+    "hospitalId": "HOSP002",
+    "hospitalName": "Bengaluru City Medical Center",
+    "source": "BCMC Central Pathology Laboratory",
+    "notes": "BNP marked improvement from 1420 pg/mL at Apollo General Hospital"
   }
 ]
