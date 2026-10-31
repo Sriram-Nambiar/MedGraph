@@ -6,6 +6,7 @@ import patientRoutes from './routes/patient-routes.js';
 import graphRoutes from './routes/graph-routes.js';
 import vectorRoutes from './routes/vector-routes.js';
 import admissionRoutes from './routes/admission-routes.js';
+import agentRoutes from './routes/agent-routes.js';
 import { seedKnowledgeGraph } from './ingestion/seed.js';
 import { vectorStore } from './vector/vector-store.js';
 import { graphService } from './graph/graph-service.js';
@@ -26,6 +27,7 @@ app.use('/api/patients', patientRoutes);
 app.use('/api/graph', graphRoutes);
 app.use('/api/vector', vectorRoutes);
 app.use('/api/admissions', admissionRoutes);
+app.use('/api', agentRoutes);
 
 // Root greeting
 app.get('/', (req, res) => {
