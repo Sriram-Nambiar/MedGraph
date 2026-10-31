@@ -1,0 +1,32 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "MedGraph Clinical Knowledge Graph and GraphRAG Retrieval Backend",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "seed": "tsx src/ingestion/seed.ts",
+    "test": "tsx src/test/run-tests.ts"
+  },
+  "keywords": ["medgraph", "graphrag", "neo4j", "clinical"],
+  "author": "MedGraph Team",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.9",
+    "express": "^5.3.0",
+    "neo4j-driver": "^6.3.0",
+    "uuid": "^14.0.3"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.6",
+    "@types/uuid": "^10.0.0",
+    "tsx": "^4.23.15",
+    "typescript": "^5.8.0"
+  }
+}
