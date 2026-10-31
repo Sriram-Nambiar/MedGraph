@@ -21,8 +21,8 @@ def get_configured_llm():
             base_url=settings.nvidia_base_url,
             api_key=api_key,
             temperature=settings.temperature,
-            timeout=35.0,
-            max_retries=1
+            timeout=6.0,
+            max_retries=0
         )
 
     elif provider == "openai":

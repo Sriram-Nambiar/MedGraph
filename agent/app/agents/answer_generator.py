@@ -1,3 +1,4 @@
+import asyncio
 from typing import List, Dict, Any
 from app.schemas.evidence import (
     MergedEvent,
@@ -44,7 +45,7 @@ class AnswerGenerator:
                     f"Verified Claims: {[v.model_dump() for v in verifications]}\n\n"
                     f"Synthesize the FinalAnswer report strictly adhering to these verifications."
                 )
-                result = await structured_llm.ainvoke(prompt)
+                result = await asyncio.wait_for(structured_llm.ainvoke(prompt), timeout=5.0)
                 if isinstance(result, FinalAnswer):
                     return result
             except Exception:
@@ -102,7 +103,7 @@ class AnswerGenerator:
         for v in verifications:
             summary_counts[v.status] = summary_counts.get(v.status, 0) + 1
 
-        all_verified = (summary_counts["CONTRADICTED"] == 0 and summary_counts["NOT_FOUND"] == 0)
+        all_verified = (summary_counts["CONTRADICTED"] == 0 and summary_counts["NOT_FOUND"] == 0 and summary_counts.get("INSUFFICIENT", 0) == 0)
 
         # Build key findings and chronological changes
         key_findings = []
@@ -185,9 +186,31 @@ class AnswerGenerator:
         # Direct Answer Formulation - Clean ChatGPT-style Paragraphs
         if not key_findings and not admissions:
             direct_ans = f"No clinical records or hospital admissions were found for patient **{patient_id}** regarding this query."
-        elif len(admissions) < 2 and "between" in question.lower():
-            direct_ans = f"Only **{len(admissions)} admission episode** is on file for patient **{patient_id}**, which is insufficient to perform a comparative analysis."
+        elif len(admissions) < 2 and ("between" in question.lower() or "compare" in question.lower()):
+            paragraphs = []
+            adm_text = f"Only **{len(admissions)} admission episode** ({admissions[0].admission_id if admissions else 'None'}) is on file for patient **{patient_id}**; cross-admission delta cannot be computed. However, longitudinal review of all recorded encounters, prescriptions, and notes reveals:"
+            paragraphs.append(adm_text)
             limitations.append("Insufficient admission history to perform longitudinal comparison.")
+
+            presc_events = [e for e in events if e.event_type in ("medication", "prescription")]
+            if presc_events:
+                med_lines = ["**Documented Medications & Regimens:**"]
+                for p in presc_events:
+                    p_name = p.data.get("medicationName") or p.data.get("name") or "Medication"
+                    p_dose = f" ({p.data.get('dosage')})" if p.data.get('dosage') else ""
+                    p_act = p.data.get("action", "Documented")
+                    p_status = p.data.get("status", "")
+                    med_lines.append(f"- **{p_name}**{p_dose}: {p_act} [{p_status}]")
+                paragraphs.append("\n".join(med_lines))
+
+            supported_causals = [cv for cv in causal_verifications if cv.status == "SUPPORTED"]
+            if supported_causals:
+                paragraphs.append(f"**Documented Clinical Rationale:**\n- {supported_causals[0].evidence_text}")
+
+            if contradictions:
+                paragraphs.append(f"**Documentation Alert:**\n- {len(contradictions)} conflicting clinical record(s) flagged during verification.")
+
+            direct_ans = "\n\n".join(paragraphs)
         else:
             paragraphs = []
             paragraphs.append(f"Based on a longitudinal review of the patient's records across admissions, the key changes are summarized below:")
@@ -196,27 +219,27 @@ class AnswerGenerator:
                 med_lines = ["**Medication Changes:**"]
                 for m in temporal_findings.new_medications:
                     dose = f" ({m.get('dosage') or m.get('new_dosage')})" if (m.get('dosage') or m.get('new_dosage')) else ""
-                    med_lines.append(f"• **{m['name']}**{dose}: {m.get('status')}")
+                    med_lines.append(f"- **{m['name']}**{dose}: {m.get('status')}")
                 for m in temporal_findings.absent_earlier_medications:
                     dose = f" ({m.get('previous_dosage')})" if m.get('previous_dosage') else ""
-                    med_lines.append(f"• **{m['name']}**{dose}: Discontinued / omitted from active orders")
+                    med_lines.append(f"- **{m['name']}**{dose}: Discontinued / omitted from active orders")
                 paragraphs.append("\n".join(med_lines))
 
             if temporal_findings.lab_comparisons:
                 lab_lines = ["**Laboratory Biomarker Shifts:**"]
                 for l in temporal_findings.lab_comparisons:
-                    lab_lines.append(f"• **{l['test_name']}**: {l['direction'].capitalize()} from **{l['previous_value']}** to **{l['latest_value']} {l['unit']}**")
+                    lab_lines.append(f"- **{l['test_name']}**: {l['direction'].capitalize()} from **{l['previous_value']}** to **{l['latest_value']} {l['unit']}**")
                 paragraphs.append("\n".join(lab_lines))
 
             # Add rationale status
             supported_causals = [cv for cv in causal_verifications if cv.status == "SUPPORTED"]
             if supported_causals:
-                paragraphs.append(f"**Documented Clinical Rationale:**\n• {supported_causals[0].evidence_text}")
+                paragraphs.append(f"**Documented Clinical Rationale:**\n- {supported_causals[0].evidence_text}")
             elif any(cv.status in ("INSUFFICIENT", "NOT_FOUND") for cv in causal_verifications):
-                paragraphs.append("**Clinical Rationale:**\n• The medical records do not contain explicit documentation explaining the reason for the medication change.")
+                paragraphs.append("**Clinical Rationale:**\n- The medical records do not contain explicit documentation explaining the reason for the medication change.")
 
             if contradictions:
-                paragraphs.append(f"**Documentation Alert:**\n• {len(contradictions)} conflicting clinical record(s) were flagged during verification.")
+                paragraphs.append(f"**Documentation Alert:**\n- {len(contradictions)} conflicting clinical record(s) were flagged during verification.")
 
             direct_ans = "\n\n".join(paragraphs) if paragraphs else f"Clinical investigation completed with {len(verifications)} verified claims."
 

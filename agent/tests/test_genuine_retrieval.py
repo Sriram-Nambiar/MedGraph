@@ -128,9 +128,14 @@ async def test_workflow_hybrid_live_explicit_neo4j_diagnostic(monkeypatch):
     """
     from app.main import run_investigation
     from app.config import settings
+    from app.services.neo4j_service import neo4j_service
 
     monkeypatch.setenv("RETRIEVAL_MODE", "hybrid_live")
     monkeypatch.setattr(settings, "retrieval_mode", "hybrid_live")
+    monkeypatch.setattr(settings, "neo4j_uri", "bolt://127.0.0.1:9999")
+    monkeypatch.setattr(settings, "neo4j_connection_timeout", 0.5)
+    monkeypatch.setattr(neo4j_service, "uri", "bolt://127.0.0.1:9999")
+    monkeypatch.setattr(neo4j_service, "_driver", None)
 
     with pytest.raises(ConnectionError, match="Cannot connect to Neo4j database"):
         await run_investigation(

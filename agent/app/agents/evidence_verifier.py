@@ -104,6 +104,20 @@ class EvidenceVerifier:
                     ))
                     claim_idx += 1
 
+        # If no cross-admission med changes extracted yet, extract patient medication regimens from events
+        if not temporal_findings.new_medications and not temporal_findings.absent_earlier_medications:
+            prescriptions = [e for e in events if e.event_type in ("medication", "prescription")]
+            for p in prescriptions:
+                raw_name = p.data.get("medicationName") or p.data.get("name") or "Medication"
+                dose = p.data.get("dosage", "")
+                action = p.data.get("action", "Prescribed")
+                claims.append(Claim(
+                    claim_id=f"CLAIM-{claim_idx:02d}",
+                    statement=f"Medication {raw_name} ({dose}) was {action.lower()}.",
+                    category="medication_change"
+                ))
+                claim_idx += 1
+
         # If no claims extracted yet (e.g. simple or missing records query)
         if not claims:
             claims.append(Claim(
@@ -197,17 +211,22 @@ class EvidenceVerifier:
                 )
 
         # 3. Check for Medication Changes
-        if claim.category == "medication_change":
+        if claim.category in ("medication_change", "medication_regimen"):
             matching_events = []
             for e in events:
-                if e.event_type == "medication":
-                    med_name = e.data.get("name", "").lower()
+                if e.event_type in ("medication", "prescription"):
+                    med_name = (e.data.get("medicationName") or e.data.get("medication_name") or e.data.get("name") or "").lower()
                     if any(word in statement_lower for word in med_name.split() if len(word) > 3):
                         matching_events.append(e)
 
             if matching_events:
                 rec_ids = list({r for e in matching_events for r in e.source_record_ids})
-                timestamps = [e.normalized_timestamp for e in matching_events if e.normalized_timestamp]
+                timestamps = [e.original_timestamps[0] if e.original_timestamps else e.normalized_timestamp for e in matching_events if (e.original_timestamps or e.normalized_timestamp)]
+                quote_items = [
+                    f"{e.data.get('name')} {e.data.get('dosage', '')} ({e.normalized_timestamp or 'documented'})"
+                    for e in matching_events if e.data.get('name')
+                ]
+                quote_text = "; ".join(quote_items) if quote_items else f"Prescription records: {', '.join(rec_ids)}"
                 return ClaimVerification(
                     claim_id=claim.claim_id,
                     statement=claim.statement,
@@ -215,7 +234,7 @@ class EvidenceVerifier:
                     status="SUPPORTED",
                     supporting_record_ids=rec_ids,
                     timestamps=timestamps,
-                    evidence_text=f"Corroborated by medication records: {rec_ids}",
+                    evidence_text=quote_text,
                     explanation="Directly supported by structured prescription records."
                 )
 
@@ -223,14 +242,19 @@ class EvidenceVerifier:
         if claim.category == "lab_trend":
             matching_labs = []
             for e in events:
-                if e.event_type == "lab_result":
-                    test_name = e.data.get("test_name", "").lower()
+                if e.event_type in ("lab_result", "labresult", "lab"):
+                    test_name = (e.data.get("testName") or e.data.get("test_name") or e.data.get("name") or "").lower()
                     if any(term in statement_lower for term in test_name.split() if len(term) > 2):
                         matching_labs.append(e)
 
             if matching_labs:
                 rec_ids = list({r for e in matching_labs for r in e.source_record_ids})
-                timestamps = [e.normalized_timestamp for e in matching_labs if e.normalized_timestamp]
+                timestamps = [e.original_timestamps[0] if e.original_timestamps else e.normalized_timestamp for e in matching_labs if (e.original_timestamps or e.normalized_timestamp)]
+                quote_items = [
+                    f"{e.data.get('test_name')}: {e.data.get('value')} {e.data.get('unit', '')} ({e.data.get('flag', 'Recorded')})"
+                    for e in matching_labs if e.data.get('test_name')
+                ]
+                quote_text = "; ".join(quote_items) if quote_items else f"Laboratory records: {', '.join(rec_ids)}"
                 return ClaimVerification(
                     claim_id=claim.claim_id,
                     statement=claim.statement,
@@ -238,7 +262,7 @@ class EvidenceVerifier:
                     status="SUPPORTED",
                     supporting_record_ids=rec_ids,
                     timestamps=timestamps,
-                    evidence_text=f"Corroborated by lab records: {rec_ids}",
+                    evidence_text=quote_text,
                     explanation="Directly supported by laboratory values across encounters."
                 )
 

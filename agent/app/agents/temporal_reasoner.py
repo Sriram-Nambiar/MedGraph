@@ -77,8 +77,20 @@ class TemporalReasoner:
             }
 
             # Partition events between previous and latest admissions
-            prev_events = [e for e in events if e.encounter_id == prev_adm.admission_id]
-            latest_events = [e for e in events if e.encounter_id == latest_adm.admission_id]
+            def _is_event_in_adm(event: MergedEvent, adm: AdmissionRecord) -> bool:
+                if event.encounter_id:
+                    return event.encounter_id == adm.admission_id
+                if event.data and event.data.get("admissionId"):
+                    return event.data.get("admissionId") == adm.admission_id
+                if event.normalized_timestamp and adm.admission_date:
+                    ts = event.normalized_timestamp[:10]
+                    start = adm.admission_date[:10]
+                    end = adm.discharge_date[:10] if adm.discharge_date else start
+                    return start <= ts <= end
+                return False
+
+            prev_events = [e for e in events if _is_event_in_adm(e, prev_adm)]
+            latest_events = [e for e in events if _is_event_in_adm(e, latest_adm)]
 
             # Compare Medications
             prev_med_map = cls._extract_medications(prev_events)
@@ -152,12 +164,15 @@ class TemporalReasoner:
     def _extract_medications(cls, events: List[MergedEvent]) -> Dict[str, Dict[str, Any]]:
         meds = {}
         for e in events:
-            if e.event_type == "medication":
-                name = e.data.get("name", "").strip().lower()
+            if e.event_type in ("medication", "prescription"):
+                raw_name = e.data.get("medicationName") or e.data.get("medication_name") or e.data.get("name") or ""
+                name = raw_name.strip().lower()
+                if not name:
+                    continue
                 # Normalize common names (e.g. strip brand/generic parens for matching)
                 base_name = name.split("(")[0].strip()
                 meds[base_name] = {
-                    "name": e.data.get("name"),
+                    "name": raw_name,
                     "dosage": e.data.get("dosage"),
                     "frequency": e.data.get("frequency"),
                     "timestamp": e.normalized_timestamp,
@@ -168,25 +183,25 @@ class TemporalReasoner:
     @classmethod
     def _compare_labs(cls, prev_events: List[MergedEvent], latest_events: List[MergedEvent]) -> List[Dict[str, Any]]:
         prev_labs = {
-            e.data.get("test_name"): {
+            (e.data.get("testName") or e.data.get("test_name") or e.data.get("name")): {
                 "value": e.data.get("value"),
                 "unit": e.data.get("unit"),
                 "flag": e.data.get("flag"),
                 "record_id": e.source_record_ids[0] if e.source_record_ids else "UNKNOWN",
                 "timestamp": e.normalized_timestamp
             }
-            for e in prev_events if e.event_type == "lab_result" and e.data.get("test_name")
+            for e in prev_events if e.event_type in ("lab_result", "labresult", "lab") and (e.data.get("testName") or e.data.get("test_name") or e.data.get("name"))
         }
 
         latest_labs = {
-            e.data.get("test_name"): {
+            (e.data.get("testName") or e.data.get("test_name") or e.data.get("name")): {
                 "value": e.data.get("value"),
                 "unit": e.data.get("unit"),
                 "flag": e.data.get("flag"),
                 "record_id": e.source_record_ids[0] if e.source_record_ids else "UNKNOWN",
                 "timestamp": e.normalized_timestamp
             }
-            for e in latest_events if e.event_type == "lab_result" and e.data.get("test_name")
+            for e in latest_events if e.event_type in ("lab_result", "labresult", "lab") and (e.data.get("testName") or e.data.get("test_name") or e.data.get("name"))
         }
 
         comparisons = []

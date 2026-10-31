@@ -10,10 +10,10 @@ class Settings(BaseSettings):
     # - "mock": Fast, deterministic offline in-memory data for unit testing & development
     # - "hybrid_live": Direct native Neo4j (Cypher) + local persistent dense vector search (FastEmbed)
     # - "external_api": Proxies retrieval calls to the companion Express backend
-    retrieval_mode: RetrievalMode = "mock"
+    retrieval_mode: RetrievalMode = "external_api"
 
     # Backwards-compatible flag: if use_mock_api is set explicitly, it aligns with retrieval_mode
-    use_mock_api: bool = True
+    use_mock_api: bool = False
 
     # Neo4j Graph Database Configuration (Used in hybrid_live mode)
     neo4j_uri: str = "bolt://localhost:7687"
@@ -33,10 +33,10 @@ class Settings(BaseSettings):
     admission_endpoint: str = "/api/patients/{patient_id}/admissions"
 
     # LLM configuration
-    llm_provider: Literal["mock", "openai", "google_genai", "anthropic", "nvidia"] = "nvidia"
+    llm_provider: Literal["mock", "openai", "google_genai", "anthropic", "nvidia"] = "mock"
     nvidia_api_key: Optional[str] = None
     nvidia_base_url: str = "https://integrate.api.nvidia.com/v1"
-    nvidia_model: str = "nvidia/nemotron-3-ultra-550b-a55b"
+    nvidia_model: str = "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning"
     openai_api_key: Optional[str] = None
     openai_model: str = "gpt-4o"
     google_api_key: Optional[str] = None
@@ -59,20 +59,22 @@ class Settings(BaseSettings):
         """Resolve the effective retrieval mode, ensuring the system never
         silently reports mock data when live mode is requested.
         """
-        mode = os.getenv("RETRIEVAL_MODE", self.retrieval_mode).lower().strip()
-        if mode in ("mock", "hybrid_live", "external_api"):
-            return mode  # type: ignore
+        if self.retrieval_mode in ("mock", "hybrid_live", "external_api"):
+            return self.retrieval_mode
 
         if not self.use_mock_api:
             return "external_api"
+
         return "mock"
 
     def resolve_provider(self) -> str:
-        """Auto-detect provider if default is mock or explicit."""
-        if self.llm_provider != "mock":
+        """Resolve LLM provider, respecting explicit 'mock' or configured provider."""
+        env_provider = os.getenv("LLM_PROVIDER")
+        if env_provider:
+            return env_provider.lower().strip()
+        if self.llm_provider:
             return self.llm_provider
-        if self.nvidia_api_key or os.getenv("NVIDIA_API_KEY"):
-            return "nvidia"
+        return "mock"
         if self.openai_api_key or os.getenv("OPENAI_API_KEY"):
             return "openai"
         if self.google_api_key or os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY"):

@@ -5,6 +5,7 @@ import { vectorStore } from '../vector/vector-store.js';
 import { timelineService } from '../services/timeline-service.js';
 import { admissionComparisonService } from '../services/admission-comparison-service.js';
 import { agentController } from '../controllers/agent-controller.js';
+import { closeNeo4jDriver } from '../database/neo4j-connection.js';
 
 let passed = 0;
 let failed = 0;
@@ -128,12 +129,16 @@ async function runTestSuite() {
   console.log(`Results: ${passed} Passed, ${failed} Failed.`);
   console.log('----------------------------------------\n');
 
-  if (failed > 0) {
-    process.exit(1);
-  }
+  try {
+    await closeNeo4jDriver();
+  } catch (e) {}
+  process.exit(failed > 0 ? 1 : 0);
 }
 
-runTestSuite().catch((err) => {
+runTestSuite().catch(async (err) => {
   console.error('[TestSuite Error]', err);
+  try {
+    await closeNeo4jDriver();
+  } catch (e) {}
   process.exit(1);
 });

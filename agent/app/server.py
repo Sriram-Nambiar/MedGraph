@@ -49,16 +49,56 @@ def format_response_for_backend(final_state: Dict[str, Any], thread_id: Optional
     else:
         verif_status = "UNVERIFIED"
 
+    # Index all retrieved entities for precise citation-to-source mapping
+    record_map: Dict[str, Dict[str, Any]] = {}
+    for adm in final_state.get("retrieved_admissions", []):
+        adm_id = getattr(adm, "admission_id", None) or (adm.get("admission_id") if isinstance(adm, dict) else None)
+        if adm_id:
+            record_map[adm_id] = {
+                "timestamp": getattr(adm, "admission_date", "") or (adm.get("admission_date", "") if isinstance(adm, dict) else ""),
+                "quote": f"Admission {adm_id}: {getattr(adm, 'reason', '') or (adm.get('reason', '') if isinstance(adm, dict) else '')}",
+                "source_type": "admission"
+            }
+    for rec in final_state.get("retrieved_graph_data", []):
+        rec_id = getattr(rec, "record_id", None) or (rec.get("record_id") if isinstance(rec, dict) else None)
+        if rec_id:
+            details = getattr(rec, "details", {}) or (rec.get("details", {}) if isinstance(rec, dict) else {})
+            ts = getattr(rec, "timestamp", "") or (rec.get("timestamp", "") if isinstance(rec, dict) else "")
+            name = details.get("name") or details.get("medication_name") or details.get("test_name") or rec_id
+            dose = details.get("dosage") or details.get("value") or ""
+            quote = f"{name} ({dose})".strip() if dose else str(name)
+            record_map[rec_id] = {
+                "timestamp": ts,
+                "quote": quote,
+                "source_type": getattr(rec, "record_type", "graph")
+            }
+    for note in final_state.get("retrieved_notes", []):
+        note_id = getattr(note, "record_id", None) or (note.get("record_id") if isinstance(note, dict) else None)
+        if note_id:
+            ts = getattr(note, "timestamp", "") or (note.get("timestamp", "") if isinstance(note, dict) else "")
+            content = getattr(note, "content", "") or (note.get("content", "") if isinstance(note, dict) else "")
+            title = getattr(note, "note_type", "Clinical Note") or (note.get("note_type", "Clinical Note") if isinstance(note, dict) else "Clinical Note")
+            record_map[note_id] = {
+                "timestamp": ts,
+                "quote": content[:240] + ("..." if len(content) > 240 else ""),
+                "note_title": title.replace("_", " ").title(),
+                "source_type": "clinical_note"
+            }
+
     formatted_claims = []
     for c in final_answer.claims_verification:
         evidence_items = []
         rec_ids = c.supporting_record_ids or c.contradicting_record_ids
         for idx, rec_id in enumerate(rec_ids):
-            ts = c.timestamps[idx] if idx < len(c.timestamps) else (c.timestamps[0] if c.timestamps else "")
+            rec_meta = record_map.get(rec_id, {})
+            ts = rec_meta.get("timestamp") or (c.timestamps[idx] if idx < len(c.timestamps) else (c.timestamps[0] if c.timestamps else ""))
+            quote = rec_meta.get("quote") or c.evidence_text
             evidence_items.append({
                 "record_id": rec_id,
                 "timestamp": ts,
-                "quote": c.evidence_text
+                "quote": quote,
+                "source_type": rec_meta.get("source_type", "graph_record"),
+                "note_title": rec_meta.get("note_title")
             })
 
         status_str = "CONTRADICTORY" if c.status == "CONTRADICTED" else c.status
@@ -157,8 +197,12 @@ def format_response_for_backend(final_state: Dict[str, Any], thread_id: Optional
             badge_text = f"Pass: {len(matched_ids)} records matched"
         elif c.status == "CONTRADICTED":
             badge_text = f"Flag: {c.explanation or 'Contradictory clinical documentation detected'}"
+        elif c.status == "INSUFFICIENT":
+            badge_text = f"Flag: {c.explanation[:65] if c.explanation else 'Insufficient clinical documentation'}"
+        elif c.status == "NOT_FOUND":
+            badge_text = "Flag: Record not found in patient chart"
         else:
-            badge_text = "Flag: Discontinuation not documented in Note #4"
+            badge_text = f"Flag: {c.explanation or 'Verification flagged'}"
 
         verifier_checks.append({
             "id": c.claim_id or f"CHECK-{idx+1:02d}",

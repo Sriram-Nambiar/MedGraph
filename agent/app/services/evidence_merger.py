@@ -162,7 +162,7 @@ class EvidenceMerger:
             seen_record_ids.add(gr.record_id)
 
             norm_ts = cls.normalize_timestamp(gr.timestamp)
-            encounter_id = cls.match_encounter(gr.timestamp, gr.relationships, admissions)
+            encounter_id = gr.details.get('admissionId') or cls.match_encounter(gr.timestamp, gr.relationships, admissions)
 
             # Associate relevant conflicts
             record_conflicts = [c for c in global_conflicts if gr.record_id in c]

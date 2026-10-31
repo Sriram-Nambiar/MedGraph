@@ -3,8 +3,6 @@ import logging
 from typing import List, Tuple
 from app.config import settings
 from app.services.api_client import api_client
-from app.services.neo4j_service import neo4j_service
-from app.services.vector_service import vector_service
 from app.services.mock_data import MockDataRepository
 from app.schemas.evidence import GraphRecord, ClinicalNote, AdmissionRecord
 from app.schemas.responses import InvestigationPlan
@@ -32,6 +30,9 @@ class RetrievalRouter:
 
         if mode == "hybrid_live":
             # Live native Neo4j and native Vector search
+            from app.services.neo4j_service import neo4j_service
+            from app.services.vector_service import vector_service
+
             async def _fetch_admissions():
                 return await neo4j_service.get_patient_admissions(patient_id)
 
@@ -84,6 +85,9 @@ class RetrievalRouter:
         query_str = " ".join(targeted_queries)
 
         if mode == "hybrid_live":
+            from app.services.neo4j_service import neo4j_service
+            from app.services.vector_service import vector_service
+
             async def _fetch_graph():
                 return await neo4j_service.search_patient_graph(patient_id, query_str)
 

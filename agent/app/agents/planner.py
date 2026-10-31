@@ -1,3 +1,4 @@
+import asyncio
 import re
 from typing import Dict, List, Any
 from app.llm_factory import get_configured_llm
@@ -33,7 +34,7 @@ class InvestigationPlanner:
                     f"User Question: {question}\n\n"
                     f"Formulate a complete InvestigationPlan."
                 )
-                result = await structured_llm.ainvoke(prompt)
+                result = await asyncio.wait_for(structured_llm.ainvoke(prompt), timeout=4.0)
                 if isinstance(result, InvestigationPlan):
                     return result
             except Exception:

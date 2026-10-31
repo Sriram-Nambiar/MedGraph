@@ -230,8 +230,12 @@ export class InMemoryGraphEngine {
 
     // Search nodes
     for (const node of subGraph.nodes) {
-      const propText = JSON.stringify(node.properties).toLowerCase();
-      const hits = tokens.filter((t) => propText.includes(t));
+      const propText = (node.label + ' ' + JSON.stringify(node.properties)).toLowerCase();
+      const hits = tokens.filter((t) => {
+        if (propText.includes(t)) return true;
+        if (t.endsWith('s') && t.length > 3 && propText.includes(t.slice(0, -1))) return true;
+        return false;
+      });
 
       if (hits.length > 0 || tokens.length === 0) {
         matchedNodes.add(node.id);
