@@ -7,6 +7,7 @@ import { ClinicalTimeline } from './components/timeline/ClinicalTimeline';
 import { KnowledgeGraphView } from './components/graph/KnowledgeGraphView';
 import { ThreeDGraphView } from './components/graph/ThreeDGraphView';
 import { InvestigationView } from './components/investigation/InvestigationView';
+import { HospitalNetworkView } from './components/network/HospitalNetworkView';
 import { EvidenceInspectorModal } from './components/evidence/EvidenceInspectorModal';
 import {
   Patient,
@@ -269,6 +270,15 @@ export function App() {
                     patient={selectedPatient}
                     onOpenEvidence={handleOpenEvidence}
                     initialQuestion={investigationQuestion}
+                  />
+                </ErrorBoundary>
+              )}
+
+              {activeTab === 'hospital-network' && (
+                <ErrorBoundary fallbackLabel="Hospital Interoperability Error">
+                  <HospitalNetworkView
+                    selectedPatient={selectedPatient}
+                    theme={theme}
                   />
                 </ErrorBoundary>
               )}
