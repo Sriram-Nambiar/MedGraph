@@ -1,81 +1,111 @@
-# MedGraph Agent Developer Guide (Person 2 Integration)
+# MedGraph Agent Layer (LangChain + LangGraph)
 
-Welcome Person 2! This guide details how your LangChain / LangGraph clinical investigation agent integrates with the MedGraph backend and knowledge graph.
+This directory contains the complete **AI and agent orchestration layer** for MedGraph, built using LangChain and LangGraph.
 
-## 1. Connection Architecture
-
-The MedGraph backend exposes retrieval and graph services on `http://localhost:5000`.
-
-When a user submits an investigation query in the MedGraph UI:
-1. MedGraph Frontend calls `POST /api/investigate`.
-2. The Backend proxies the request to your LangGraph service at `AGENT_SERVICE_URL` (configured in `.env`, e.g. `http://localhost:8000/investigate`).
-3. Your LangGraph pipeline uses the provided tools to query the structured knowledge graph and unstructured clinical notes.
-4. Your agent returns the structured verification response with citations.
+It fulfills the **Person 2** role for the Hackathon, providing an evidence-grounded longitudinal clinical history investigation engine that connects with Person 1's Express/Neo4j backend.
 
 ---
 
-## 2. Using the LangChain Tools
+## 1. Architecture
 
-A pre-built Python tools module is provided in [`agent/tools.py`](tools.py).
-
-```python
-from tools import (
-    get_patient_profile,
-    get_patient_timeline,
-    search_patient_graph,
-    search_clinical_notes,
-    compare_admissions
-)
-
-# Example: Bind to LangGraph ReAct agent or StateGraph
-tools = [
-    get_patient_profile,
-    get_patient_timeline,
-    search_patient_graph,
-    search_clinical_notes,
-    compare_admissions
-]
+```mermaid
+flowchart TD
+    START([START]) --> PlanNode["Question Understanding & Planning\n(InvestigationPlanner)"]
+    PlanNode --> RetrieveNode["Parallel Retrieval Routing\n(Graph + Vector + Admissions)"]
+    RetrieveNode --> MergeNode["Evidence Merger\n(Normalization & Conflict Detection)"]
+    MergeNode --> TemporalNode["Temporal Reasoning Engine\n(Chronological Deltas & Lab Shifts)"]
+    TemporalNode --> VerifyNode["Evidence Verification Agent\n(Atomic Claim Classification)"]
+    
+    VerifyNode --> SufficiencyCheck{"Is Evidence Sufficient?\n(retry_count < 2)"}
+    
+    SufficiencyCheck -- "NO" --> TargetedNode["Targeted Retrieval\n(Self-Correction Loop)"]
+    TargetedNode --> MergeNode
+    
+    SufficiencyCheck -- "YES" --> FinalAnswerNode["Final Answer Generator\n(Evidence-Grounded Report)"]
+    FinalAnswerNode --> END([END])
 ```
 
 ---
 
-## 3. Investigation Response Contract
+## 2. Features
 
-Your agent endpoint should return JSON matching the following schema:
+- **Longitudinal History Investigation**: Compares patient hospital admissions, detects newly introduced medications, dose adjustments, and absent medications.
+- **Evidence Verification (4 States)**: Decomposes findings into individual claims and classifies them as `SUPPORTED`, `CONTRADICTED`, `INSUFFICIENT`, or `NOT_FOUND`.
+- **Causality Protection**: Refuses to assume causation from correlation. If a medication change has no documented rationale in physician notes, it is flagged as unverified and the system abstains.
+- **Controlled Self-Correction**: Implements bounded retry loops (maximum 2 retries) for targeted retrieval when evidence is incomplete.
+- **Thread & Patient Isolation**: Persists session state using LangGraph checkpointing (`MemorySaver`) while enforcing strict patient isolation.
+- **Dual Mode**: Can run against Person 1's live backend (`USE_MOCK_API=False`, port 5000) or standalone with high-fidelity synthetic patient data (`USE_MOCK_API=True`).
 
-```json
-{
-  "answer": "Medication Lisinopril was discontinued during ADM-102 due to acute hyperkalemia (potassium 5.7 mEq/L).",
-  "patient_id": "P001",
-  "thread_id": "INV001",
-  "verification_status": "VERIFIED",
-  "claims": [
-    {
-      "claim": "Lisinopril 20 mg was discontinued secondary to acute hyperkalemia and renal decompensation.",
-      "status": "SUPPORTED",
-      "evidence": [
-        {
-          "record_id": "NOTE-105",
-          "timestamp": "2026-02-05T12:00:00Z",
-          "quote": "Lisinopril 20 mg is STOPPED IMMEDIATELY. Discontinued due to severe hyperkalemia."
-        },
-        {
-          "record_id": "LAB-109",
-          "timestamp": "2026-02-05T11:00:00Z",
-          "quote": "Potassium: 5.7 mEq/L [Critical High]"
-        }
-      ]
-    }
-  ],
-  "key_findings": [
-    "Lisinopril discontinued -> Entresto initiated",
-    "Torsemide replaced Furosemide"
-  ],
-  "missing_information": [
-    "Baseline echocardiogram from June 2025 is missing from records."
-  ],
-  "contradictions_found": [
-    "NOTE-104 denies ACE-inhibitor cough, contradicting earlier note NOTE-102."
-  ]
-}
+---
+
+## 3. Backend Integration (Person 1 <-> Person 2)
+
+When the MedGraph Express backend calls `POST http://localhost:8000/investigate`:
+1. The FastAPI service in `server.py` receives:
+   ```json
+   {
+     "patient_id": "P001",
+     "thread_id": "INV001",
+     "question": "What changed between the last two admissions?"
+   }
+   ```
+2. The LangGraph workflow executes end-to-end.
+3. The service responds with the exact `InvestigationResponse` schema expected by the backend and frontend:
+   ```json
+   {
+     "answer": "Medication changes identified: Furosemide (Dose adjusted from 20mg to 40mg), Entresto (Newly introduced)...",
+     "patient_id": "P001",
+     "thread_id": "INV001",
+     "verification_status": "VERIFIED",
+     "claims": [
+       {
+         "claim": "Medication Entresto (Sacubitril/Valsartan) was newly introduced in latest admission.",
+         "status": "SUPPORTED",
+         "evidence": [
+           {
+             "record_id": "MED-104",
+             "timestamp": "2023-08-02T09:00:00Z",
+             "quote": "Corroborated by medication records: ['MED-104']"
+           }
+         ],
+         "explanation": "Directly supported by structured prescription records."
+       }
+     ],
+     "key_findings": [...],
+     "missing_information": [...],
+     "contradictions_found": [...]
+   }
+   ```
+
+---
+
+## 4. Setup & Running the Agent Service
+
+### 1. Install Dependencies
+```bash
+pip install -r requirements.txt
 ```
+
+### 2. Configure Environment
+```bash
+cp .env.example .env
+```
+*(Defaults to mock mode, running out-of-the-box with zero setup)*
+
+### 3. Start the FastAPI Service (Port 8000)
+```bash
+python server.py
+# Or using uvicorn:
+uvicorn app.server:app --port 8000 --reload
+```
+
+### 4. Run CLI Demo
+```bash
+python app/main.py "P001" "What changed between the patient's last two admissions? Were there any medication changes, and is the reason documented?"
+```
+
+### 5. Run Automated Tests
+```bash
+pytest -v
+```
+*(All 20 unit and clinical integration tests pass)*
