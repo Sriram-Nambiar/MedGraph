@@ -1,0 +1,136 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "MedGraph Clinical Knowledge Graph & Retrieval API",
+    "description": "Integration APIs for the LangChain / LangGraph Agentic Clinical Investigation Platform. Provides patient-scoped GraphRAG, vector retrieval, and admission comparison.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000",
+      "description": "Local development backend"
+    }
+  ],
+  "paths": {
+    "/api/patients": {
+      "get": {
+        "summary": "List all synthetic patients",
+        "responses": {
+          "200": {
+            "description": "Array of synthetic patient demographic records"
+          }
+        }
+      }
+    },
+    "/api/patients/{patientId}": {
+      "get": {
+        "summary": "Get patient details, active conditions, and medications",
+        "parameters": [
+          {
+            "name": "patientId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ]
+      }
+    },
+    "/api/patients/{patientId}/timeline": {
+      "get": {
+        "summary": "Get chronological clinical timeline events",
+        "parameters": [
+          {
+            "name": "patientId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ]
+      }
+    },
+    "/api/graph/search": {
+      "post": {
+        "summary": "Controlled parameterized Graph Search",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["patient_id", "query"],
+                "properties": {
+                  "patient_id": { "type": "string", "example": "P001" },
+                  "query": { "type": "string", "example": "medications during the latest admission" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/vector/search": {
+      "post": {
+        "summary": "Semantic vector search across clinical notes",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["patient_id", "query"],
+                "properties": {
+                  "patient_id": { "type": "string", "example": "P001" },
+                  "query": { "type": "string", "example": "why was the medication changed?" },
+                  "top_k": { "type": "integer", "default": 5 },
+                  "min_score": { "type": "number", "default": 0.05 }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admissions/compare": {
+      "post": {
+        "summary": "Compare two hospital admissions for longitudinal change analysis",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["patient_id", "admission_id_1", "admission_id_2"],
+                "properties": {
+                  "patient_id": { "type": "string", "example": "P001" },
+                  "admission_id_1": { "type": "string", "example": "ADM-101" },
+                  "admission_id_2": { "type": "string", "example": "ADM-102" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/investigate": {
+      "post": {
+        "summary": "Agent Investigation endpoint called by the UI",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["patient_id", "question"],
+                "properties": {
+                  "patient_id": { "type": "string", "example": "P001" },
+                  "thread_id": { "type": "string", "example": "INV001" },
+                  "question": { "type": "string", "example": "What changed between the last two admissions?" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
