@@ -1,13 +1,15 @@
 import React from 'react';
-import { Activity, ChevronDown, Check } from 'lucide-react';
+import { Activity, ChevronDown, Sparkles } from 'lucide-react';
 import { Patient, SystemHealth } from '../types';
+
+export type NavigationTab = 'overview' | 'timeline' | 'graph' | '3d-graph' | 'investigation';
 
 interface TopBarProps {
   patients: Patient[];
   selectedPatient: Patient | null;
   onSelectPatient: (patient: Patient) => void;
-  activeTab: 'overview' | 'timeline' | 'graph' | 'investigation';
-  setActiveTab: (tab: 'overview' | 'timeline' | 'graph' | 'investigation') => void;
+  activeTab: NavigationTab;
+  setActiveTab: (tab: NavigationTab) => void;
   health: SystemHealth | null;
 }
 
@@ -89,7 +91,18 @@ export const TopBar: React.FC<TopBarProps> = ({
                 : 'text-zinc-400 hover:text-zinc-200'
             }`}
           >
-            Knowledge Graph
+            2D Graph
+          </button>
+          <button
+            onClick={() => setActiveTab('3d-graph')}
+            className={`px-3 py-1 text-xs font-medium rounded-md transition-all flex items-center gap-1.5 ${
+              activeTab === '3d-graph'
+                ? 'bg-zinc-800 text-white shadow-sm font-semibold'
+                : 'text-zinc-400 hover:text-zinc-200'
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+            <span>3D Cosmos</span>
           </button>
           <button
             onClick={() => setActiveTab('investigation')}

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { TopBar } from './components/TopBar';
+import { TopBar, NavigationTab } from './components/TopBar';
 import { PatientOverview } from './components/overview/PatientOverview';
 import { LabTrendsChart } from './components/overview/LabTrendsChart';
 import { ClinicalTimeline } from './components/timeline/ClinicalTimeline';
 import { KnowledgeGraphView } from './components/graph/KnowledgeGraphView';
+import { ThreeDGraphView } from './components/graph/ThreeDGraphView';
 import { InvestigationView } from './components/investigation/InvestigationView';
 import { EvidenceInspectorModal } from './components/evidence/EvidenceInspectorModal';
 import {
@@ -25,7 +26,7 @@ import { Loader2 } from 'lucide-react';
 export function App() {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'timeline' | 'graph' | 'investigation'>('investigation');
+  const [activeTab, setActiveTab] = useState<NavigationTab>('investigation');
   const [health, setHealth] = useState<SystemHealth | null>(null);
 
   const [patientDetails, setPatientDetails] = useState<any>(null);
@@ -160,7 +161,7 @@ export function App() {
               <div className="space-y-3 max-w-5xl mx-auto">
                 <div className="flex items-center justify-between text-xs">
                   <div>
-                    <h2 className="font-semibold text-white">Knowledge Graph</h2>
+                    <h2 className="font-semibold text-white">2D Knowledge Graph</h2>
                     <p className="text-zinc-500 font-mono text-[11px]">
                       Connected medical entities for {selectedPatient.name} ({selectedPatient.id})
                     </p>
@@ -175,6 +176,36 @@ export function App() {
                   nodes={graphData.nodes}
                   relationships={graphData.relationships}
                   onOpenEvidence={handleOpenEvidence}
+                />
+              </div>
+            )}
+
+            {activeTab === '3d-graph' && (
+              <div className="space-y-3 max-w-7xl mx-auto">
+                <div className="flex items-center justify-between text-xs px-1">
+                  <div>
+                    <h2 className="font-semibold text-white flex items-center gap-2">
+                      <span>3D Cosmos Knowledge Network</span>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-800/60 font-semibold">
+                        Three.js WebGL
+                      </span>
+                    </h2>
+                    <p className="text-zinc-500 font-mono text-[11px]">
+                      Orbital 3D connections, animated signal pulses, and interactive inspection for {selectedPatient.name} ({selectedPatient.id})
+                    </p>
+                  </div>
+                  <div className="font-mono text-[11px] text-zinc-500 flex items-center gap-3">
+                    <span>Nodes: {graphData.nodes.length}</span>
+                    <span>Links: {graphData.relationships.length}</span>
+                  </div>
+                </div>
+
+                <ThreeDGraphView
+                  nodes={graphData.nodes}
+                  relationships={graphData.relationships}
+                  onOpenEvidence={handleOpenEvidence}
+                  patientName={selectedPatient.name}
+                  patientId={selectedPatient.id}
                 />
               </div>
             )}
