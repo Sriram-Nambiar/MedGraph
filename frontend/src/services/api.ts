@@ -24,7 +24,7 @@ function resolveApiBase(): string {
 
   // Automatic Render backend resolution when frontend is hosted on Render
   if (typeof window !== 'undefined' && window.location.hostname.includes('onrender.com')) {
-    const backendHost = window.location.hostname.replace('medgraph-frontend', 'medgraph-backend');
+    const backendHost = 'medgraph-backend-hgc9.onrender.com';
     return `https://${backendHost}/api`;
   }
 
