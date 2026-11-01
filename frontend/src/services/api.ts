@@ -13,7 +13,8 @@ import {
   AuditLog,
 } from '../types';
 
-const API_BASE = '/api';
+const rawBase = (import.meta.env.VITE_API_URL as string | undefined) || '';
+const API_BASE = rawBase ? (rawBase.endsWith('/api') ? rawBase : `${rawBase.replace(/\/$/, '')}/api`) : '/api';
 
 export async function fetchHealth(): Promise<SystemHealth> {
   const res = await fetch(`${API_BASE}/health`);
