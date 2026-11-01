@@ -10,6 +10,15 @@
 [![LangGraph](https://img.shields.io/badge/LangGraph-Agentic_AI-FF6F00?logo=python&logoColor=white)](https://langchain-ai.github.io/langgraph/)
 [![Three.js](https://img.shields.io/badge/Three.js-3D_WebGL-000000?logo=three.js&logoColor=white)](https://threejs.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Sarvam AI](https://img.shields.io/badge/Sarvam_AI-105B_LLM-orange?logo=fastapi&logoColor=white)](https://sarvam.ai/)
+
+<p align="center">
+  <img src="docs/images/medgraph-hero.png" alt="MedGraph Clinical Knowledge Graph & Agentic Investigation Platform" width="100%" />
+</p>
+
+<p align="center">
+  <a href="https://medgraph-frontend.onrender.com"><strong>🌐 Live Web Application: https://medgraph-frontend.onrender.com</strong></a>
+</p>
 
 ---
 
