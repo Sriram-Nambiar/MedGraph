@@ -1,0 +1,146 @@
+[
+  {
+    "id": "COND-101",
+    "patientId": "P001",
+    "code": "I50.22",
+    "name": "Chronic systolic heart failure (HFrEF, EF 32%)",
+    "category": "Cardiovascular",
+    "status": "Chronic",
+    "onsetDate": "2023-03-15"
+  },
+  {
+    "id": "COND-102",
+    "patientId": "P001",
+    "code": "L40.0",
+    "name": "Severe plaque psoriasis",
+    "category": "Dermatology",
+    "status": "Active",
+    "onsetDate": "2022-07-10"
+  },
+  {
+    "id": "COND-103",
+    "patientId": "P001",
+    "code": "I10",
+    "name": "Essential hypertension",
+    "category": "Cardiovascular",
+    "status": "Active",
+    "onsetDate": "2015-06-20"
+  },
+  {
+    "id": "COND-201",
+    "patientId": "P002",
+    "code": "I82.41",
+    "name": "Acute deep vein thrombosis of right popliteal vein",
+    "category": "Hematology",
+    "status": "Recurrent",
+    "onsetDate": "2025-07-08"
+  },
+  {
+    "id": "COND-202",
+    "patientId": "P002",
+    "code": "I26.92",
+    "name": "Saddle and subsegmental pulmonary embolism",
+    "category": "Cardiovascular",
+    "status": "Active",
+    "onsetDate": "2026-01-13"
+  },
+  {
+    "id": "COND-203",
+    "patientId": "P002",
+    "code": "I48.0",
+    "name": "Paroxysmal atrial fibrillation",
+    "category": "Cardiovascular",
+    "status": "Chronic",
+    "onsetDate": "2024-11-19"
+  },
+  {
+    "id": "COND-204",
+    "patientId": "P002",
+    "code": "K62.5",
+    "name": "Hemorrhage of anus and rectum (Lower GI Bleed)",
+    "category": "Hematology",
+    "status": "Resolved",
+    "onsetDate": "2026-09-02"
+  },
+  {
+    "id": "COND-301",
+    "patientId": "P003",
+    "code": "G35",
+    "name": "Multiple sclerosis, relapsing-remitting",
+    "category": "Neurology",
+    "status": "Chronic",
+    "onsetDate": "2019-02-14"
+  },
+  {
+    "id": "COND-302",
+    "patientId": "P003",
+    "code": "A41.51",
+    "name": "Sepsis due to Escherichia coli (Urosepsis)",
+    "category": "Renal",
+    "status": "Resolved",
+    "onsetDate": "2025-10-14"
+  },
+  {
+    "id": "COND-303",
+    "patientId": "P003",
+    "code": "N31.9",
+    "name": "Neuromuscular dysfunction of bladder (Neurogenic bladder)",
+    "category": "Renal",
+    "status": "Active",
+    "onsetDate": "2021-08-20"
+  },
+  {
+    "id": "COND-401",
+    "patientId": "P004",
+    "code": "J44.1",
+    "name": "Chronic obstructive pulmonary disease with acute exacerbation",
+    "category": "Respiratory",
+    "status": "Recurrent",
+    "onsetDate": "2020-04-10"
+  },
+  {
+    "id": "COND-402",
+    "patientId": "P004",
+    "code": "I48.91",
+    "name": "Unspecified atrial fibrillation with rapid ventricular response",
+    "category": "Cardiovascular",
+    "status": "Active",
+    "onsetDate": "2025-06-20"
+  },
+  {
+    "id": "COND-403",
+    "patientId": "P004",
+    "code": "E05.90",
+    "name": "Amiodarone-induced thyrotoxicosis (Type 2)",
+    "category": "Endocrine",
+    "status": "Active",
+    "onsetDate": "2026-03-08"
+  },
+  {
+    "id": "COND-501",
+    "patientId": "P005",
+    "code": "S72.001A",
+    "name": "Fracture of unspecified part of neck of right femur (Hip fracture)",
+    "category": "Musculoskeletal",
+    "status": "Resolved",
+    "onsetDate": "2025-08-01"
+  },
+  {
+    "id": "COND-502",
+    "patientId": "P005",
+    "code": "F05",
+    "name": "Delirium due to known physiological condition (Post-op / drug-induced)",
+    "category": "Neurology",
+    "status": "Recurrent",
+    "onsetDate": "2025-08-03"
+  },
+  {
+    "id": "COND-503",
+    "patientId": "P005",
+    "code": "M81.0",
+    "name": "Age-related osteoporosis without current pathological fracture",
+    "category": "Musculoskeletal",
+    "status": "Chronic",
+    "onsetDate": "2017-05-12"
+  }
+]

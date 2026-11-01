@@ -1,0 +1,67 @@
+[
+  {
+    "id": "P001",
+    "mrn": "MRN-847291",
+    "name": "Lakshmi Sundaram",
+    "age": 68,
+    "gender": "Female",
+    "dateOfBirth": "1958-04-12",
+    "bloodType": "A+",
+    "primaryDiagnosis": "Systolic Heart Failure (HFrEF) & Severe Plaque Psoriasis",
+    "allergies": [
+      "Penicillin (Rash)"
+    ]
+  },
+  {
+    "id": "P002",
+    "mrn": "MRN-391824",
+    "name": "Rajesh Sharma",
+    "age": 54,
+    "gender": "Male",
+    "dateOfBirth": "1972-08-25",
+    "bloodType": "O+",
+    "primaryDiagnosis": "Recurrent Deep Vein Thrombosis & Pulmonary Embolism on Anticoagulation",
+    "allergies": [
+      "No Known Drug Allergies (NKDA)"
+    ]
+  },
+  {
+    "id": "P003",
+    "mrn": "MRN-582109",
+    "name": "Priya Nambiar",
+    "age": 42,
+    "gender": "Female",
+    "dateOfBirth": "1984-11-03",
+    "bloodType": "B-",
+    "primaryDiagnosis": "Relapsing-Remitting Multiple Sclerosis (RRMS) with Severe Urosepsis",
+    "allergies": [
+      "Latex (Contact Dermatitis)"
+    ]
+  },
+  {
+    "id": "P004",
+    "mrn": "MRN-204918",
+    "name": "Ramesh Patel",
+    "age": 71,
+    "gender": "Male",
+    "dateOfBirth": "1955-01-19",
+    "bloodType": "AB+",
+    "primaryDiagnosis": "Severe COPD (GOLD 3) with Drug-Induced Amiodarone Thyrotoxicosis",
+    "allergies": [
+      "Codeine (Nausea/Vomiting)"
+    ]
+  },
+  {
+    "id": "P005",
+    "mrn": "MRN-773012",
+    "name": "Sunita Deshmukh",
+    "age": 80,
+    "gender": "Female",
+    "dateOfBirth": "1946-06-30",
+    "bloodType": "O-",
+    "primaryDiagnosis": "Femoral Neck Fracture Post-Op Delirium & Anticholinergic Toxicity",
+    "allergies": [
+      "Aspirin (Bronchospasm)"
+    ]
+  }
+]

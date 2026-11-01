@@ -1,0 +1,437 @@
+{
+  "patient": {
+    "id": "P002",
+    "mrn": "MRN-391824",
+    "name": "Rajesh Sharma",
+    "age": 54,
+    "gender": "Male",
+    "dateOfBirth": "1972-08-25",
+    "bloodType": "O+",
+    "primaryDiagnosis": "Recurrent Deep Vein Thrombosis & Pulmonary Embolism on Anticoagulation",
+    "allergies": [
+      "No Known Drug Allergies (NKDA)"
+    ]
+  },
+  "conditions": [
+    {
+      "id": "COND-201",
+      "patientId": "P002",
+      "code": "I82.41",
+      "name": "Acute deep vein thrombosis of right popliteal vein",
+      "category": "Hematology",
+      "status": "Recurrent",
+      "onsetDate": "2025-07-08"
+    },
+    {
+      "id": "COND-202",
+      "patientId": "P002",
+      "code": "I26.92",
+      "name": "Saddle and subsegmental pulmonary embolism",
+      "category": "Cardiovascular",
+      "status": "Active",
+      "onsetDate": "2026-01-13"
+    },
+    {
+      "id": "COND-203",
+      "patientId": "P002",
+      "code": "I48.0",
+      "name": "Paroxysmal atrial fibrillation",
+      "category": "Cardiovascular",
+      "status": "Chronic",
+      "onsetDate": "2024-11-19"
+    },
+    {
+      "id": "COND-204",
+      "patientId": "P002",
+      "code": "K62.5",
+      "name": "Hemorrhage of anus and rectum (Lower GI Bleed)",
+      "category": "Hematology",
+      "status": "Resolved",
+      "onsetDate": "2026-09-02"
+    }
+  ],
+  "admissions": [
+    {
+      "id": "ADM-201",
+      "patientId": "P002",
+      "admissionDate": "2025-07-10T13:00:00Z",
+      "dischargeDate": "2025-07-15T11:00:00Z",
+      "reason": "Right lower extremity swelling and pain confirmed as extensive popliteal deep vein thrombosis",
+      "admissionType": "Emergency",
+      "department": "General Medicine",
+      "attendingDoctorId": "DOC-101",
+      "dischargeDisposition": "Discharged Home",
+      "primaryConditionId": "COND-201",
+      "dischargeSummaryId": "NOTE-203"
+    },
+    {
+      "id": "ADM-202",
+      "patientId": "P002",
+      "admissionDate": "2026-01-14T09:20:00Z",
+      "dischargeDate": "2026-01-18T15:00:00Z",
+      "reason": "Recurrent pleuritic chest pain and shortness of breath diagnosed as bilateral subsegmental pulmonary embolism",
+      "admissionType": "Emergency",
+      "department": "General Medicine",
+      "attendingDoctorId": "DOC-101",
+      "dischargeDisposition": "Discharged Home",
+      "primaryConditionId": "COND-202",
+      "dischargeSummaryId": "NOTE-206"
+    },
+    {
+      "id": "ADM-203",
+      "patientId": "P002",
+      "admissionDate": "2026-09-02T07:15:00Z",
+      "dischargeDate": "2026-09-06T13:30:00Z",
+      "reason": "Acute lower gastrointestinal bleeding (hematochezia) with hemoglobin drop while on therapeutic anticoagulation",
+      "admissionType": "Emergency",
+      "department": "General Medicine",
+      "attendingDoctorId": "DOC-101",
+      "dischargeDisposition": "Discharged Home",
+      "primaryConditionId": "COND-204",
+      "dischargeSummaryId": "NOTE-209"
+    }
+  ],
+  "encounters": [
+    {
+      "id": "ENC-201",
+      "patientId": "P002",
+      "admissionId": "ADM-201",
+      "type": "inpatient_admission",
+      "date": "2025-07-10T13:00:00Z",
+      "department": "General Medicine",
+      "doctorId": "DOC-101",
+      "reason": "Admission for right leg acute DVT anticoagulation initiation"
+    },
+    {
+      "id": "ENC-202",
+      "patientId": "P002",
+      "type": "outpatient_clinic",
+      "date": "2025-08-22T10:00:00Z",
+      "department": "Anticoagulation Clinic",
+      "doctorId": "DOC-101",
+      "reason": "Labile INR monitoring and Warfarin dosage adjustment"
+    },
+    {
+      "id": "ENC-203",
+      "patientId": "P002",
+      "admissionId": "ADM-202",
+      "type": "inpatient_admission",
+      "date": "2026-01-14T09:20:00Z",
+      "department": "General Medicine",
+      "doctorId": "DOC-101",
+      "reason": "Emergency admission for bilateral pulmonary embolism on Warfarin"
+    },
+    {
+      "id": "ENC-204",
+      "patientId": "P002",
+      "type": "outpatient_clinic",
+      "date": "2026-03-30T15:00:00Z",
+      "department": "Primary Care",
+      "doctorId": "DOC-101",
+      "reason": "Follow-up on Apixaban therapy and glycemic control"
+    },
+    {
+      "id": "ENC-205",
+      "patientId": "P002",
+      "admissionId": "ADM-203",
+      "type": "inpatient_admission",
+      "date": "2026-09-02T07:15:00Z",
+      "department": "General Medicine",
+      "doctorId": "DOC-101",
+      "reason": "Admission for hematochezia and acute drop in hemoglobin"
+    }
+  ],
+  "prescriptions": [
+    {
+      "id": "RX-201",
+      "patientId": "P002",
+      "encounterId": "ENC-201",
+      "admissionId": "ADM-201",
+      "medicationId": "MED-WARFARIN",
+      "dosage": "5 mg",
+      "frequency": "Once Daily",
+      "route": "Oral",
+      "startDate": "2025-07-12",
+      "endDate": "2026-01-14",
+      "status": "Discontinued",
+      "action": "Initiated",
+      "reason": "Anticoagulation for acute popliteal DVT with target INR 2.0 - 3.0",
+      "sourceRecordId": "NOTE-202"
+    },
+    {
+      "id": "RX-202",
+      "patientId": "P002",
+      "encounterId": "ENC-201",
+      "admissionId": "ADM-201",
+      "medicationId": "MED-METFORMIN",
+      "dosage": "1000 mg",
+      "frequency": "Twice Daily",
+      "route": "Oral",
+      "startDate": "2025-07-10",
+      "status": "Active",
+      "action": "Maintained",
+      "reason": "Type 2 Diabetes glycemic control",
+      "sourceRecordId": "NOTE-201"
+    },
+    {
+      "id": "RX-203",
+      "patientId": "P002",
+      "encounterId": "ENC-203",
+      "admissionId": "ADM-202",
+      "medicationId": "MED-WARFARIN",
+      "dosage": "5 mg",
+      "frequency": "Once Daily",
+      "route": "Oral",
+      "startDate": "2025-07-12",
+      "endDate": "2026-01-14",
+      "status": "Discontinued",
+      "action": "Discontinued",
+      "reason": "Warfarin failure evidenced by breakthrough pulmonary embolism and erratic INR control",
+      "sourceRecordId": "NOTE-205"
+    },
+    {
+      "id": "RX-204",
+      "patientId": "P002",
+      "encounterId": "ENC-203",
+      "admissionId": "ADM-202",
+      "medicationId": "MED-ELIQUIS",
+      "dosage": "10 mg",
+      "frequency": "Twice Daily x 7 days, then 5 mg BID",
+      "route": "Oral",
+      "startDate": "2026-01-14",
+      "endDate": "2026-09-02",
+      "status": "Adjusted",
+      "action": "Initiated",
+      "reason": "Direct Factor Xa inhibitor initiated for acute treatment and secondary prevention of pulmonary embolism",
+      "sourceRecordId": "NOTE-205"
+    },
+    {
+      "id": "RX-205",
+      "patientId": "P002",
+      "encounterId": "ENC-205",
+      "admissionId": "ADM-203",
+      "medicationId": "MED-ELIQUIS",
+      "dosage": "2.5 mg",
+      "frequency": "Twice Daily",
+      "route": "Oral",
+      "startDate": "2026-09-05",
+      "status": "Active",
+      "action": "Dose Decreased",
+      "reason": "Resumed at reduced dose following lower GI bleed stabilization and colonoscopy hemostasis",
+      "sourceRecordId": "NOTE-209"
+    }
+  ],
+  "labResults": [
+    {
+      "id": "LAB-201",
+      "patientId": "P002",
+      "encounterId": "ENC-201",
+      "testId": "TEST-INR",
+      "date": "2025-07-10T13:45:00Z",
+      "value": 1,
+      "unit": "ratio",
+      "flag": "Normal",
+      "sourceRecordId": "NOTE-201"
+    },
+    {
+      "id": "LAB-202",
+      "patientId": "P002",
+      "encounterId": "ENC-201",
+      "testId": "TEST-PLT",
+      "date": "2025-07-10T13:45:00Z",
+      "value": 240,
+      "unit": "x10^9/L",
+      "flag": "Normal",
+      "sourceRecordId": "NOTE-201"
+    },
+    {
+      "id": "LAB-203",
+      "patientId": "P002",
+      "encounterId": "ENC-201",
+      "testId": "TEST-INR",
+      "date": "2025-07-15T09:00:00Z",
+      "value": 2.1,
+      "unit": "ratio",
+      "flag": "Normal",
+      "sourceRecordId": "NOTE-203"
+    },
+    {
+      "id": "LAB-204",
+      "patientId": "P002",
+      "encounterId": "ENC-202",
+      "testId": "TEST-INR",
+      "date": "2025-08-22T10:30:00Z",
+      "value": 1.4,
+      "unit": "ratio",
+      "flag": "Low",
+      "sourceRecordId": "NOTE-204"
+    },
+    {
+      "id": "LAB-205",
+      "patientId": "P002",
+      "encounterId": "ENC-203",
+      "testId": "TEST-INR",
+      "date": "2026-01-14T10:00:00Z",
+      "value": 2.8,
+      "unit": "ratio",
+      "flag": "High",
+      "sourceRecordId": "NOTE-205",
+      "notes": "Electronic lab analyzer output shows INR 2.8; however attending physician chart note NOTE-205 explicitly documents INR as 1.5."
+    },
+    {
+      "id": "LAB-206",
+      "patientId": "P002",
+      "encounterId": "ENC-203",
+      "testId": "TEST-CREAT",
+      "date": "2026-01-14T10:00:00Z",
+      "value": 1.5,
+      "unit": "mg/dL",
+      "flag": "High",
+      "sourceRecordId": "NOTE-205"
+    },
+    {
+      "id": "LAB-207",
+      "patientId": "P002",
+      "encounterId": "ENC-204",
+      "testId": "TEST-HBA1C",
+      "date": "2026-03-30T15:20:00Z",
+      "value": 7.8,
+      "unit": "%",
+      "flag": "High",
+      "sourceRecordId": "NOTE-207"
+    },
+    {
+      "id": "LAB-208",
+      "patientId": "P002",
+      "encounterId": "ENC-205",
+      "testId": "TEST-HGB",
+      "date": "2026-09-02T08:00:00Z",
+      "value": 8.4,
+      "unit": "g/dL",
+      "flag": "Critical Low",
+      "sourceRecordId": "NOTE-208"
+    },
+    {
+      "id": "LAB-209",
+      "patientId": "P002",
+      "encounterId": "ENC-205",
+      "testId": "TEST-HGB",
+      "date": "2026-09-05T10:00:00Z",
+      "value": 10.1,
+      "unit": "g/dL",
+      "flag": "Low",
+      "sourceRecordId": "NOTE-209"
+    }
+  ],
+  "clinicalNotes": [
+    {
+      "id": "NOTE-201",
+      "patientId": "P002",
+      "encounterId": "ENC-201",
+      "admissionId": "ADM-201",
+      "timestamp": "2025-07-10T14:30:00Z",
+      "noteType": "Admission Note",
+      "title": "Emergency H&P: Acute Popliteal DVT",
+      "authorId": "DOC-101",
+      "text": "Rajesh Sharma is a 54-year-old male presenting with painful swelling of the right calf and popliteal fossa following a 14-hour international flight.\nVenous Doppler ultrasound confirms extensive occlusive thrombus in the right popliteal and posterior tibial veins.\nBaseline labs: INR 1.0, Platelets 240k.\nStarted on Enoxaparin 1 mg/kg BID bridge and Warfarin 5 mg daily.",
+      "sourceRecordId": "REC-P002-001"
+    },
+    {
+      "id": "NOTE-202",
+      "patientId": "P002",
+      "encounterId": "ENC-201",
+      "admissionId": "ADM-201",
+      "timestamp": "2025-07-12T10:00:00Z",
+      "noteType": "Progress Note",
+      "title": "Inpatient Medicine Progress Note",
+      "authorId": "DOC-101",
+      "text": "Patient ambulatory with compression stockings. Warfarin dose maintained at 5 mg daily. INR today is 1.4. Continuing Lovenox bridging.",
+      "sourceRecordId": "REC-P002-002"
+    },
+    {
+      "id": "NOTE-203",
+      "patientId": "P002",
+      "encounterId": "ENC-201",
+      "admissionId": "ADM-201",
+      "timestamp": "2025-07-15T10:30:00Z",
+      "noteType": "Discharge Summary",
+      "title": "Discharge Summary - ADM-201 DVT Initiation",
+      "authorId": "DOC-101",
+      "text": "Patient discharged with INR 2.1. Lovenox discontinued. Instructions provided for weekly INR monitoring at Anticoagulation Clinic. Maintain Warfarin 5 mg daily.",
+      "sourceRecordId": "REC-P002-003"
+    },
+    {
+      "id": "NOTE-204",
+      "patientId": "P002",
+      "encounterId": "ENC-202",
+      "timestamp": "2025-08-22T11:00:00Z",
+      "noteType": "Consultation Note",
+      "title": "Anticoagulation Clinic Note: Subtherapeutic INR",
+      "authorId": "DOC-101",
+      "text": "INR check today reveals subtherapeutic result: 1.4. Patient reports missing two doses last week due to work travel and increased dietary vitamin K (green salads).\nWarfarin dose adjusted to 7.5 mg on Mondays/Thursdays, 5 mg other days. Recheck INR in 10 days.",
+      "sourceRecordId": "REC-P002-004"
+    },
+    {
+      "id": "NOTE-205",
+      "patientId": "P002",
+      "encounterId": "ENC-203",
+      "admissionId": "ADM-202",
+      "timestamp": "2026-01-14T11:00:00Z",
+      "noteType": "Admission Note",
+      "title": "H&P: Bilateral Pulmonary Embolism & Warfarin Failure",
+      "authorId": "DOC-101",
+      "text": "CLINICAL EVALUATION:\nPatient presents with sudden-onset sharp right-sided pleuritic chest pain and shortness of breath.\nCT Pulmonary Angiogram shows bilateral subsegmental pulmonary emboli.\nCONTRADICTION IN RECORD:\nAttending Physician Dr. House writes: \"Patient has suffered recurrent venous thromboembolism while supposedly on anticoagulation. Laboratory testing shows INR is critically subtherapeutic at 1.5, demonstrating failure and unreliability of Warfarin therapy.\"\n(NOTE: Electronic Laboratory result LAB-205 from the exact same morning shows INR 2.8!).\nPLAN:\nPermanently discontinue Warfarin. Switch to Direct Oral Anticoagulant: Apixaban (Eliquis) 10 mg BID x 7 days followed by 5 mg BID maintenance. Metformin held temporarily due to iodinated CT contrast exposure.",
+      "sourceRecordId": "REC-P002-005",
+      "isContradictoryOrMissing": true,
+      "metaAnnotation": "Severe contradiction: Physician writes INR is 1.5, but official lab LAB-205 reports INR 2.8."
+    },
+    {
+      "id": "NOTE-206",
+      "patientId": "P002",
+      "encounterId": "ENC-203",
+      "admissionId": "ADM-202",
+      "timestamp": "2026-01-18T14:00:00Z",
+      "noteType": "Discharge Summary",
+      "title": "Discharge Summary - ADM-202 Switch to Apixaban",
+      "authorId": "DOC-101",
+      "text": "Patient chest pain fully resolved. Oxygen saturation 98% room air.\nDischarged on Apixaban 5 mg BID (following 7-day loading phase).\nWarfarin discontinued. Metformin resumed at 1000 mg BID as creatinine normalized to 1.1 mg/dL.",
+      "sourceRecordId": "REC-P002-006"
+    },
+    {
+      "id": "NOTE-207",
+      "patientId": "P002",
+      "encounterId": "ENC-204",
+      "timestamp": "2026-03-30T15:30:00Z",
+      "noteType": "Progress Note",
+      "title": "Outpatient Follow-Up: Apixaban Tolerance",
+      "authorId": "DOC-101",
+      "text": "Patient reports excellent compliance with Apixaban 5 mg BID. No recurrent leg swelling or dyspnea. No bruising or bleeding noted. HbA1c 7.8%.",
+      "sourceRecordId": "REC-P002-007"
+    },
+    {
+      "id": "NOTE-208",
+      "patientId": "P002",
+      "encounterId": "ENC-205",
+      "admissionId": "ADM-203",
+      "timestamp": "2026-09-02T09:00:00Z",
+      "noteType": "Admission Note",
+      "title": "H&P: Lower GI Bleed on Apixaban",
+      "authorId": "DOC-101",
+      "text": "Patient woke with lightheadedness and passed two large maroon stools with clots (hematochezia).\nAdmission Hemoglobin: 8.4 g/dL (down from baseline 14.2 g/dL).\nApixaban immediately held. Transfused 1 unit packed red blood cells. Urgent gastroenterology consult requested.",
+      "sourceRecordId": "REC-P002-008"
+    },
+    {
+      "id": "NOTE-209",
+      "patientId": "P002",
+      "encounterId": "ENC-205",
+      "admissionId": "ADM-203",
+      "timestamp": "2026-09-06T12:00:00Z",
+      "noteType": "Discharge Summary",
+      "title": "Discharge Summary - ADM-203 Bleed Resolution",
+      "authorId": "DOC-101",
+      "text": "Colonoscopy revealed diverticular hemorrhage in sigmoid colon, successfully treated with endoscopic hemoclips. Hemoglobin stable at 10.1 g/dL without further transfusion.\nGiven unprovoked PE history 8 months ago, anticoagulation cannot be completely stopped. Multi-disciplinary team consensus decided to resume Apixaban at a reduced dose of 2.5 mg BID with close monitoring.",
+      "sourceRecordId": "REC-P002-009",
+      "metaAnnotation": "Explains dose reduction of Apixaban from 5mg BID to 2.5mg BID."
+    }
+  ]
+}

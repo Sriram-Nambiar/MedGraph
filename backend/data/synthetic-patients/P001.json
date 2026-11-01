@@ -1,0 +1,190 @@
+{
+  "patient": {
+    "id": "P001",
+    "mrn": "MRN-847291",
+    "name": "Lakshmi Sundaram",
+    "age": 68,
+    "gender": "Female",
+    "dateOfBirth": "1958-04-12",
+    "bloodType": "A+",
+    "primaryDiagnosis": "Systolic Heart Failure (HFrEF) & Severe Plaque Psoriasis",
+    "allergies": [
+      "Penicillin (Rash)"
+    ]
+  },
+  "conditions": [
+    {
+      "id": "COND-101",
+      "patientId": "P001",
+      "code": "I50.22",
+      "name": "Chronic systolic heart failure (HFrEF, EF 32%)",
+      "category": "Cardiovascular",
+      "status": "Chronic",
+      "onsetDate": "2023-03-15"
+    },
+    {
+      "id": "COND-102",
+      "patientId": "P001",
+      "code": "L40.0",
+      "name": "Severe plaque psoriasis",
+      "category": "Dermatology",
+      "status": "Active",
+      "onsetDate": "2022-07-10"
+    },
+    {
+      "id": "COND-103",
+      "patientId": "P001",
+      "code": "I10",
+      "name": "Essential hypertension",
+      "category": "Cardiovascular",
+      "status": "Active",
+      "onsetDate": "2015-06-20"
+    }
+  ],
+  "admissions": [
+    {
+      "id": "ADM-101",
+      "patientId": "P001",
+      "admissionDate": "2025-09-12T08:30:00Z",
+      "dischargeDate": "2025-09-16T14:00:00Z",
+      "reason": "Cardiology admission for acute heart failure decompensation & hyperkalemia",
+      "admissionType": "Emergency",
+      "department": "Cardiovascular Care",
+      "attendingDoctorId": "DOC-102",
+      "dischargeDisposition": "Discharged Home",
+      "primaryConditionId": "COND-101",
+      "dischargeSummaryId": "NOTE-101"
+    }
+  ],
+  "encounters": [
+    {
+      "id": "ENC-101",
+      "patientId": "P001",
+      "admissionId": "ADM-101",
+      "type": "inpatient_admission",
+      "date": "2025-09-12T08:30:00Z",
+      "department": "Cardiovascular Care",
+      "doctorId": "DOC-102",
+      "reason": "Cardiologist visit: Inpatient heart failure management & ACE-inhibitor washout"
+    },
+    {
+      "id": "ENC-102",
+      "patientId": "P001",
+      "type": "outpatient_clinic",
+      "date": "2025-11-20T14:00:00Z",
+      "department": "Dermatology Clinic",
+      "doctorId": "DOC-109",
+      "reason": "Dermatologist visit: Outpatient evaluation and topical therapy for severe plaque psoriasis"
+    }
+  ],
+  "prescriptions": [
+    {
+      "id": "RX-101",
+      "patientId": "P001",
+      "encounterId": "ENC-101",
+      "admissionId": "ADM-101",
+      "medicationId": "MED-LISINOPRIL",
+      "dosage": "20 mg",
+      "frequency": "Once Daily",
+      "route": "Oral",
+      "startDate": "2025-08-15",
+      "endDate": "2025-09-13",
+      "status": "Discontinued",
+      "action": "Discontinued",
+      "reason": "Discontinued by Cardiologist due to severe acute hyperkalemia (K 5.7 mEq/L)",
+      "sourceRecordId": "NOTE-101"
+    },
+    {
+      "id": "RX-102",
+      "patientId": "P001",
+      "encounterId": "ENC-101",
+      "admissionId": "ADM-101",
+      "medicationId": "MED-ENTRESTO",
+      "dosage": "24/26 mg",
+      "frequency": "Twice Daily",
+      "route": "Oral",
+      "startDate": "2025-09-15",
+      "status": "Active",
+      "action": "Initiated",
+      "reason": "Initiated by Cardiologist following 36-hour washout for HFrEF guideline therapy",
+      "sourceRecordId": "NOTE-101"
+    },
+    {
+      "id": "RX-103",
+      "patientId": "P001",
+      "encounterId": "ENC-102",
+      "medicationId": "MED-CLOBETASOL",
+      "dosage": "0.05% cream",
+      "frequency": "Twice Daily",
+      "route": "Topical",
+      "startDate": "2025-11-20",
+      "status": "Active",
+      "action": "Initiated",
+      "reason": "Prescribed by Dermatologist for plaque psoriasis over extensor elbows & knees",
+      "sourceRecordId": "NOTE-102"
+    }
+  ],
+  "labResults": [
+    {
+      "id": "LAB-101",
+      "patientId": "P001",
+      "encounterId": "ENC-101",
+      "testId": "TEST-K",
+      "date": "2025-09-13T09:00:00Z",
+      "value": 5.7,
+      "unit": "mEq/L",
+      "flag": "Critical High",
+      "sourceRecordId": "NOTE-101",
+      "notes": "Critical hyperkalemia prompting Lisinopril discontinuation"
+    },
+    {
+      "id": "LAB-102",
+      "patientId": "P001",
+      "encounterId": "ENC-101",
+      "testId": "TEST-CREAT",
+      "date": "2025-09-13T09:00:00Z",
+      "value": 2.1,
+      "unit": "mg/dL",
+      "flag": "High",
+      "sourceRecordId": "NOTE-101",
+      "notes": "Acute creatinine elevation reflecting acute renal injury"
+    },
+    {
+      "id": "LAB-103",
+      "patientId": "P001",
+      "encounterId": "ENC-101",
+      "testId": "TEST-BNP",
+      "date": "2025-09-12T09:30:00Z",
+      "value": 1250,
+      "unit": "pg/mL",
+      "flag": "Critical High",
+      "sourceRecordId": "NOTE-101",
+      "notes": "Markedly elevated BNP confirming acute systolic heart failure decompensation"
+    }
+  ],
+  "clinicalNotes": [
+    {
+      "id": "NOTE-101",
+      "patientId": "P001",
+      "encounterId": "ENC-101",
+      "admissionId": "ADM-101",
+      "timestamp": "2025-09-15T14:00:00Z",
+      "noteType": "Discharge Summary",
+      "title": "Cardiology Summary: Acute Heart Failure & ACE-Inhibitor Washout",
+      "authorId": "DOC-102",
+      "text": "Cardiology Inpatient Summary: Patient Lakshmi Sundaram admitted for acute decompensated heart failure (EF 32%) complicated by severe hyperkalemia (Potassium 5.7 mEq/L) on Lisinopril 20 mg. Lisinopril was abruptly discontinued. Following aggressive potassium normalization and a 36-hour washout period, initiated Sacubitril/Valsartan (Entresto) 24/26 mg BID. Condition stable at discharge.",
+      "sourceRecordId": "REC-P001-001"
+    },
+    {
+      "id": "NOTE-102",
+      "patientId": "P001",
+      "encounterId": "ENC-102",
+      "timestamp": "2025-11-20T14:30:00Z",
+      "noteType": "Consultation Note",
+      "title": "Dermatology Clinic: Plaque Psoriasis Assessment",
+      "authorId": "DOC-109",
+      "text": "Dermatology Clinic Outpatient Note: Patient Lakshmi Sundaram evaluated by Dr. Maya Lin for extensive silvery erythematous plaques over bilateral elbows and knees consistent with plaque psoriasis. Prescribed Clobetasol Propionate 0.05% topical cream twice daily. Patient instructed on proper topical application and monitoring for skin atrophy.",
+      "sourceRecordId": "REC-P001-002"
+    }
+  ]
+}

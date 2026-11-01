@@ -1,0 +1,338 @@
+{
+  "patient": {
+    "id": "P004",
+    "mrn": "MRN-204918",
+    "name": "Ramesh Patel",
+    "age": 71,
+    "gender": "Male",
+    "dateOfBirth": "1955-01-19",
+    "bloodType": "AB+",
+    "primaryDiagnosis": "Severe COPD (GOLD 3) with Drug-Induced Amiodarone Thyrotoxicosis",
+    "allergies": [
+      "Codeine (Nausea/Vomiting)"
+    ]
+  },
+  "conditions": [
+    {
+      "id": "COND-401",
+      "patientId": "P004",
+      "code": "J44.1",
+      "name": "Chronic obstructive pulmonary disease with acute exacerbation",
+      "category": "Respiratory",
+      "status": "Recurrent",
+      "onsetDate": "2020-04-10"
+    },
+    {
+      "id": "COND-402",
+      "patientId": "P004",
+      "code": "I48.91",
+      "name": "Unspecified atrial fibrillation with rapid ventricular response",
+      "category": "Cardiovascular",
+      "status": "Active",
+      "onsetDate": "2025-06-20"
+    },
+    {
+      "id": "COND-403",
+      "patientId": "P004",
+      "code": "E05.90",
+      "name": "Amiodarone-induced thyrotoxicosis (Type 2)",
+      "category": "Endocrine",
+      "status": "Active",
+      "onsetDate": "2026-03-08"
+    }
+  ],
+  "admissions": [
+    {
+      "id": "ADM-401",
+      "patientId": "P004",
+      "admissionDate": "2025-06-20T06:45:00Z",
+      "dischargeDate": "2025-06-25T14:30:00Z",
+      "reason": "Severe acute exacerbation of COPD with new onset atrial fibrillation and rapid ventricular response",
+      "admissionType": "Emergency",
+      "department": "Cardiovascular Care",
+      "attendingDoctorId": "DOC-102",
+      "dischargeDisposition": "Discharged Home",
+      "primaryConditionId": "COND-401"
+    },
+    {
+      "id": "ADM-402",
+      "patientId": "P004",
+      "admissionDate": "2026-03-10T08:00:00Z",
+      "dischargeDate": "2026-03-15T15:15:00Z",
+      "reason": "Palpitations, marked tremor, weight loss, and recurrent atrial fibrillation found to be Amiodarone-induced thyrotoxicosis",
+      "admissionType": "Emergency",
+      "department": "Endocrinology & Metabolism",
+      "attendingDoctorId": "DOC-108",
+      "dischargeDisposition": "Discharged Home",
+      "primaryConditionId": "COND-403",
+      "dischargeSummaryId": "NOTE-406"
+    }
+  ],
+  "encounters": [
+    {
+      "id": "ENC-401",
+      "patientId": "P004",
+      "admissionId": "ADM-401",
+      "type": "inpatient_admission",
+      "date": "2025-06-20T06:45:00Z",
+      "department": "Cardiovascular Care",
+      "doctorId": "DOC-102",
+      "reason": "Admission for acute COPD exacerbation and AF with rapid ventricular rate"
+    },
+    {
+      "id": "ENC-402",
+      "patientId": "P004",
+      "type": "outpatient_clinic",
+      "date": "2025-11-12T10:15:00Z",
+      "department": "Pulmonology Outpatient",
+      "doctorId": "DOC-101",
+      "reason": "Pulmonary function test and inhaler therapy escalation"
+    },
+    {
+      "id": "ENC-403",
+      "patientId": "P004",
+      "admissionId": "ADM-402",
+      "type": "inpatient_admission",
+      "date": "2026-03-10T08:00:00Z",
+      "department": "Endocrinology & Metabolism",
+      "doctorId": "DOC-108",
+      "reason": "Admission for thyroid storm / severe thyrotoxicosis"
+    },
+    {
+      "id": "ENC-404",
+      "patientId": "P004",
+      "type": "specialist_consult",
+      "date": "2026-07-22T14:00:00Z",
+      "department": "Endocrinology Outpatient",
+      "doctorId": "DOC-108",
+      "reason": "Evaluation of thyroid function post-amiodarone cessation"
+    }
+  ],
+  "prescriptions": [
+    {
+      "id": "RX-401",
+      "patientId": "P004",
+      "encounterId": "ENC-401",
+      "admissionId": "ADM-401",
+      "medicationId": "MED-SPIRIVA",
+      "dosage": "18 mcg",
+      "frequency": "Once Daily",
+      "route": "Inhalation",
+      "startDate": "2023-08-10",
+      "endDate": "2025-11-12",
+      "status": "Discontinued",
+      "action": "Maintained",
+      "reason": "Maintenance bronchodilation for severe COPD",
+      "sourceRecordId": "NOTE-401"
+    },
+    {
+      "id": "RX-402",
+      "patientId": "P004",
+      "encounterId": "ENC-401",
+      "admissionId": "ADM-401",
+      "medicationId": "MED-AMIODARONE",
+      "dosage": "200 mg",
+      "frequency": "Once Daily",
+      "route": "Oral",
+      "startDate": "2025-06-22",
+      "endDate": "2026-03-11",
+      "status": "Discontinued",
+      "action": "Initiated",
+      "reason": "Rhythm and rate control for acute new onset atrial fibrillation with RVR in presence of structural lung disease",
+      "sourceRecordId": "NOTE-402"
+    },
+    {
+      "id": "RX-403",
+      "patientId": "P004",
+      "encounterId": "ENC-402",
+      "medicationId": "MED-TRELEGY",
+      "dosage": "100/62.5/25 mcg",
+      "frequency": "Once Daily",
+      "route": "Inhalation",
+      "startDate": "2025-11-12",
+      "status": "Active",
+      "action": "Initiated",
+      "reason": "Escalated to triple inhaler therapy (ICS/LAMA/LABA) due to recurrent severe COPD hospital admissions",
+      "sourceRecordId": "NOTE-403"
+    },
+    {
+      "id": "RX-404",
+      "patientId": "P004",
+      "encounterId": "ENC-403",
+      "admissionId": "ADM-402",
+      "medicationId": "MED-AMIODARONE",
+      "dosage": "200 mg",
+      "frequency": "Once Daily",
+      "route": "Oral",
+      "startDate": "2025-06-22",
+      "endDate": "2026-03-11",
+      "status": "Discontinued",
+      "action": "Discontinued",
+      "reason": "Urgently discontinued secondary to documented severe Amiodarone-Induced Thyrotoxicosis (TSH < 0.01)",
+      "sourceRecordId": "NOTE-405"
+    },
+    {
+      "id": "RX-405",
+      "patientId": "P004",
+      "encounterId": "ENC-403",
+      "admissionId": "ADM-402",
+      "medicationId": "MED-METOPROLOL",
+      "dosage": "50 mg",
+      "frequency": "Once Daily",
+      "route": "Oral",
+      "startDate": "2026-03-11",
+      "status": "Active",
+      "action": "Initiated",
+      "reason": "Rate control for atrial fibrillation replacing amiodarone, titrated cautiously for airway safety",
+      "sourceRecordId": "NOTE-405"
+    }
+  ],
+  "labResults": [
+    {
+      "id": "LAB-401",
+      "patientId": "P004",
+      "encounterId": "ENC-401",
+      "testId": "TEST-TSH",
+      "date": "2025-06-20T07:30:00Z",
+      "value": 2.4,
+      "unit": "uIU/mL",
+      "flag": "Normal",
+      "sourceRecordId": "NOTE-401"
+    },
+    {
+      "id": "LAB-402",
+      "patientId": "P004",
+      "encounterId": "ENC-401",
+      "testId": "TEST-TROP",
+      "date": "2025-06-20T07:30:00Z",
+      "value": 8,
+      "unit": "ng/L",
+      "flag": "Normal",
+      "sourceRecordId": "NOTE-401"
+    },
+    {
+      "id": "LAB-403",
+      "patientId": "P004",
+      "encounterId": "ENC-403",
+      "testId": "TEST-TSH",
+      "date": "2026-03-10T09:00:00Z",
+      "value": 0.01,
+      "unit": "uIU/mL",
+      "flag": "Critical Low",
+      "sourceRecordId": "NOTE-404"
+    },
+    {
+      "id": "LAB-404",
+      "patientId": "P004",
+      "encounterId": "ENC-403",
+      "testId": "TEST-FT4",
+      "date": "2026-03-10T09:00:00Z",
+      "value": 3.8,
+      "unit": "ng/dL",
+      "flag": "Critical High",
+      "sourceRecordId": "NOTE-404"
+    },
+    {
+      "id": "LAB-405",
+      "patientId": "P004",
+      "encounterId": "ENC-404",
+      "testId": "TEST-TSH",
+      "date": "2026-07-22T14:30:00Z",
+      "value": 0.85,
+      "unit": "uIU/mL",
+      "flag": "Normal",
+      "sourceRecordId": "NOTE-407"
+    }
+  ],
+  "clinicalNotes": [
+    {
+      "id": "NOTE-401",
+      "patientId": "P004",
+      "encounterId": "ENC-401",
+      "admissionId": "ADM-401",
+      "timestamp": "2025-06-20T08:00:00Z",
+      "noteType": "Admission Note",
+      "title": "H&P: Acute COPD Exacerbation & New Atrial Fibrillation",
+      "authorId": "DOC-102",
+      "text": "71-year-old male with severe COPD on Spiriva who presents with severe wheezing and productive cough.\nCONTRADICTION IN SOCIAL HISTORY:\nIntake record states: \"Patient has an active 45 pack-year smoking history, currently smoking 0.5 packs per day.\"\nECG demonstrates rapid atrial fibrillation with heart rate 145 bpm.\nBaseline TSH is normal at 2.4 uIU/mL.\nStarted on IV Solu-Medrol, Duonebs, and oral Amiodarone 200 mg daily for rate and rhythm control.",
+      "sourceRecordId": "REC-P004-001",
+      "isContradictoryOrMissing": true,
+      "metaAnnotation": "Documents active smoking history (contradicts later note NOTE-405). Baseline normal TSH."
+    },
+    {
+      "id": "NOTE-402",
+      "patientId": "P004",
+      "encounterId": "ENC-401",
+      "admissionId": "ADM-401",
+      "timestamp": "2025-06-23T10:00:00Z",
+      "noteType": "Progress Note",
+      "title": "Cardiology Progress Note: Amiodarone Rhythm Control",
+      "authorId": "DOC-102",
+      "text": "Patient converted to sinus rhythm with rate 78 bpm on Amiodarone 200 mg daily. Wheezing markedly improved.\nMISSING SUMMARY: Note mentions patient will be discharged on June 25, 2025; however NO DISCHARGE SUMMARY was ever filed for this admission (ADM-401).",
+      "sourceRecordId": "REC-P004-002",
+      "isContradictoryOrMissing": true,
+      "metaAnnotation": "Missing document: ADM-401 has no filed discharge summary."
+    },
+    {
+      "id": "NOTE-403",
+      "patientId": "P004",
+      "encounterId": "ENC-402",
+      "timestamp": "2025-11-12T11:00:00Z",
+      "noteType": "Consultation Note",
+      "title": "Pulmonology Outpatient Visit: Inhaler Step-Up",
+      "authorId": "DOC-101",
+      "text": "Spirometry demonstrates persistent severe obstruction (FEV1 44% predicted). Given two exacerbations in the past 12 months, Spiriva monotherapy is insufficient.\nDiscontinuing Spiriva. Starting triple therapy with Trelegy Ellipta (Fluticasone furoate/Umeclidinium/Vilanterol) 100/62.5/25 mcg once daily. Continue Amiodarone as prescribed by cardiology.",
+      "sourceRecordId": "REC-P004-003",
+      "metaAnnotation": "Explains medication change from Spiriva to Trelegy Ellipta."
+    },
+    {
+      "id": "NOTE-404",
+      "patientId": "P004",
+      "encounterId": "ENC-403",
+      "admissionId": "ADM-402",
+      "timestamp": "2026-03-10T10:00:00Z",
+      "noteType": "Admission Note",
+      "title": "Emergency H&P: Severe Thyrotoxicosis / Thyroid Storm",
+      "authorId": "DOC-108",
+      "text": "Patient admitted with severe heat intolerance, fine bilateral hand tremor, 15 lb unintentional weight loss, and palpitations with recurrent rapid atrial fibrillation (HR 138 bpm).\nEndocrine labs:\n- TSH: < 0.01 uIU/mL (severely suppressed, down from baseline 2.4)\n- Free T4: 3.8 ng/dL (markedly elevated)\nDiagnosis: Amiodarone-Induced Thyrotoxicosis (AIT), likely Type 2 destructive thyroiditis from chronic iodine load of Amiodarone therapy.",
+      "sourceRecordId": "REC-P004-004"
+    },
+    {
+      "id": "NOTE-405",
+      "patientId": "P004",
+      "encounterId": "ENC-403",
+      "admissionId": "ADM-402",
+      "timestamp": "2026-03-12T14:00:00Z",
+      "noteType": "Progress Note",
+      "title": "Endocrinology & Cardiology Progress Note: Medication Reversal",
+      "authorId": "DOC-108",
+      "text": "CONTRADICTION IN SOCIAL HISTORY:\nChart note states: \"Patient is a lifelong non-smoker for over 20 years.\" (Directly contradicts NOTE-401 documenting active smoking).\nMEDICATION CHANGES:\n1. Amiodarone is STOPPED IMMEDIATELY. It is contraindicated in active destructive thyroiditis.\n2. Initiated Metoprolol Succinate 50 mg daily for rate control.\n3. Started oral Prednisone 40 mg daily for treatment of Type 2 AIT.",
+      "sourceRecordId": "REC-P004-005",
+      "isContradictoryOrMissing": true,
+      "metaAnnotation": "Contradiction in smoking history. Documents Amiodarone discontinuation and switch to Metoprolol."
+    },
+    {
+      "id": "NOTE-406",
+      "patientId": "P004",
+      "encounterId": "ENC-403",
+      "admissionId": "ADM-402",
+      "timestamp": "2026-03-15T14:30:00Z",
+      "noteType": "Discharge Summary",
+      "title": "Discharge Summary - ADM-402 Thyrotoxicosis",
+      "authorId": "DOC-108",
+      "text": "Tremor improved, resting heart rate controlled at 76 bpm on Metoprolol 50 mg daily.\nAmiodarone is permanently added to patient's allergy/intolerance list.\nContinue Prednisone taper over 6 weeks. Trelegy Ellipta continued for COPD.",
+      "sourceRecordId": "REC-P004-006"
+    },
+    {
+      "id": "NOTE-407",
+      "patientId": "P004",
+      "encounterId": "ENC-404",
+      "timestamp": "2026-07-22T15:00:00Z",
+      "noteType": "Consultation Note",
+      "title": "Endocrinology Follow-Up: Thyrotoxicosis Resolution",
+      "authorId": "DOC-108",
+      "text": "TSH has normalized to 0.85 uIU/mL. Free T4 is 1.1 ng/dL. Patient is off steroids. Metoprolol maintains rate control in sinus rhythm.",
+      "sourceRecordId": "REC-P004-007"
+    }
+  ]
+}

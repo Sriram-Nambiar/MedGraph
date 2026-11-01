@@ -6,10 +6,23 @@ import { timelineService } from '../services/timeline-service.js';
 import { inMemoryGraph } from '../graph/in-memory-graph.js';
 import { Patient } from '../schemas/types.js';
 
+function getSyntheticDataDir(): string {
+  const candidates = [
+    path.resolve(process.cwd(), '../data/synthetic-patients'),
+    path.resolve(process.cwd(), 'data/synthetic-patients'),
+    path.resolve(__dirname, '../../data/synthetic-patients'),
+    path.resolve(__dirname, '../../../data/synthetic-patients'),
+  ];
+  for (const c of candidates) {
+    if (fs.existsSync(c)) return c;
+  }
+  return candidates[0];
+}
+
 export class PatientController {
   public async getPatients(req: Request, res: Response): Promise<void> {
     try {
-      const dataDir = path.resolve(process.cwd(), '../data/synthetic-patients');
+      const dataDir = getSyntheticDataDir();
       const patientsFile = path.join(dataDir, 'patients.json');
 
       if (fs.existsSync(patientsFile)) {
@@ -39,7 +52,7 @@ export class PatientController {
       const node = inMemoryGraph.getNode(pId);
       if (!node || node.label !== 'Patient') {
         // Try file
-        const pFile = path.resolve(process.cwd(), `../data/synthetic-patients/${pId}.json`);
+        const pFile = path.join(getSyntheticDataDir(), `${pId}.json`);
         if (fs.existsSync(pFile)) {
           const data = JSON.parse(fs.readFileSync(pFile, 'utf-8'));
           res.json({ patient: data.patient, details: data });
