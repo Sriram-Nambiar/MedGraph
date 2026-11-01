@@ -11,13 +11,23 @@ services:
       - key: LLM_PROVIDER
         value: sarvam
       - key: SARVAM_API_KEY
-        sync: false
+        value: sk_ypad38lm_u5DC7pKbyEzuaqwe1vw3JCeF
       - key: SARVAM_MODEL
         value: sarvam-105b
       - key: SARVAM_BASE_URL
         value: https://api.sarvam.ai/v2
       - key: USE_MOCK_API
         value: "false"
+      - key: NEO4J_URI
+        value: neo4j+s://b708ea32.databases.neo4j.io
+      - key: NEO4J_USER
+        value: b708ea32
+      - key: NEO4J_USERNAME
+        value: b708ea32
+      - key: NEO4J_PASSWORD
+        value: IrC6SwejubhgkaDbkBzpXfOypE0TXB0gnZnCInhWm2c
+      - key: NEO4J_DATABASE
+        value: b708ea32
 
   # 2. Node.js Express Backend Service
   - type: web
@@ -35,13 +45,23 @@ services:
       - key: LLM_PROVIDER
         value: sarvam
       - key: SARVAM_API_KEY
-        sync: false
+        value: sk_ypad38lm_u5DC7pKbyEzuaqwe1vw3JCeF
       - key: SARVAM_MODEL
         value: sarvam-105b
       - key: SARVAM_STT_MODEL
         value: saaras:v4
       - key: SARVAM_TTS_MODEL
         value: bulbul:v4-flash
+      - key: NEO4J_URI
+        value: neo4j+s://b708ea32.databases.neo4j.io
+      - key: NEO4J_USER
+        value: b708ea32
+      - key: NEO4J_USERNAME
+        value: b708ea32
+      - key: NEO4J_PASSWORD
+        value: IrC6SwejubhgkaDbkBzpXfOypE0TXB0gnZnCInhWm2c
+      - key: NEO4J_DATABASE
+        value: b708ea32
       - key: USE_IN_MEMORY_FALLBACK
         value: "true"
       - key: AGENT_SERVICE_URL

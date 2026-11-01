@@ -26,7 +26,16 @@ export async function seedKnowledgeGraph(dataPath?: string): Promise<{
   notesLoaded: number;
   neo4jSynced: boolean;
 }> {
-  const dir = dataPath || path.resolve(process.cwd(), '../data/synthetic-patients');
+  const candidates = [
+    path.resolve(process.cwd(), 'data/synthetic-patients'),
+    path.resolve(process.cwd(), '../data/synthetic-patients'),
+    path.resolve(__dirname, '../../data/synthetic-patients'),
+  ];
+  let resolvedDir = dataPath || '';
+  if (!resolvedDir || !fs.existsSync(resolvedDir)) {
+    resolvedDir = candidates.find((c) => fs.existsSync(c)) || candidates[0];
+  }
+  const dir = resolvedDir;
 
   let dataset: {
     patients: Patient[];
