@@ -13,8 +13,25 @@ import {
   AuditLog,
 } from '../types';
 
-const rawBase = (import.meta.env.VITE_API_URL as string | undefined) || '';
-const API_BASE = rawBase ? (rawBase.endsWith('/api') ? rawBase : `${rawBase.replace(/\/$/, '')}/api`) : '/api';
+function resolveApiBase(): string {
+  let envUrl = (import.meta.env.VITE_API_URL as string | undefined)?.trim();
+  if (envUrl) {
+    if (!envUrl.startsWith('http://') && !envUrl.startsWith('https://') && !envUrl.startsWith('/')) {
+      envUrl = `https://${envUrl}`;
+    }
+    return envUrl.endsWith('/api') ? envUrl : `${envUrl.replace(/\/$/, '')}/api`;
+  }
+
+  // Automatic Render backend resolution when frontend is hosted on Render
+  if (typeof window !== 'undefined' && window.location.hostname.includes('onrender.com')) {
+    const backendHost = window.location.hostname.replace('medgraph-frontend', 'medgraph-backend');
+    return `https://${backendHost}/api`;
+  }
+
+  return '/api';
+}
+
+const API_BASE = resolveApiBase();
 
 export async function fetchHealth(): Promise<SystemHealth> {
   const res = await fetch(`${API_BASE}/health`);
@@ -101,8 +118,16 @@ export async function runInvestigation(
       requesting_hospital_id: requestingHospitalId,
     }),
   });
-  if (!res.ok) throw new Error(`Investigation failed: ${res.statusText}`);
-  return res.json();
+  if (!res.ok) {
+    const errorText = await res.text().catch(() => '');
+    throw new Error(`Investigation failed (${res.status} ${res.statusText}): ${errorText}`);
+  }
+  const text = await res.text();
+  try {
+    return JSON.parse(text);
+  } catch (parseErr: any) {
+    throw new Error(`Invalid response from server (${res.status}): ${text.substring(0, 200)}`);
+  }
 }
 
 export async function fetchNoteByRecordId(patientId: string, recordId: string): Promise<{ note: ClinicalNote }> {
