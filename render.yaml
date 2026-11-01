@@ -24,7 +24,7 @@ services:
     name: medgraph-backend
     runtime: node
     rootDir: backend
-    buildCommand: npm install && npm run build
+    buildCommand: npm install --include=dev && npm run build
     startCommand: npm start
     plan: free
     envVars:
@@ -49,14 +49,14 @@ services:
           type: web
           name: medgraph-agent
           property: host
-          value: "http://${host}/investigate"
+          value: "https://${host}/investigate"
 
   # 3. Static React Frontend
   - type: web
     name: medgraph-frontend
     runtime: static
     rootDir: frontend
-    buildCommand: npm install && npm run build
+    buildCommand: npm install --include=dev && npm run build
     staticPublishPath: dist
     routes:
       - type: rewrite
