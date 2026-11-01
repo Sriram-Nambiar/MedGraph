@@ -145,7 +145,7 @@ async function runTestSuite() {
   console.log('\n[Test 13: Consent Request Lifecycle]');
   const testReq = consentService.createRequest({
     patient_id: 'P003',
-    patient_name: 'Sarah Chen',
+    patient_name: 'Priya Nambiar',
     requesting_hospital_id: 'HOSP002',
     source_hospital_id: 'HOSP001',
     purpose: 'Neurology timeline verification',
@@ -160,7 +160,7 @@ async function runTestSuite() {
   // New Request + Approve flow
   const testReq2 = consentService.createRequest({
     patient_id: 'P003',
-    patient_name: 'Sarah Chen',
+    patient_name: 'Priya Nambiar',
     requesting_hospital_id: 'HOSP002',
     source_hospital_id: 'HOSP001',
     purpose: 'Neurology timeline verification approved by patient',
@@ -174,7 +174,7 @@ async function runTestSuite() {
 
   // 14. Consent Revocation
   console.log('\n[Test 14: Consent Revocation]');
-  consentService.revokeGrant(grant.grant_id, 'Sarah Chen');
+  consentService.revokeGrant(grant.grant_id, 'Priya Nambiar');
   assert(
     consentService.isAuthorized('P003', 'HOSP002', 'HOSP001') === false,
     'Access immediately terminated following grant revocation'

@@ -11,13 +11,20 @@
     "seed": "tsx src/ingestion/seed.ts",
     "test": "tsx src/test/run-tests.ts"
   },
-  "keywords": ["medgraph", "graphrag", "neo4j", "clinical"],
+  "keywords": [
+    "medgraph",
+    "graphrag",
+    "neo4j",
+    "clinical"
+  ],
   "author": "MedGraph Team",
   "license": "MIT",
   "dependencies": {
+    "@types/multer": "^2.3.0",
     "cors": "^2.8.6",
     "dotenv": "^18.0.9",
     "express": "^5.3.0",
+    "multer": "^2.5.0",
     "neo4j-driver": "^6.3.0",
     "uuid": "^14.0.3"
   },

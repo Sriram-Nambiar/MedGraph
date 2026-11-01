@@ -11,7 +11,7 @@ episodes for synthetic patients (P001, P002, P003, P004) covering:
 from typing import List, Dict, Any, Optional
 from app.schemas.evidence import GraphRecord, ClinicalNote, AdmissionRecord
 
-# --- PATIENT P001 (Eleanor Vance - 68F, Heart Failure, Plaque Psoriasis, Hypertension) ---
+# --- PATIENT P001 (Lakshmi Sundaram - 68F, Heart Failure, Plaque Psoriasis, Hypertension) ---
 P001_ADMISSIONS = [
     AdmissionRecord(
         admission_id="ADM-100",
@@ -187,7 +187,7 @@ P001_CLINICAL_NOTES = [
         timestamp="2025-09-15T14:00:00Z",
         author="Dr. Cristina Yang, MD (Cardiologist)",
         note_type="discharge_summary",
-        content="Cardiology Inpatient Summary: Patient Eleanor Vance admitted for acute decompensated heart failure (EF 32%) complicated by severe hyperkalemia (Potassium 5.7 mEq/L) on Lisinopril 20 mg. Lisinopril was abruptly discontinued. Following aggressive potassium normalization and a 36-hour washout period, initiated Sacubitril/Valsartan (Entresto) 24/26 mg BID. Condition stable at discharge under ongoing cardiovascular monitoring.",
+        content="Cardiology Inpatient Summary: Patient Lakshmi Sundaram admitted for acute decompensated heart failure (EF 32%) complicated by severe hyperkalemia (Potassium 5.7 mEq/L) on Lisinopril 20 mg. Lisinopril was abruptly discontinued. Following aggressive potassium normalization and a 36-hour washout period, initiated Sacubitril/Valsartan (Entresto) 24/26 mg BID. Condition stable at discharge under ongoing cardiovascular monitoring.",
         relevance_score=0.96
     ),
     ClinicalNote(
@@ -196,7 +196,7 @@ P001_CLINICAL_NOTES = [
         timestamp="2025-11-20T14:30:00Z",
         author="Dr. Maya Lin, MD (Dermatologist)",
         note_type="consultation",
-        content="Dermatology Clinic Outpatient Note: Patient Eleanor Vance evaluated by Dr. Maya Lin for extensive silvery erythematous plaques over bilateral elbows and knees consistent with severe plaque psoriasis. Prescribed Clobetasol Propionate 0.05% topical cream twice daily. Patient instructed on proper topical application and monitoring for skin atrophy.",
+        content="Dermatology Clinic Outpatient Note: Patient Lakshmi Sundaram evaluated by Dr. Maya Lin for extensive silvery erythematous plaques over bilateral elbows and knees consistent with severe plaque psoriasis. Prescribed Clobetasol Propionate 0.05% topical cream twice daily. Patient instructed on proper topical application and monitoring for skin atrophy.",
         relevance_score=0.92
     )
 ]

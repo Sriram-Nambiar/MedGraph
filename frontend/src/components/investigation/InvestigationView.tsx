@@ -6,25 +6,42 @@ import {
   AlertTriangle,
   HelpCircle,
   Activity,
-  ArrowUp,
+  Plus,
+  Search,
+  Share2,
+  RotateCcw,
+  Sliders,
+  ShieldCheck,
+  Shield,
+  FileText,
+  Database,
+  ExternalLink,
+  Sparkles,
   ChevronDown,
   ChevronUp,
-  RotateCcw,
-  GitBranch,
-  Database,
-  FileText,
-  ShieldCheck,
-  CheckCheck,
-  Columns,
   MessageSquare,
-  FileCode,
+  Clock,
+  User,
+  Copy,
+  Check,
+  BookOpen,
+  ArrowRight,
+  Mic,
+  MicOff,
+  Volume2,
+  VolumeX,
+  Play,
+  Pause,
+  Square,
+  UploadCloud,
+  Languages,
 } from 'lucide-react';
 import {
   Patient,
   InvestigationResponse,
   InvestigationClaim,
 } from '../../types';
-import { runInvestigation } from '../../services/api';
+import { runInvestigation, transcribeAudio, synthesizeSpeech } from '../../services/api';
 
 interface Message {
   id: string;
@@ -33,68 +50,21 @@ interface Message {
   text?: string;
   response?: InvestigationResponse;
   isLoading?: boolean;
+  audioData?: string;
+}
+
+interface SavedSession {
+  id: string;
+  title: string;
+  date: string;
+  messageCount: number;
+  initialQuestion?: string;
 }
 
 interface InvestigationViewProps {
   patient: Patient;
   onOpenEvidence: (recordId: string) => void;
   initialQuestion?: string;
-}
-
-/**
- * Normalizes dense or robotic responses into clean, human-readable paragraphs just like ChatGPT
- */
-function simplifyClinicalAnswer(text: string): string {
-  if (!text) return '';
-
-  // If text already has clean paragraphs or markdown headers, return as is
-  if (text.includes('\n\n') && (text.includes('•') || text.includes('**'))) {
-    return text;
-  }
-
-  // If text matches raw agent format like:
-  // "Medication changes identified: ... Laboratory shifts: ..."
-  if (text.includes('Medication changes identified:') || text.includes('Laboratory shifts:')) {
-    const parts: string[] = [];
-    parts.push("Across the patient's recent admissions, several critical medication and laboratory changes were identified:");
-
-    // Extract Medication changes
-    const medMatch = text.match(/Medication changes identified:\s*(.*?)(?=\.\s*Laboratory shifts:|\.\s*Clinical documentation|\.\s*No clinical reason|$)/i);
-    if (medMatch && medMatch[1]) {
-      const medItems = medMatch[1].split(/,\s*(?=[A-Z])/).map(m => m.trim()).filter(Boolean);
-      const lines = ['**Medication Changes:**'];
-      for (const item of medItems) {
-        lines.push(`• ${item.replace(/\s+/g, ' ')}`);
-      }
-      parts.push(lines.join('\n'));
-    }
-
-    // Extract Laboratory shifts
-    const labMatch = text.match(/Laboratory shifts:\s*(.*?)(?=\.\s*Clinical documentation|\.\s*No clinical reason|$)/i);
-    if (labMatch && labMatch[1]) {
-      const labItems = labMatch[1].split(/;\s*|,\s*(?=[A-Z])/).map(l => l.trim()).filter(Boolean);
-      const lines = ['**Laboratory Biomarker Shifts:**'];
-      for (const item of labItems) {
-        lines.push(`• ${item.replace('->', '→')}`);
-      }
-      parts.push(lines.join('\n'));
-    }
-
-    // Extract Clinical documentation reason
-    const reasonMatch = text.match(/Clinical documentation establishes the reason:\s*(.*?)$/i);
-    if (reasonMatch && reasonMatch[1]) {
-      parts.push(`**Documented Clinical Rationale:**\n• ${reasonMatch[1].trim()}`);
-    }
-
-    // Extract No clinical reason
-    if (text.toLowerCase().includes('no clinical reason or rationale is documented')) {
-      parts.push(`**Clinical Rationale:**\n• No explicit clinical rationale was documented in the medical records for these changes.`);
-    }
-
-    return parts.join('\n\n');
-  }
-
-  return text;
 }
 
 const renderInlineTokens = (content: string) => {
@@ -104,7 +74,7 @@ const renderInlineTokens = (content: string) => {
       {parts.map((part, index) => {
         if (part.startsWith('**') && part.endsWith('**')) {
           return (
-            <strong key={index} className="font-bold text-white tracking-wide">
+            <strong key={index} className="font-bold text-[#173F43] tracking-normal">
               {part.slice(2, -2)}
             </strong>
           );
@@ -115,16 +85,12 @@ const renderInlineTokens = (content: string) => {
   );
 };
 
-/**
- * Utility to render text in clean paragraphs and lists just like ChatGPT
- */
 const renderFormattedText = (rawText: string) => {
   if (!rawText) return null;
-  const formattedText = simplifyClinicalAnswer(rawText);
-  const paragraphs = formattedText.split(/\n\s*\n/);
+  const paragraphs = rawText.split(/\n\s*\n/);
 
   return (
-    <div className="space-y-3 text-zinc-200 text-xs font-sans leading-relaxed">
+    <div className="space-y-3 text-[#173F43] text-xs font-sans leading-relaxed">
       {paragraphs.map((para, pIdx) => {
         const lines = para.split('\n');
         const hasBullets = lines.some((l) => l.trim().startsWith('•') || l.trim().startsWith('- '));
@@ -139,16 +105,16 @@ const renderFormattedText = (rawText: string) => {
 
                 if (!isBullet) {
                   return (
-                    <div key={lIdx} className="font-bold text-white text-[12px] pt-1">
+                    <div key={lIdx} className="font-bold text-[#173F43] text-xs pt-1">
                       {renderInlineTokens(content)}
                     </div>
                   );
                 }
 
                 return (
-                  <div key={lIdx} className="flex items-start gap-2 pl-2 text-zinc-300">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1.5 shrink-0" />
-                    <span className="leading-relaxed">{renderInlineTokens(content)}</span>
+                  <div key={lIdx} className="flex items-start gap-2 pl-2 text-[#657C78]">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#4FA58D] mt-1.5 shrink-0" />
+                    <span className="leading-relaxed text-[#173F43]">{renderInlineTokens(content)}</span>
                   </div>
                 );
               })}
@@ -157,7 +123,7 @@ const renderFormattedText = (rawText: string) => {
         }
 
         return (
-          <p key={pIdx} className="leading-relaxed">
+          <p key={pIdx} className="leading-relaxed text-[#173F43]">
             {renderInlineTokens(para)}
           </p>
         );
@@ -171,22 +137,103 @@ export const InvestigationView: React.FC<InvestigationViewProps> = ({
   onOpenEvidence,
   initialQuestion = '',
 }) => {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 'welcome-1',
-      sender: 'agent',
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      text: `MedGraph ready for clinical history investigation on **${patient.name}** (${patient.id}).\n\nI have indexed the patient's **hospital admissions**, **doctor progress notes**, **medication changes**, and **longitudinal laboratory values**. Ask any question to retrieve and verify evidence.`,
-    },
-  ]);
-
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState(initialQuestion || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [expandedClaims, setExpandedClaims] = useState<Record<string, boolean>>({});
   const [selectedResponse, setSelectedResponse] = useState<InvestigationResponse | null>(null);
-  const [viewMode, setViewMode] = useState<'split' | 'chat' | 'audit'>('split');
+  const [showParameters, setShowParameters] = useState(false);
+  const [strictEvidenceMode, setStrictEvidenceMode] = useState(true);
+  const [promptSearch, setPromptSearch] = useState('');
+  const [sessionSearch, setSessionSearch] = useState('');
+  const [copiedSession, setCopiedSession] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<'sarvam' | 'nvidia'>('sarvam');
+  const [selectedSpeaker, setSelectedSpeaker] = useState<'ishita_en_medical' | 'shubh_en_narration' | 'ritu_en_medical'>('ishita_en_medical');
+  const [selectedLanguage, setSelectedLanguage] = useState<'en-IN' | 'unknown' | 'hi-IN' | 'ta-IN' | 'te-IN'>('en-IN');
+
+  // Voice Interaction State (Sarvam Saaras & Bulbul)
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingDuration, setRecordingDuration] = useState(0);
+  const [isTranscribing, setIsTranscribing] = useState(false);
+  const [transcriptionPreview, setTranscriptionPreview] = useState<{
+    transcript: string;
+    language_code: string;
+  } | null>(null);
+
+  // Audio Playback State
+  const [playingMessageId, setPlayingMessageId] = useState<string | null>(null);
+  const [isAudioLoading, setIsAudioLoading] = useState<string | null>(null);
+  const [isAudioPaused, setIsAudioPaused] = useState(false);
+
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const recordingTimerRef = useRef<any>(null);
+  const currentAudioRef = useRef<HTMLAudioElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const threadIdRef = useRef<string>(`INV-${patient.id}-${Date.now()}`);
+
+  const samplePrompts = [
+    {
+      category: 'Medication Changes',
+      tag: 'MED',
+      title: 'Medication Regimen Modification',
+      prompt: 'Why was the medication regimen modified?',
+      desc: 'Investigate Lisinopril cessation, washout period, and Entresto initiation.',
+    },
+    {
+      category: 'Biomarkers & Labs',
+      tag: 'LAB',
+      title: 'Potassium & Creatinine Trajectory',
+      prompt: 'What is the trend in creatinine and potassium across admissions?',
+      desc: 'Review hyperkalemia trajectory (5.7 mEq/L down to 4.6 mEq/L).',
+    },
+    {
+      category: 'Contradiction Audit',
+      tag: 'ALERT',
+      title: 'Clinical Note Contradictions',
+      prompt: 'Are there contradictions between triage and physician notes?',
+      desc: 'Verify conflicting cough symptom documentation between cardiology & dermatology.',
+    },
+    {
+      category: 'Hospital Transfer',
+      tag: 'INTEROP',
+      title: 'Cross-Hospital Transfer & Delta',
+      prompt: 'What changed between admissions?',
+      desc: 'Audit Apollo General Hospital inpatient care to Bengaluru City Medical Center follow-up.',
+    },
+    {
+      category: 'Clinical Summary',
+      tag: 'SUMMARY',
+      title: 'Full Longitudinal Clinical Summary',
+      prompt: 'Summarize the patient clinical history.',
+      desc: 'Synthesize conditions, hospitalizations, active GDMT regimens, and risk factors.',
+    },
+  ];
+
+  const sessions: SavedSession[] = [
+    {
+      id: `sess-${patient.id}-1`,
+      title: `${patient.name} - Longitudinal Audit`,
+      date: 'Today',
+      messageCount: messages.length,
+    },
+    {
+      id: `sess-${patient.id}-2`,
+      title: 'Medication Reconciliation & Washout',
+      date: 'Yesterday',
+      messageCount: 3,
+      initialQuestion: 'Why was the medication regimen modified?',
+    },
+    {
+      id: `sess-${patient.id}-3`,
+      title: 'Potassium Trajectory & Creatinine Delta',
+      date: 'Oct 28',
+      messageCount: 4,
+      initialQuestion: 'What is the trend in creatinine and potassium across admissions?',
+    },
+  ];
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -194,32 +241,49 @@ export const InvestigationView: React.FC<InvestigationViewProps> = ({
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, isSubmitting]);
+
+  // Clean up audio on unmount
+  useEffect(() => {
+    return () => {
+      if (currentAudioRef.current) {
+        currentAudioRef.current.pause();
+        currentAudioRef.current = null;
+      }
+      if (recordingTimerRef.current) {
+        clearInterval(recordingTimerRef.current);
+      }
+    };
+  }, []);
 
   // Reset thread when patient changes
   useEffect(() => {
+    stopCurrentAudio();
     threadIdRef.current = `INV-${patient.id}-${Date.now()}`;
     setSelectedResponse(null);
-    setMessages([
-      {
-        id: `welcome-${patient.id}`,
-        sender: 'agent',
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        text: `MedGraph active for **${patient.name}** (${patient.id}, **${patient.age}y ${patient.gender[0]}**).\n**Primary Diagnosis**: **${patient.primaryDiagnosis}**\n\nAsk any question to investigate timeline changes, medication transitions, or contradictory records.`,
-      },
-    ]);
+    setMessages([]);
+    setTranscriptionPreview(null);
+    if (initialQuestion) {
+      handleSend(initialQuestion);
+    }
   }, [patient.id]);
 
-  const samplePrompts = [
-    'What changed between the last two admissions?',
-    'Why was the primary medication discontinued or changed?',
-    'What happened to blood test values over time?',
-    'Are there contradictory records or missing documentation?',
-  ];
+  const handleStartNewConsultation = () => {
+    stopCurrentAudio();
+    threadIdRef.current = `INV-${patient.id}-${Date.now()}`;
+    setMessages([]);
+    setSelectedResponse(null);
+    setTranscriptionPreview(null);
+    setInput('');
+  };
 
   const handleSend = async (customPrompt?: string) => {
     const promptToSend = customPrompt || input;
     if (!promptToSend.trim() || isSubmitting) return;
+
+    // Clear any active transcription preview
+    setTranscriptionPreview(null);
+    stopCurrentAudio();
 
     const userMsgId = `user-${Date.now()}`;
     const agentMsgId = `agent-${Date.now()}`;
@@ -246,7 +310,6 @@ export const InvestigationView: React.FC<InvestigationViewProps> = ({
 
     try {
       const response = await runInvestigation(patient.id, promptToSend, threadIdRef.current);
-
       setSelectedResponse(response);
 
       setMessages((prev) =>
@@ -267,7 +330,7 @@ export const InvestigationView: React.FC<InvestigationViewProps> = ({
             ? {
                 ...msg,
                 isLoading: false,
-                text: `Investigation error: ${err.message || 'Unable to retrieve answer.'}`,
+                text: `Investigation query failed: ${err.message || 'Unable to connect to agent service.'}`,
               }
             : msg
         )
@@ -277,728 +340,1104 @@ export const InvestigationView: React.FC<InvestigationViewProps> = ({
     }
   };
 
-  const toggleClaimExpansion = (claimIdx: string) => {
-    setExpandedClaims((prev) => ({
-      ...prev,
-      [claimIdx]: !prev[claimIdx],
-    }));
-  };
+  /* ─────────────────────────────────────────────────────────────
+     VOICE INPUT: Sarvam Saaras v4 Recording & Transcribing
+     ───────────────────────────────────────────────────────────── */
+  const startRecording = async () => {
+    try {
+      stopCurrentAudio();
+      audioChunksRef.current = [];
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-  const renderStatusTag = (status: InvestigationClaim['status']) => {
-    switch (status) {
-      case 'SUPPORTED':
-        return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-zinc-800 text-white border border-zinc-600">
-            <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-            SUPPORTED
-          </span>
-        );
-      case 'CONTRADICTORY':
-        return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-zinc-900 text-amber-300 border border-amber-600">
-            <AlertTriangle className="w-3 h-3 text-amber-400" />
-            CONTRADICTORY
-          </span>
-        );
-      case 'MISSING_EVIDENCE':
-        return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-zinc-850 text-zinc-300 border border-zinc-700">
-            <HelpCircle className="w-3 h-3 text-zinc-400" />
-            MISSING EVIDENCE
-          </span>
-        );
-      default:
-        return (
-          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-zinc-800 text-zinc-300">
-            UNVERIFIED
-          </span>
-        );
+      const mediaRecorder = new MediaRecorder(stream, {
+        mimeType: MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/ogg',
+      });
+      mediaRecorderRef.current = mediaRecorder;
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = async () => {
+        stream.getTracks().forEach((track) => track.stop());
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        await handleAudioTranscription(audioBlob);
+      };
+
+      mediaRecorder.start(250);
+      setIsRecording(true);
+      setRecordingDuration(0);
+
+      recordingTimerRef.current = setInterval(() => {
+        setRecordingDuration((prev) => prev + 1);
+      }, 1000);
+    } catch (err: any) {
+      console.error('Microphone access denied or error:', err);
+      alert('Unable to access microphone. Please verify browser permissions.');
     }
   };
 
-  const activeAuditResponse: InvestigationResponse | null =
-    selectedResponse ||
-    ([...messages]
-      .reverse()
-      .find((m) => m.response !== undefined)?.response || null);
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+      if (recordingTimerRef.current) {
+        clearInterval(recordingTimerRef.current);
+      }
+    }
+  };
 
-  const showChat = viewMode === 'split' || viewMode === 'chat';
-  const showAudit = viewMode === 'split' || viewMode === 'audit';
+  const cancelRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      audioChunksRef.current = [];
+      setIsRecording(false);
+      if (recordingTimerRef.current) {
+        clearInterval(recordingTimerRef.current);
+      }
+    }
+  };
+
+  const handleAudioTranscription = async (blob: Blob) => {
+    setIsTranscribing(true);
+    try {
+      const data = await transcribeAudio(blob, selectedLanguage);
+      if (data.transcript && data.transcript.trim()) {
+        setTranscriptionPreview({
+          transcript: data.transcript,
+          language_code: data.language_code || selectedLanguage,
+        });
+      } else {
+        alert('No distinct speech recognized in audio. Please try speaking clearly or typing your clinical inquiry.');
+      }
+    } catch (err: any) {
+      console.error('Transcription failed:', err);
+      alert(`Voice recognition error: ${err.message}`);
+    } finally {
+      setIsTranscribing(false);
+    }
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    await handleAudioTranscription(file);
+    e.target.value = '';
+  };
+
+  /* ─────────────────────────────────────────────────────────────
+     VOICE OUTPUT: Sarvam Bulbul v4 Flash Speech Synthesis & Playback
+     ───────────────────────────────────────────────────────────── */
+  const stopCurrentAudio = () => {
+    if (currentAudioRef.current) {
+      currentAudioRef.current.pause();
+      currentAudioRef.current = null;
+    }
+    setPlayingMessageId(null);
+    setIsAudioPaused(false);
+  };
+
+  const handlePlaySpeech = async (msgId: string, textToRead: string) => {
+    // If currently playing this message, toggle pause/play
+    if (playingMessageId === msgId && currentAudioRef.current) {
+      if (isAudioPaused) {
+        currentAudioRef.current.play();
+        setIsAudioPaused(false);
+      } else {
+        currentAudioRef.current.pause();
+        setIsAudioPaused(true);
+      }
+      return;
+    }
+
+    // Stop existing audio
+    stopCurrentAudio();
+    setIsAudioLoading(msgId);
+
+    try {
+      const result = await synthesizeSpeech(textToRead, 'en-IN', selectedSpeaker);
+      if (result.audio) {
+        const audioSrc = `data:audio/wav;base64,${result.audio}`;
+        const audio = new Audio(audioSrc);
+        currentAudioRef.current = audio;
+
+        audio.onended = () => {
+          setPlayingMessageId(null);
+          setIsAudioPaused(false);
+        };
+
+        audio.onerror = (e) => {
+          console.error('Audio playback error:', e);
+          stopCurrentAudio();
+        };
+
+        await audio.play();
+        setPlayingMessageId(msgId);
+        setIsAudioPaused(false);
+      }
+    } catch (err: any) {
+      console.error('Text-to-speech synthesis error:', err);
+      alert(`Voice output error: ${err.message}`);
+    } finally {
+      setIsAudioLoading(null);
+    }
+  };
+
+  const handleCopyTranscript = () => {
+    const transcript = messages
+      .map((m) => `${m.sender === 'user' ? 'Clinician' : 'MedGraph Agent'}: ${m.text || m.response?.answer || ''}`)
+      .join('\n\n');
+    navigator.clipboard.writeText(transcript);
+    setCopiedSession(true);
+    setTimeout(() => setCopiedSession(false), 2000);
+  };
+
+  const getVerificationBadge = (status: string) => {
+    switch (status) {
+      case 'SUPPORTED':
+        return {
+          bg: 'bg-[#F0FBF5]',
+          border: 'border-[#8BD4A9]',
+          text: 'text-[#1B4F3A]',
+          icon: CheckCircle2,
+          label: 'SUPPORTED',
+        };
+      case 'CONTRADICTED':
+      case 'CONTRADICTORY':
+        return {
+          bg: 'bg-[#FFF3F2]',
+          border: 'border-[#FDD9D5]',
+          text: 'text-[#702D2D]',
+          icon: AlertTriangle,
+          label: 'CONTRADICTED',
+        };
+      case 'INSUFFICIENT':
+      case 'MISSING_EVIDENCE':
+        return {
+          bg: 'bg-[#FFF9EA]',
+          border: 'border-[#F5D47D]',
+          text: 'text-[#674617]',
+          icon: HelpCircle,
+          label: 'INSUFFICIENT',
+        };
+      default:
+        return {
+          bg: 'bg-[#F7F9F5]',
+          border: 'border-[#CAD8D1]',
+          text: 'text-[#4C6865]',
+          icon: Activity,
+          label: 'NOT_FOUND',
+        };
+    }
+  };
+
+  const filteredPrompts = samplePrompts.filter(
+    (p) =>
+      p.title.toLowerCase().includes(promptSearch.toLowerCase()) ||
+      p.prompt.toLowerCase().includes(promptSearch.toLowerCase()) ||
+      p.category.toLowerCase().includes(promptSearch.toLowerCase())
+  );
 
   return (
-    <div className="space-y-3 max-w-[1700px] mx-auto px-2">
-      {/* Top Layout Controls */}
-      <div className="flex items-center justify-between px-2">
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-zinc-400 font-medium">Patient:</span>
-          <span className="text-xs font-bold text-white">
-            {patient.name} <span className="font-mono text-zinc-400 font-normal">({patient.id})</span>
-          </span>
+    <div className="flex flex-col lg:flex-row gap-4 items-stretch min-h-[780px]">
+      {/* Hidden file input for audio file upload */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileUpload}
+        accept="audio/*,.wav,.mp3,.m4a,.webm,.ogg"
+        className="hidden"
+      />
+
+      {/* ─────────────────────────────────────────────────────────────
+          1. LEFT SIDEBAR: Consultations & Session History
+          ───────────────────────────────────────────────────────────── */}
+      <aside className="w-full lg:w-64 xl:w-72 shrink-0 bg-[#FFFEFB] border border-[#E1EAE3] rounded-3xl p-4 shadow-xs flex flex-col justify-between">
+        <div className="space-y-4">
+          {/* Brand Emblem & New Consultation Button */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between pb-1">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-xl bg-[#E6F4ED] border border-[#B5E4D3] flex items-center justify-center text-[#174F55]">
+                  <MessageSquare className="w-4 h-4" />
+                </div>
+                <span className="font-['Outfit'] font-black text-sm text-[#173F43] tracking-tight">
+                  Medical Chat + Voice
+                </span>
+              </div>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#E6F4ED] text-[#174F55] font-bold">
+                {patient.id}
+              </span>
+            </div>
+
+            <button
+              onClick={handleStartNewConsultation}
+              className="w-full py-2.5 px-4 bg-[#173F43] hover:bg-[#205559] text-white rounded-2xl text-xs font-semibold shadow-xs transition-all flex items-center justify-center gap-2 group cursor-pointer"
+            >
+              <Plus className="w-4 h-4 text-[#8BD4A9] group-hover:rotate-90 transition-transform" />
+              <span>New consultation</span>
+            </button>
+          </div>
+
+          {/* Search Conversations Bar */}
+          <div className="relative">
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#829590]" />
+            <input
+              type="text"
+              placeholder="Search consultations..."
+              value={sessionSearch}
+              onChange={(e) => setSessionSearch(e.target.value)}
+              className="w-full pl-8 pr-3 py-1.5 bg-[#FBFAF4] border border-[#E1EAE3] text-xs rounded-xl text-[#173F43] placeholder-[#A8B9B2] focus:outline-none focus:ring-1 focus:ring-[#91D5BE]"
+            />
+          </div>
+
+          {/* Consultation History List */}
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between px-1">
+              <span className="text-[10px] font-mono uppercase font-bold tracking-wider text-[#829590]">
+                Consultations
+              </span>
+              <span className="text-[10px] font-mono text-[#829590]">
+                {sessions.length} recorded
+              </span>
+            </div>
+
+            <div className="space-y-1">
+              {sessions.map((sess, idx) => {
+                const isActive = idx === 0 && messages.length > 0;
+                return (
+                  <button
+                    key={sess.id}
+                    onClick={() => {
+                      if (sess.initialQuestion) {
+                        handleSend(sess.initialQuestion);
+                      }
+                    }}
+                    className={`w-full text-left p-2.5 rounded-2xl border transition-all text-xs flex items-center justify-between group cursor-pointer ${
+                      isActive
+                        ? 'bg-[#E6F4ED] border-[#B5E4D3] text-[#174F55] font-semibold'
+                        : 'bg-[#FBFAF4] hover:bg-[#F0F5F2] border-[#E1EAE3] text-[#173F43]'
+                    }`}
+                  >
+                    <div className="min-w-0 pr-2">
+                      <div className="truncate text-xs font-medium group-hover:text-[#174F55]">
+                        {sess.title}
+                      </div>
+                      <div className="text-[10px] text-[#829590] mt-0.5">
+                        {sess.date} · {sess.messageCount} exchanges
+                      </div>
+                    </div>
+                    <ArrowRight className="w-3.5 h-3.5 text-[#829590] opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
 
-        {/* View Mode Switcher */}
-        <div className="flex items-center gap-1 bg-zinc-950 p-1 rounded-xl border border-zinc-800 text-[11px] font-mono">
-          <button
-            onClick={() => setViewMode('split')}
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg transition-all ${
-              viewMode === 'split'
-                ? 'bg-zinc-800 text-white font-bold shadow-sm'
-                : 'text-zinc-400 hover:text-zinc-200'
-            }`}
-          >
-            <Columns className="w-3.5 h-3.5" />
-            <span>Split View</span>
-          </button>
-          <button
-            onClick={() => setViewMode('chat')}
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg transition-all ${
-              viewMode === 'chat'
-                ? 'bg-zinc-800 text-white font-bold shadow-sm'
-                : 'text-zinc-400 hover:text-zinc-200'
-            }`}
-          >
-            <MessageSquare className="w-3.5 h-3.5" />
-            <span>Chat Only</span>
-          </button>
-          <button
-            onClick={() => setViewMode('audit')}
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg transition-all ${
-              viewMode === 'audit'
-                ? 'bg-zinc-800 text-white font-bold shadow-sm'
-                : 'text-zinc-400 hover:text-zinc-200'
-            }`}
-          >
-            <ShieldCheck className="w-3.5 h-3.5" />
-            <span>Audit Panel</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Main Grid */}
-      <div className={`grid gap-5 h-[calc(100vh-170px)] ${
-        viewMode === 'split' ? 'grid-cols-1 lg:grid-cols-12' : 'grid-cols-1 max-w-4xl mx-auto'
-      }`}>
-        {/* =========================================================================
-            COLUMN 1 (LEFT): CHAT WINDOW WITH VERIFIED RESPONSE
-            ========================================================================= */}
-        {showChat && (
-          <div className={`${
-            viewMode === 'split' ? 'lg:col-span-7 xl:col-span-7' : 'w-full'
-          } flex flex-col h-full bg-white dark:bg-[#0a0a0c] border-2 border-[#bfdbfe] dark:border-zinc-800/80 rounded-2xl overflow-hidden shadow-lg`}>
-            {/* Chat Header */}
-            <div className="px-5 py-3 border-b-2 border-[#bfdbfe] dark:border-zinc-800/80 bg-[#eff6ff] dark:bg-zinc-950/70 flex items-center justify-between shrink-0">
-              <div className="flex items-center gap-2.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                <div>
-                  <span className="text-xs font-black text-[#0f172a] dark:text-white tracking-tight uppercase font-['Outfit']">Clinical Investigation Chat</span>
-                  <span className="text-[11px] text-[#1e3a8a] dark:text-zinc-300 font-mono ml-2 font-bold">
-                    • {patient.name} <strong className="text-[#0f172a] dark:text-white">({patient.id})</strong>
-                  </span>
+        {/* Bottom Utility Card: User & Clinical AI Services */}
+        <div className="pt-4 border-t border-[#E1EAE3] space-y-3">
+          <div className="p-2.5 rounded-2xl bg-[#FBFAF4] border border-[#E1EAE3] flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-full bg-[#173F43] text-white flex items-center justify-center font-bold text-xs">
+                {patient.name.charAt(0)}
+              </div>
+              <div className="leading-tight">
+                <div className="text-xs font-bold text-[#173F43] truncate max-w-[130px]">
+                  Dr. Clinician
+                </div>
+                <div className="text-[10px] text-[#829590] font-mono">
+                  {patient.id} Verified
                 </div>
               </div>
-
-              <button
-                onClick={() => {
-                  threadIdRef.current = `INV-${patient.id}-${Date.now()}`;
-                  setSelectedResponse(null);
-                  setMessages([
-                    {
-                      id: `welcome-${Date.now()}`,
-                      sender: 'agent',
-                      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                      text: `Session reset. Ready for new investigation questions regarding **${patient.name}**.`,
-                    },
-                  ]);
-                }}
-                className="text-slate-600 dark:text-zinc-400 hover:text-[#1e3a8a] dark:hover:text-white text-xs font-mono font-semibold flex items-center gap-1 p-1 rounded hover:bg-blue-50 dark:hover:bg-zinc-900 transition-colors"
-                title="Reset conversation"
-              >
-                <RotateCcw className="w-3 h-3" />
-                <span className="hidden sm:inline">Clear Chat</span>
-              </button>
             </div>
+            <button
+              onClick={handleStartNewConsultation}
+              title="Clear current consultation"
+              className="p-1.5 rounded-xl hover:bg-[#E6F4ED] text-[#829590] hover:text-[#174F55] transition-colors cursor-pointer"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+            </button>
+          </div>
 
-            {/* Messages Scroll Area */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-5 bg-[#fbfdff] dark:bg-transparent">
-              {messages.map((msg) => (
-                <div key={msg.id} className="space-y-2">
-                  {/* User Message */}
-                  {msg.sender === 'user' ? (
-                    <div className="flex justify-end">
-                      <div className="max-w-xl bg-zinc-800 text-white text-xs font-semibold px-4 py-2.5 rounded-2xl rounded-tr-sm border border-zinc-700 shadow-sm leading-relaxed">
-                        {msg.text}
-                        <span className="text-[9px] text-zinc-400 block text-right mt-1 font-mono font-normal">
-                          {msg.timestamp}
-                        </span>
-                      </div>
-                    </div>
-                  ) : (
-                    /* Agent Message */
-                    <div className="flex items-start gap-2.5 max-w-full">
-                      <div className="w-7 h-7 rounded-lg bg-zinc-900 border border-zinc-700 flex items-center justify-center text-zinc-100 shrink-0 mt-0.5">
-                        <Activity className="w-4 h-4 text-white" />
-                      </div>
-
-                      <div className="flex-1 space-y-3 min-w-0">
-                        {/* Loading State */}
-                        {msg.isLoading ? (
-                          <div className="bg-zinc-900/60 border border-zinc-800 rounded-2xl p-4 flex items-center gap-3 text-xs text-zinc-300 font-mono">
-                            <Loader2 className="w-4 h-4 animate-spin text-white" />
-                            <span className="font-semibold text-white">Traversing Neo4j graph & verifying clinical evidence...</span>
-                          </div>
-                        ) : msg.response ? (
-                          /* Structured Agent Investigation Output */
-                          <div
-                            onClick={() => setSelectedResponse(msg.response || null)}
-                            className={`bg-zinc-900/60 border rounded-2xl p-4 space-y-4 shadow-sm text-xs transition-all ${
-                              selectedResponse === msg.response
-                                ? 'border-zinc-500 ring-1 ring-zinc-500/30'
-                                : 'border-zinc-800 hover:border-zinc-700'
-                            }`}
-                          >
-                            {/* Status header */}
-                            <div className="flex items-center justify-between pb-2 border-b border-zinc-800 text-[11px] font-mono">
-                              <div className="flex items-center gap-2">
-                                <strong className="text-white font-bold tracking-tight">MedGraph Verified Report</strong>
-                              </div>
-                              <div className="flex items-center gap-1.5">
-                                <strong className="text-zinc-400 font-bold">Status:</strong>
-                                <span
-                                  className={`px-2 py-0.5 rounded text-[10px] font-bold font-mono ${
-                                    msg.response.verification_status === 'VERIFIED'
-                                      ? 'bg-zinc-800 text-white border border-zinc-600'
-                                      : 'bg-zinc-850 text-amber-300 border border-amber-600'
-                                  }`}
-                                >
-                                  {msg.response.verification_status}
-                                </span>
-                              </div>
-                            </div>
-
-                            {/* Main Answer Narrative - Clean ChatGPT Style in Paragraphs */}
-                            <div className="leading-relaxed">
-                              {renderFormattedText(msg.response.answer)}
-                            </div>
-
-                            {/* Missing Information Callout (if any) */}
-                            {msg.response.missing_information && msg.response.missing_information.length > 0 && (
-                              <div className="p-3 rounded-lg bg-zinc-950 border border-zinc-800 space-y-1 text-xs">
-                                <div className="flex items-center gap-1.5 text-zinc-300 font-mono text-[10px] font-bold uppercase">
-                                  <HelpCircle className="w-3.5 h-3.5 text-zinc-400" />
-                                  <strong>Missing Clinical Documentation</strong>
-                                </div>
-                                {msg.response.missing_information.map((info, idx) => (
-                                  <p key={idx} className="text-zinc-200 pl-4 text-[11px] font-medium">
-                                    • {info}
-                                  </p>
-                                ))}
-                              </div>
-                            )}
-
-                            {/* Contradictions Callout (if any) */}
-                            {msg.response.contradictions_found && msg.response.contradictions_found.length > 0 && (
-                              <div className="p-3 rounded-lg bg-zinc-950 border border-amber-900/60 space-y-1 text-xs">
-                                <div className="flex items-center gap-1.5 text-amber-300 font-mono text-[10px] font-bold uppercase">
-                                  <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
-                                  <strong>Contradictory Records Flagged</strong>
-                                </div>
-                                {msg.response.contradictions_found.map((c, idx) => (
-                                  <p key={idx} className="text-zinc-200 pl-4 text-[11px] font-medium">
-                                    • {c}
-                                  </p>
-                                ))}
-                              </div>
-                            )}
-
-                            {/* Grounded Claims & Citations (Collapsible) */}
-                            {msg.response.claims && msg.response.claims.length > 0 && (
-                              <div className="space-y-2 pt-2 border-t border-zinc-800">
-                                <strong className="text-[10px] font-mono uppercase text-zinc-400 font-bold block">
-                                  Grounded Claims & Citations:
-                                </strong>
-
-                                <div className="space-y-2">
-                                  {msg.response.claims.map((claim, cIdx) => {
-                                    const claimKey = `${msg.id}-${cIdx}`;
-                                    const isExpanded = expandedClaims[claimKey] ?? false;
-
-                                    return (
-                                      <div
-                                        key={cIdx}
-                                        className="bg-zinc-950 border border-zinc-800 rounded-lg p-3 space-y-2"
-                                      >
-                                        <div
-                                          className="flex items-start justify-between gap-2 cursor-pointer select-none"
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            toggleClaimExpansion(claimKey);
-                                          }}
-                                        >
-                                          <div className="flex items-start gap-2">
-                                            <span className="text-zinc-100 font-bold text-xs leading-snug">
-                                              {renderInlineTokens(claim.claim)}
-                                            </span>
-                                          </div>
-                                          <div className="flex items-center gap-1.5 shrink-0">
-                                            {renderStatusTag(claim.status)}
-                                            {isExpanded ? (
-                                              <ChevronUp className="w-3.5 h-3.5 text-zinc-400" />
-                                            ) : (
-                                              <ChevronDown className="w-3.5 h-3.5 text-zinc-400" />
-                                            )}
-                                          </div>
-                                        </div>
-
-                                        {isExpanded && claim.evidence && claim.evidence.length > 0 && (
-                                          <div className="space-y-1.5 pt-1.5 border-t border-zinc-900">
-                                            {claim.evidence.map((ev, evIdx) => (
-                                              <div
-                                                key={evIdx}
-                                                className="flex items-start justify-between gap-2 text-[11px] text-zinc-300 bg-zinc-900/90 p-2.5 rounded border border-zinc-850"
-                                              >
-                                                <div className="space-y-0.5">
-                                                  {ev.quote && (
-                                                    <p className="text-zinc-200 italic font-medium leading-relaxed">
-                                                      "{ev.quote}"
-                                                    </p>
-                                                  )}
-                                                  <div className="font-mono text-[10px] text-zinc-400">
-                                                    Date:{' '}
-                                                    <strong className="text-zinc-300 font-bold">
-                                                      {ev.timestamp ? ev.timestamp.split('T')[0] : 'N/A'}
-                                                    </strong>
-                                                  </div>
-                                                </div>
-                                                <button
-                                                  onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    onOpenEvidence(ev.record_id);
-                                                  }}
-                                                  className="px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-white font-mono text-[11px] font-bold border border-zinc-700 transition-colors shrink-0"
-                                                >
-                                                  [{ev.record_id}]
-                                                </button>
-                                              </div>
-                                            ))}
-                                          </div>
-                                        )}
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-                            )}
-
-                            <div className="text-[10px] text-zinc-400 font-mono pt-1 text-right font-medium">
-                              Verified via MedGraph GraphRAG • {msg.timestamp}
-                            </div>
-                          </div>
-                        ) : (
-                          /* Plain text message */
-                          <div className="bg-zinc-900/50 border border-zinc-800 text-zinc-200 text-xs px-4 py-3 rounded-2xl leading-relaxed whitespace-pre-line font-sans">
-                            {renderFormattedText(msg.text || '')}
-                            <span className="text-[9px] text-zinc-400 block text-right mt-1 font-mono font-normal">
-                              {msg.timestamp}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-              <div ref={messagesEndRef} />
+          <div className="space-y-1 px-1 font-mono text-[10px]">
+            <div className="flex items-center justify-between text-[#829590]">
+              <span>Primary LLM:</span>
+              <span className="font-bold text-[#4FA58D]">Sarvam-105B</span>
             </div>
-
-            {/* Suggested Prompts Pill Strip */}
-            <div className="px-4 py-2 border-t-2 border-[#bfdbfe] dark:border-zinc-800/80 bg-[#eff6ff] dark:bg-zinc-950 flex items-center gap-2 overflow-x-auto no-scrollbar shrink-0">
-              <strong className="text-[10px] font-mono uppercase text-[#1e3a8a] dark:text-zinc-400 font-bold shrink-0">Prompts:</strong>
-              {samplePrompts.map((prompt, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => handleSend(prompt)}
-                  disabled={isSubmitting}
-                  className="text-xs font-semibold px-3 py-1 rounded-full bg-white dark:bg-zinc-900 hover:bg-[#1e3a8a] hover:text-white dark:hover:bg-zinc-800 text-[#1e3a8a] dark:text-zinc-200 border border-[#bfdbfe] dark:border-zinc-750 transition-colors shrink-0 disabled:opacity-50 shadow-xs"
-                >
-                  {prompt}
-                </button>
-              ))}
+            <div className="flex items-center justify-between text-[#829590]">
+              <span>Voice Engine:</span>
+              <span className="font-bold text-[#174F55]">Saaras v4 & Bulbul</span>
             </div>
+          </div>
+        </div>
+      </aside>
 
-            {/* Chat Input Bar */}
-            <div className="p-3.5 border-t-2 border-[#bfdbfe] dark:border-zinc-800 bg-white dark:bg-zinc-950 shrink-0">
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleSend();
-                }}
-                className="relative flex items-center"
-              >
-                <input
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  disabled={isSubmitting}
-                  placeholder={`Ask a question about ${patient.name}'s clinical records...`}
-                  className="w-full bg-[#f8faff] dark:bg-zinc-900 text-xs text-[#0f172a] dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 pl-4 pr-12 py-3 rounded-xl border-2 border-[#bfdbfe] dark:border-zinc-750 focus:outline-none focus:border-[#1e3a8a] dark:focus:border-zinc-500 transition-colors font-medium shadow-xs"
-                />
+      {/* ─────────────────────────────────────────────────────────────
+          2. CENTER COLUMN: Chat, Voice Interaction & Canvas
+          ───────────────────────────────────────────────────────────── */}
+      <section className="flex-1 bg-[#FFFEFB] border border-[#E1EAE3] rounded-3xl p-5 shadow-xs flex flex-col justify-between min-h-[780px]">
+        {/* Top Header Bar */}
+        <div className="flex items-center justify-between pb-4 border-b border-[#E1EAE3] gap-3">
+          <div className="flex items-center gap-2 min-w-0">
+            <h2 className="text-base sm:text-lg font-black text-[#173F43] tracking-tight font-['Outfit'] truncate">
+              {messages.length > 0
+                ? `${patient.name} Consultation`
+                : 'Unified Clinical Chat & Voice'}
+            </h2>
+            <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#E6F4ED] text-[#174F55] border border-[#B5E4D3] text-[11px] font-medium font-mono shrink-0">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#4FA58D] animate-pulse" />
+              <span>Sarvam AI Native (105B + Saaras + Bulbul)</span>
+            </span>
+          </div>
 
-                <button
-                  type="submit"
-                  disabled={!input.trim() || isSubmitting}
-                  className="absolute right-2 p-2 bg-[#1e3a8a] hover:bg-[#152347] disabled:bg-slate-200 disabled:text-slate-400 text-white rounded-lg transition-colors shadow-sm font-bold"
-                >
-                  {isSubmitting ? (
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  ) : (
-                    <ArrowUp className="w-3.5 h-3.5" />
-                  )}
-                </button>
-              </form>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <button
+              onClick={handleCopyTranscript}
+              disabled={messages.length === 0}
+              className="p-2 rounded-xl bg-[#FBFAF4] hover:bg-[#E6F4ED] text-[#173F43] hover:text-[#174F55] border border-[#E1EAE3] transition-all disabled:opacity-40 cursor-pointer"
+              title="Copy consultation transcript"
+            >
+              {copiedSession ? (
+                <Check className="w-3.5 h-3.5 text-[#4FA58D]" />
+              ) : (
+                <Share2 className="w-3.5 h-3.5" />
+              )}
+            </button>
+            <button
+              onClick={() => setShowParameters((prev) => !prev)}
+              className={`p-2 rounded-xl border transition-all cursor-pointer ${
+                showParameters
+                  ? 'bg-[#173F43] text-white border-[#173F43]'
+                  : 'bg-[#FBFAF4] hover:bg-[#E6F4ED] text-[#173F43] border-[#E1EAE3]'
+              }`}
+              title="Toggle Clinical System Instructions & Parameters"
+            >
+              <Sliders className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+
+        {/* Collapsible System Instructions Accordion */}
+        {showParameters && (
+          <div className="my-3 p-4 rounded-2xl bg-[#FBFAF4] border border-[#E1EAE3] text-xs space-y-2 animate-fadeIn">
+            <div className="flex items-center justify-between font-mono text-[10px] uppercase font-bold text-[#829590]">
+              <span>Sarvam AI & Clinical Graph Parameters</span>
+              <span className="text-[#4FA58D]">Grounded LangGraph Pipeline</span>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 font-mono text-[11px]">
+              <div className="p-2 rounded-xl bg-[#FFFEFB] border border-[#E1EAE3]">
+                <div className="text-[#829590] text-[9px]">PRIMARY LLM</div>
+                <div className="font-bold text-[#173F43]">Sarvam-105B (105B Params)</div>
+              </div>
+              <div className="p-2 rounded-xl bg-[#FFFEFB] border border-[#E1EAE3]">
+                <div className="text-[#829590] text-[9px]">SPEECH TO TEXT</div>
+                <div className="font-bold text-[#173F43]">Saaras:v4 (Indic/English)</div>
+              </div>
+              <div className="p-2 rounded-xl bg-[#FFFEFB] border border-[#E1EAE3]">
+                <div className="text-[#829590] text-[9px]">TEXT TO SPEECH</div>
+                <div className="font-bold text-[#4FA58D]">Bulbul:v4-flash (ishita_en_medical)</div>
+              </div>
+              <div className="p-2 rounded-xl bg-[#FFFEFB] border border-[#E1EAE3]">
+                <div className="text-[#829590] text-[9px]">SECURITY SCOPE</div>
+                <div className="font-bold text-[#173F43]">Server-Side Isolated (No Leaks)</div>
+              </div>
             </div>
           </div>
         )}
 
-        {/* =========================================================================
-            COLUMN 2 (RIGHT): THE "AUDIT PANEL"
-            Showing:
-            a. The Plan generated
-            b. The Neo4j sub-graph nodes visited (with green checkmarks)
-            c. The vector text snippet retrieved
-            d. The Verifier's check status (Pass: 2 records matched, Flag: Discontinuation not documented in Note #4)
-            ========================================================================= */}
-        {showAudit && (
-          <div className={`${
-            viewMode === 'split' ? 'lg:col-span-5 xl:col-span-5' : 'w-full'
-          } flex flex-col h-full bg-white dark:bg-[#0a0a0c] border-2 border-[#bfdbfe] dark:border-zinc-800/80 rounded-2xl overflow-hidden shadow-lg`}>
-            {/* Audit Panel Header */}
-            <div className="px-5 py-3 border-b-2 border-[#bfdbfe] dark:border-zinc-800/80 bg-[#eff6ff] dark:bg-zinc-950/70 flex items-center justify-between shrink-0">
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-blue-600 dark:text-emerald-400" />
-                <span className="text-xs font-black text-[#0f172a] dark:text-white tracking-tight uppercase font-['Outfit']">Audit Panel</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-50 dark:bg-zinc-900 text-[#1e3a8a] dark:text-zinc-300 border border-[#bfdbfe] dark:border-zinc-750 font-bold">
-                  Agentic Provenance
+        {/* Conversation Stream or Hero Welcome State */}
+        <div className="flex-1 overflow-y-auto my-3 pr-1 space-y-4">
+          {messages.length === 0 ? (
+            /* ─────────────────────────────────────────────────────────────
+               Hero Empty State (Unified Chat + Voice Welcome)
+               ───────────────────────────────────────────────────────────── */
+            <div className="h-full flex flex-col items-center justify-center text-center py-10 px-4 max-w-xl mx-auto space-y-6">
+              {/* Emblem Logo */}
+              <div className="w-16 h-16 rounded-3xl bg-[#E6F4ED] border border-[#91D5BE] flex items-center justify-center text-[#174F55] shadow-xs relative">
+                <Sparkles className="w-8 h-8 text-[#4FA58D]" />
+                <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-[#173F43] text-white flex items-center justify-center text-[10px] font-bold">
+                  ✓
                 </span>
               </div>
 
-              <div className="flex items-center gap-1.5 text-[10px] font-mono text-slate-600 dark:text-zinc-400 font-bold">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span>Audit Active</span>
+              {/* Title & Description */}
+              <div className="space-y-1.5">
+                <div className="inline-flex items-center gap-2 font-mono text-[11px] font-bold text-[#4FA58D] uppercase tracking-wider">
+                  <Activity className="w-3.5 h-3.5" />
+                  <span>Sarvam-105B Longitudinal Clinical Assistant</span>
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-black text-[#173F43] font-['Outfit'] tracking-tight">
+                  How can I help you today?
+                </h3>
+                <p className="text-xs text-[#657C78] max-w-md mx-auto leading-relaxed">
+                  Type or speak your clinical inquiries for <strong className="text-[#173F43]">{patient.name}</strong> ({patient.age}y {patient.gender[0]}, {patient.primaryDiagnosis}). Both chat and voice execute identical LangGraph multi-hop reasoning.
+                </p>
               </div>
-            </div>
 
-            {/* Audit Panel Body */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#fbfdff] dark:bg-transparent">
-              {activeAuditResponse ? (
-                <>
-                  {/* -------------------------------------------------------------
-                      SECTION A: The Plan Generated
-                      ------------------------------------------------------------- */}
-                  <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-3.5 space-y-3">
-                    <div className="flex items-center justify-between border-b border-zinc-850 pb-2">
-                      <div className="flex items-center gap-2">
-                        <GitBranch className="w-3.5 h-3.5 text-sky-400" />
-                        <span className="text-xs font-bold text-white uppercase tracking-wider font-mono">
-                          a. The Plan Generated
+              {/* System Instructions Dropdown Pill */}
+              <button
+                onClick={() => setShowParameters((prev) => !prev)}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-[#FBFAF4] hover:bg-[#F0F5F2] border border-[#E1EAE3] text-xs text-[#173F43] transition-all cursor-pointer font-medium"
+              >
+                <Sliders className="w-3.5 h-3.5 text-[#4FA58D]" />
+                <span>System Instructions & Models</span>
+                {showParameters ? (
+                  <ChevronUp className="w-3.5 h-3.5 text-[#829590]" />
+                ) : (
+                  <ChevronDown className="w-3.5 h-3.5 text-[#829590]" />
+                )}
+              </button>
+
+              {/* Quick Suggestion Cards */}
+              <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2 text-left">
+                {samplePrompts.slice(0, 4).map((item, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => handleSend(item.prompt)}
+                    className="p-3.5 rounded-2xl bg-[#FBFAF4] hover:bg-[#E6F4ED] border border-[#E1EAE3] hover:border-[#91D5BE] text-xs transition-all shadow-2xs group flex flex-col justify-between cursor-pointer"
+                  >
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-[#173F43] group-hover:text-[#174F55]">
+                          {item.title}
+                        </span>
+                        <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-white text-[#829590] border border-[#E1EAE3]">
+                          {item.tag}
                         </span>
                       </div>
-                      <span className="text-[10px] font-mono font-semibold text-zinc-400">
-                        Step-by-Step
+                      <p className="text-[11px] text-[#657C78] line-clamp-2 leading-relaxed">
+                        {item.desc}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1 text-[10px] font-mono text-[#4FA58D] font-bold pt-2 opacity-80 group-hover:opacity-100">
+                      <span>Investigate</span>
+                      <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : (
+            /* ─────────────────────────────────────────────────────────────
+               Conversation Chat Stream
+               ───────────────────────────────────────────────────────────── */
+            messages.map((msg) => (
+              <div
+                key={msg.id}
+                className={`flex flex-col ${
+                  msg.sender === 'user' ? 'items-end' : 'items-start'
+                }`}
+              >
+                <div
+                  className={`max-w-[90%] sm:max-w-[85%] rounded-3xl p-4.5 space-y-3 text-xs shadow-2xs ${
+                    msg.sender === 'user'
+                      ? 'bg-[#173F43] text-white rounded-tr-none'
+                      : 'bg-[#FBFAF4] border border-[#E1EAE3] text-[#173F43] rounded-tl-none'
+                  }`}
+                >
+                  {/* Sender Header */}
+                  <div
+                    className={`flex items-center justify-between gap-3 text-[10px] font-mono pb-1 border-b ${
+                      msg.sender === 'user'
+                        ? 'text-[#B5E4D3] border-white/15'
+                        : 'text-[#829590] border-[#E1EAE3]'
+                    }`}
+                  >
+                    <div className="flex items-center gap-1.5">
+                      {msg.sender === 'user' ? (
+                        <User className="w-3 h-3" />
+                      ) : (
+                        <ShieldCheck className="w-3 h-3 text-[#4FA58D]" />
+                      )}
+                      <span className="font-bold">
+                        {msg.sender === 'user' ? 'Clinician Inquiry' : 'MedGraph Agent (Sarvam-105B)'}
                       </span>
                     </div>
 
-                    {activeAuditResponse.plan ? (
-                      <div className="space-y-2.5">
-                        {/* Intent */}
-                        <div className="bg-zinc-900/80 p-2.5 rounded-lg border border-zinc-850">
-                          <div className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-tight">
-                            Intent Objective:
-                          </div>
-                          <p className="text-xs text-white font-medium mt-0.5">
-                            {activeAuditResponse.plan.intent}
-                          </p>
-                        </div>
+                    <div className="flex items-center gap-2">
+                      {/* Voice Output Button on Assistant Response */}
+                      {msg.sender === 'agent' && !msg.isLoading && (msg.text || msg.response?.answer) && (
+                        <button
+                          onClick={() =>
+                            handlePlaySpeech(
+                              msg.id,
+                              msg.response?.answer || msg.text || ''
+                            )
+                          }
+                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg border font-mono text-[9px] font-bold transition-all cursor-pointer ${
+                            playingMessageId === msg.id
+                              ? 'bg-[#173F43] text-white border-[#173F43]'
+                              : 'bg-white hover:bg-[#E6F4ED] text-[#174F55] border-[#B5E4D3]'
+                          }`}
+                          title="Listen to clinical answer via Sarvam Bulbul v4 Flash"
+                        >
+                          {isAudioLoading === msg.id ? (
+                            <Loader2 className="w-3 h-3 animate-spin text-[#4FA58D]" />
+                          ) : playingMessageId === msg.id ? (
+                            isAudioPaused ? (
+                              <>
+                                <Play className="w-3 h-3 text-[#8BD4A9]" />
+                                <span>Resume</span>
+                              </>
+                            ) : (
+                              <>
+                                <Pause className="w-3 h-3 text-[#8BD4A9]" />
+                                <span>Pause</span>
+                              </>
+                            )
+                          ) : (
+                            <>
+                              <Volume2 className="w-3 h-3 text-[#4FA58D]" />
+                              <span>Listen</span>
+                            </>
+                          )}
+                        </button>
+                      )}
 
-                        {/* Planned Steps */}
-                        {activeAuditResponse.plan.planned_steps && activeAuditResponse.plan.planned_steps.length > 0 && (
+                      {/* Stop audio button if currently playing */}
+                      {playingMessageId === msg.id && (
+                        <button
+                          onClick={stopCurrentAudio}
+                          className="p-1 rounded-md bg-[#FFF3F2] border border-[#FDD9D5] text-[#D95C55] hover:bg-[#FDD9D5] cursor-pointer"
+                          title="Stop audio playback"
+                        >
+                          <Square className="w-2.5 h-2.5" />
+                        </button>
+                      )}
+
+                      <span>{msg.timestamp}</span>
+                    </div>
+                  </div>
+
+                  {/* Loading Spinner */}
+                  {msg.isLoading && (
+                    <div className="py-4 flex items-center gap-3 text-xs font-mono text-[#4FA58D]">
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span>Traversing knowledge graph & reasoning with Sarvam-105B...</span>
+                    </div>
+                  )}
+
+                  {/* Active Speech Animation Pill if Playing */}
+                  {playingMessageId === msg.id && (
+                    <div className="p-2 rounded-xl bg-[#E6F4ED] border border-[#8BD4A9] flex items-center justify-between text-[11px] font-mono text-[#174F55]">
+                      <div className="flex items-center gap-2">
+                        <Volume2 className="w-3.5 h-3.5 text-[#4FA58D] animate-pulse" />
+                        <span className="font-bold">
+                          {isAudioPaused ? 'Audio Paused' : 'Playing spoken report (Bulbul v4 Flash - ishita_en_medical)'}
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-[#4FA58D]">Sarvam AI TTS</span>
+                    </div>
+                  )}
+
+                  {/* Plain Text Message */}
+                  {msg.text && !msg.isLoading && renderFormattedText(msg.text)}
+
+                  {/* Structured Investigation Response */}
+                  {msg.response && (
+                    <div className="space-y-4 pt-1">
+                      {/* Direct Clinical Answer */}
+                      <div className="text-[#173F43] leading-relaxed text-xs">
+                        {renderFormattedText(msg.response.answer)}
+                      </div>
+
+                      {/* Key Findings List */}
+                      {msg.response.key_findings && msg.response.key_findings.length > 0 && (
+                        <div className="space-y-2 pt-2 border-t border-[#E1EAE3]">
+                          <div className="font-bold text-[#174F55] text-xs font-mono uppercase tracking-wider flex items-center justify-between">
+                            <div className="flex items-center gap-1.5">
+                              <Sparkles className="w-3.5 h-3.5 text-[#4FA58D]" />
+                              <span>Key Clinical Findings:</span>
+                            </div>
+                            <button
+                              onClick={() =>
+                                handlePlaySpeech(
+                                  `${msg.id}-findings`,
+                                  msg.response?.key_findings?.join('. ') || ''
+                                )
+                              }
+                              className="text-[10px] text-[#4FA58D] hover:text-[#174F55] underline font-bold flex items-center gap-1 cursor-pointer"
+                            >
+                              <Volume2 className="w-3 h-3" />
+                              <span>Listen to findings</span>
+                            </button>
+                          </div>
                           <div className="space-y-1.5">
-                            <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase block">
-                              Execution Steps:
-                            </span>
-                            {activeAuditResponse.plan.planned_steps.map((step, idx) => (
-                              <div
-                                key={idx}
-                                className="flex items-start gap-2 text-[11px] text-zinc-200 bg-zinc-900/60 p-2 rounded border border-zinc-850/80"
-                              >
-                                <span className="w-4 h-4 rounded-full bg-zinc-800 text-zinc-300 flex items-center justify-center font-mono text-[9px] font-bold shrink-0 mt-0.5">
-                                  {idx + 1}
-                                </span>
-                                <span className="leading-snug">{step}</span>
+                            {msg.response.key_findings.map((f, i) => (
+                              <div key={i} className="flex items-start gap-2 text-[#173F43]">
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#4FA58D] mt-1.5 shrink-0" />
+                                <span className="leading-snug">{f}</span>
                               </div>
                             ))}
                           </div>
-                        )}
-
-                        {/* Identified Entities Chips */}
-                        {activeAuditResponse.plan.identified_entities && (
-                          <div className="pt-1 flex flex-wrap gap-1">
-                            {Object.entries(activeAuditResponse.plan.identified_entities).flatMap(([cat, list]) =>
-                              (list || []).map((ent, i) => (
-                                <span
-                                  key={`${cat}-${i}`}
-                                  className="text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-800"
-                                >
-                                  <strong className="text-zinc-400 font-semibold">{cat}:</strong> {ent}
-                                </span>
-                              ))
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="text-xs text-zinc-400 italic py-1">
-                        Plan steps generated across Neo4j graph & vector endpoints.
-                      </div>
-                    )}
-                  </div>
-
-                  {/* -------------------------------------------------------------
-                      SECTION B: Neo4j Sub-Graph Nodes Visited (with green checkmarks)
-                      ------------------------------------------------------------- */}
-                  <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-3.5 space-y-3">
-                    <div className="flex items-center justify-between border-b border-zinc-850 pb-2">
-                      <div className="flex items-center gap-2">
-                        <Database className="w-3.5 h-3.5 text-emerald-400" />
-                        <span className="text-xs font-bold text-white uppercase tracking-wider font-mono">
-                          b. Neo4j Sub-Graph Nodes Visited
-                        </span>
-                      </div>
-                      <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-zinc-900 text-emerald-400 border border-emerald-900/40">
-                        {activeAuditResponse.visited_nodes?.length || 0} Nodes Visited
-                      </span>
-                    </div>
-
-                    <div className="space-y-1.5 max-h-56 overflow-y-auto pr-1">
-                      {activeAuditResponse.visited_nodes && activeAuditResponse.visited_nodes.length > 0 ? (
-                        activeAuditResponse.visited_nodes.map((node, nIdx) => (
-                          <div
-                            key={nIdx}
-                            className="flex items-center justify-between gap-2 p-2 rounded-lg bg-zinc-900/70 border border-zinc-850 text-xs hover:border-zinc-700 transition-colors"
-                          >
-                            <div className="flex items-center gap-2 min-w-0">
-                              {/* Prominent Green Checkmark */}
-                              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                              <div className="min-w-0 truncate">
-                                <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-bold mr-1.5">
-                                  {node.label}
-                                </span>
-                                <span className="text-zinc-100 font-medium text-[11px] truncate">
-                                  {node.name}
-                                </span>
-                              </div>
-                            </div>
-
-                            <div className="flex items-center gap-1.5 shrink-0">
-                              {node.relationship && (
-                                <span className="text-[9px] font-mono text-zinc-400 px-1 rounded bg-zinc-950 border border-zinc-850">
-                                  {node.relationship}
-                                </span>
-                              )}
-                              <span className="text-[10px] font-mono text-white font-bold px-1.5 py-0.5 rounded bg-zinc-800 border border-zinc-700">
-                                {node.id}
-                              </span>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <div className="text-xs text-zinc-400 italic py-1">
-                          No graph nodes recorded for this turn.
                         </div>
                       )}
-                    </div>
-                  </div>
 
-                  {/* -------------------------------------------------------------
-                      SECTION C: The Vector Text Snippet Retrieved
-                      ------------------------------------------------------------- */}
-                  <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-3.5 space-y-3">
-                    <div className="flex items-center justify-between border-b border-zinc-855 pb-2">
-                      <div className="flex items-center gap-2">
-                        <FileText className="w-3.5 h-3.5 text-amber-400" />
-                        <span className="text-xs font-bold text-white uppercase tracking-wider font-mono">
-                          c. Vector Text Snippet Retrieved
-                        </span>
-                      </div>
-                      <span className="text-[10px] font-mono font-semibold text-zinc-400">
-                        Semantic Search
-                      </span>
-                    </div>
-
-                    <div className="space-y-2.5">
-                      {activeAuditResponse.vector_snippets && activeAuditResponse.vector_snippets.length > 0 ? (
-                        activeAuditResponse.vector_snippets.map((snip, sIdx) => (
-                          <div
-                            key={sIdx}
-                            className="bg-zinc-900/80 border border-zinc-850 rounded-lg p-2.5 space-y-1.5"
-                          >
-                            <div className="flex items-center justify-between text-[10px] font-mono">
-                              <div className="flex items-center gap-1.5">
-                                <span className="text-zinc-200 font-bold">{snip.note_title || 'Clinical Note'}</span>
-                                {snip.timestamp && (
-                                  <span className="text-zinc-400">
-                                    • {snip.timestamp.split('T')[0]}
-                                  </span>
-                                )}
-                              </div>
-                              <div className="flex items-center gap-1.5">
-                                {snip.score && (
-                                  <span className="px-1.5 py-0.2 rounded bg-zinc-800 text-emerald-300 font-mono text-[9px] border border-zinc-700">
-                                    Cosine: {snip.score}
-                                  </span>
-                                )}
-                                <button
-                                  onClick={() => onOpenEvidence(snip.record_id)}
-                                  className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-white font-mono text-[10px] font-bold border border-zinc-700 transition-colors"
-                                  title="Inspect original record"
-                                >
-                                  [{snip.record_id}]
-                                </button>
-                              </div>
-                            </div>
-
-                            <p className="text-[11px] text-zinc-300 italic font-medium leading-relaxed bg-zinc-950/70 p-2 rounded border border-zinc-900">
-                              "{snip.snippet}"
-                            </p>
+                      {/* Contradictions Alert */}
+                      {msg.response.contradictions_found && msg.response.contradictions_found.length > 0 && (
+                        <div className="p-3 rounded-2xl bg-[#FFF3F2] border border-[#FDD9D5] text-[#702D2D] space-y-1.5">
+                          <div className="flex items-center gap-1.5 font-bold text-xs">
+                            <AlertTriangle className="w-3.5 h-3.5 text-[#D95C55]" />
+                            <span>Documented Discrepancies Identified:</span>
                           </div>
-                        ))
-                      ) : (
-                        <div className="text-xs text-zinc-400 italic py-1">
-                          No vector snippets retrieved for this query.
+                          {msg.response.contradictions_found.map((c, i) => (
+                            <div key={i} className="text-[11px] leading-snug pl-5">
+                              • {c}
+                            </div>
+                          ))}
                         </div>
                       )}
-                    </div>
-                  </div>
 
-                  {/* -------------------------------------------------------------
-                      SECTION D: The Verifier's Check Status
-                      (Pass: 2 records matched, Flag: Discontinuation not documented in Note #4)
-                      ------------------------------------------------------------- */}
-                  <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-3.5 space-y-3">
-                    <div className="flex items-center justify-between border-b border-zinc-850 pb-2">
-                      <div className="flex items-center gap-2">
-                        <CheckCheck className="w-3.5 h-3.5 text-emerald-400" />
-                        <span className="text-xs font-bold text-white uppercase tracking-wider font-mono">
-                          d. Verifier's Check Status
-                        </span>
-                      </div>
-                      <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-zinc-900 text-white border border-zinc-700">
-                        Provenance Audit
-                      </span>
-                    </div>
+                      {/* Missing Documentation Alert */}
+                      {msg.response.missing_information && msg.response.missing_information.length > 0 && (
+                        <div className="p-3 rounded-2xl bg-[#FFF9EA] border border-[#F5D47D] text-[#674617] space-y-1.5">
+                          <div className="flex items-center gap-1.5 font-bold text-xs">
+                            <HelpCircle className="w-3.5 h-3.5 text-[#D99E32]" />
+                            <span>Missing Documentation:</span>
+                          </div>
+                          {msg.response.missing_information.map((m, i) => (
+                            <div key={i} className="text-[11px] leading-snug pl-5">
+                              • {m}
+                            </div>
+                          ))}
+                        </div>
+                      )}
 
-                    <div className="space-y-2">
-                      {activeAuditResponse.verifier_checks && activeAuditResponse.verifier_checks.length > 0 ? (
-                        activeAuditResponse.verifier_checks.map((chk, kIdx) => {
-                          const isPass = chk.status === 'PASS';
-                          return (
-                            <div
-                              key={kIdx}
-                              className={`p-3 rounded-lg border space-y-1.5 ${
-                                isPass
-                                  ? 'bg-zinc-900/60 border-zinc-800'
-                                  : 'bg-zinc-900/80 border-amber-900/50'
-                              }`}
-                            >
-                              <div className="flex items-center justify-between gap-2">
-                                <span
-                                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-mono font-bold tracking-tight ${
-                                    isPass
-                                      ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-600/70'
-                                      : 'bg-amber-950/80 text-amber-300 border border-amber-600/70'
-                                  }`}
+                      {/* Atomic Verified Claims Accordion */}
+                      {msg.response.claims && msg.response.claims.length > 0 && (
+                        <div className="space-y-2 pt-2 border-t border-[#E1EAE3]">
+                          <div className="font-bold text-[#173F43] text-xs font-mono uppercase tracking-wider flex items-center justify-between">
+                            <span>Verified Claims & Evidence Trail ({msg.response.claims.length}):</span>
+                            <span className="text-[10px] text-[#4FA58D] font-bold">Immutable EHR Grounding</span>
+                          </div>
+                          <div className="space-y-2">
+                            {msg.response.claims.map((claimItem, cIdx) => {
+                              const badge = getVerificationBadge(claimItem.status);
+                              const IconComponent = badge.icon;
+                              const isExpanded = expandedClaims[`${msg.id}-${cIdx}`];
+
+                              return (
+                                <div
+                                  key={cIdx}
+                                  className="bg-[#FFFEFB] border border-[#E1EAE3] rounded-2xl p-3 space-y-2 text-xs"
                                 >
-                                  {isPass ? (
-                                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                                  ) : (
-                                    <AlertTriangle className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                                  )}
-                                  {chk.badge_text}
-                                </span>
-
-                                {chk.matched_records && chk.matched_records.length > 0 && (
-                                  <div className="flex items-center gap-1 shrink-0">
-                                    {chk.matched_records.map((rId, rIdx) => (
-                                      <button
-                                        key={rIdx}
-                                        onClick={() => onOpenEvidence(rId)}
-                                        className="px-1.5 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-white font-mono text-[10px] font-bold border border-zinc-700 transition-colors"
+                                  <div className="flex items-start justify-between gap-2">
+                                    <div className="flex items-start gap-2">
+                                      <span
+                                        className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-bold border flex items-center gap-1 shrink-0 ${badge.bg} ${badge.border} ${badge.text}`}
                                       >
-                                        [{rId}]
+                                        <IconComponent className="w-3 h-3" />
+                                        <span>{badge.label}</span>
+                                      </span>
+                                      <span className="font-semibold text-[#173F43] leading-snug">
+                                        {claimItem.claim}
+                                      </span>
+                                    </div>
+
+                                    {claimItem.evidence && claimItem.evidence.length > 0 && (
+                                      <button
+                                        onClick={() =>
+                                          setExpandedClaims((prev) => ({
+                                            ...prev,
+                                            [`${msg.id}-${cIdx}`]: !prev[`${msg.id}-${cIdx}`],
+                                          }))
+                                        }
+                                        className="text-[#829590] hover:text-[#173F43] p-0.5 cursor-pointer"
+                                      >
+                                        {isExpanded ? (
+                                          <ChevronUp className="w-4 h-4" />
+                                        ) : (
+                                          <ChevronDown className="w-4 h-4" />
+                                        )}
                                       </button>
-                                    ))}
+                                    )}
                                   </div>
-                                )}
-                              </div>
 
-                              <div className="text-xs text-white font-semibold">
-                                {chk.claim}
-                              </div>
-
-                              {chk.details && (
-                                <p className="text-[11px] text-zinc-300 leading-relaxed font-sans">
-                                  {chk.details}
-                                </p>
-                              )}
-                            </div>
-                          );
-                        })
-                      ) : (
-                        <div className="text-xs text-zinc-400 italic py-1">
-                          No verifier checks recorded for this turn.
+                                  {/* Evidence Dropdown */}
+                                  {isExpanded && claimItem.evidence && (
+                                    <div className="pt-2 border-t border-[#EEF3EE] space-y-2">
+                                      {claimItem.evidence.map((ev, evIdx) => (
+                                        <div
+                                          key={evIdx}
+                                          className="p-2.5 rounded-xl bg-[#FBFAF4] border border-[#E1EAE3] text-[11px] font-mono space-y-1"
+                                        >
+                                          <div className="flex items-center justify-between text-[#287B80]">
+                                            <span className="font-bold">Record: {ev.record_id}</span>
+                                            <button
+                                              onClick={() => onOpenEvidence(ev.record_id)}
+                                              className="underline font-bold text-[#4FA58D] hover:text-[#174F55] flex items-center gap-1 cursor-pointer"
+                                            >
+                                              <span>Inspect Source</span>
+                                              <ExternalLink className="w-2.5 h-2.5" />
+                                            </button>
+                                          </div>
+                                          {ev.quote && (
+                                            <div className="text-[#657C78] italic font-sans">
+                                              "{ev.quote}"
+                                            </div>
+                                          )}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
                         </div>
                       )}
                     </div>
-                  </div>
-                </>
-              ) : (
-                /* Standby State when no investigation question has been asked yet */
-                <div className="h-full flex flex-col items-center justify-center text-center p-8 space-y-4 text-zinc-400">
-                  <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-300 shadow-inner">
-                    <ShieldCheck className="w-6 h-6 text-zinc-400" />
-                  </div>
-                  <div className="space-y-1.5 max-w-sm">
-                    <h3 className="text-sm font-bold text-white font-mono uppercase tracking-wider">
-                      Audit Panel Standby
-                    </h3>
-                    <p className="text-xs text-zinc-400 leading-relaxed">
-                      Ask a question or select a prompt on the left to inspect the LangGraph agent's:
-                    </p>
-                  </div>
-
-                  <div className="w-full max-w-xs space-y-2 text-left font-mono text-[11px]">
-                    <div className="p-2 rounded bg-zinc-900/60 border border-zinc-850 flex items-center gap-2 text-zinc-300">
-                      <span className="w-2 h-2 rounded-full bg-sky-400" />
-                      <strong>a. The Plan generated</strong>
-                    </div>
-                    <div className="p-2 rounded bg-zinc-900/60 border border-zinc-850 flex items-center gap-2 text-zinc-300">
-                      <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                      <strong>b. Neo4j visited nodes (with green checks)</strong>
-                    </div>
-                    <div className="p-2 rounded bg-zinc-900/60 border border-zinc-850 flex items-center gap-2 text-zinc-300">
-                      <span className="w-2 h-2 rounded-full bg-amber-400" />
-                      <strong>c. Vector text snippet retrieved</strong>
-                    </div>
-                    <div className="p-2 rounded bg-zinc-900/60 border border-zinc-850 flex items-center gap-2 text-zinc-300">
-                      <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                      <strong>d. Verifier's check status (Pass/Flag)</strong>
-                    </div>
-                  </div>
+                  )}
                 </div>
-              )}
+              </div>
+            ))
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* ─────────────────────────────────────────────────────────────
+            TRANSCRIPTION CONFIRMATION & EDITING BANNER
+            ───────────────────────────────────────────────────────────── */}
+        {transcriptionPreview && (
+          <div className="mb-2 p-3.5 rounded-2xl bg-[#E6F4ED] border border-[#8BD4A9] shadow-xs space-y-2 animate-fadeIn">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Mic className="w-4 h-4 text-[#174F55]" />
+                <span className="font-bold text-xs text-[#174F55]">
+                  Voice Transcribed via Sarvam Saaras v4
+                </span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white text-[#174F55] border border-[#B5E4D3]">
+                  {transcriptionPreview.language_code}
+                </span>
+              </div>
+              <span className="text-[10px] text-[#657C78]">
+                Review or edit before submitting
+              </span>
+            </div>
+
+            <textarea
+              value={transcriptionPreview.transcript}
+              onChange={(e) =>
+                setTranscriptionPreview({
+                  ...transcriptionPreview,
+                  transcript: e.target.value,
+                })
+              }
+              rows={2}
+              className="w-full bg-white border border-[#B5E4D3] text-xs p-2.5 rounded-xl text-[#173F43] focus:outline-none focus:ring-1 focus:ring-[#4FA58D]"
+            />
+
+            <div className="flex items-center justify-end gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => setTranscriptionPreview(null)}
+                className="px-3 py-1.5 rounded-xl text-xs text-[#829590] hover:text-[#173F43] hover:bg-white/60 transition-colors cursor-pointer"
+              >
+                Discard
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSend(transcriptionPreview.transcript)}
+                className="px-4 py-1.5 rounded-xl bg-[#173F43] hover:bg-[#205559] text-white text-xs font-bold transition-all shadow-2xs flex items-center gap-1.5 cursor-pointer"
+              >
+                <Check className="w-3.5 h-3.5 text-[#8BD4A9]" />
+                <span>Confirm & Investigate</span>
+              </button>
             </div>
           </div>
         )}
-      </div>
+
+        {/* ─────────────────────────────────────────────────────────────
+            ACTIVE RECORDING INDICATOR
+            ───────────────────────────────────────────────────────────── */}
+        {isRecording && (
+          <div className="mb-2 p-3 rounded-2xl bg-[#FFF3F2] border border-[#FDD9D5] flex items-center justify-between shadow-xs animate-pulse">
+            <div className="flex items-center gap-3">
+              <div className="w-3 h-3 rounded-full bg-[#D95C55] animate-ping" />
+              <div className="leading-tight">
+                <div className="text-xs font-bold text-[#702D2D]">
+                  Listening via Microphone...
+                </div>
+                <div className="text-[10px] font-mono text-[#D95C55]">
+                  Recording: {Math.floor(recordingDuration / 60)}:{(recordingDuration % 60).toString().padStart(2, '0')}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={cancelRecording}
+                className="px-3 py-1 text-xs text-[#702D2D] hover:bg-white/60 rounded-xl cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={stopRecording}
+                className="px-4 py-1.5 bg-[#D95C55] hover:bg-[#C24D47] text-white text-xs font-bold rounded-xl flex items-center gap-1.5 shadow-2xs cursor-pointer"
+              >
+                <Square className="w-3 h-3" />
+                <span>Stop & Transcribe</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Transcribing loading banner */}
+        {isTranscribing && (
+          <div className="mb-2 p-3 rounded-2xl bg-[#E6F4ED] border border-[#B5E4D3] flex items-center gap-3 text-xs font-mono text-[#174F55]">
+            <Loader2 className="w-4 h-4 animate-spin text-[#4FA58D]" />
+            <span>Transcribing audio through Sarvam Saaras v4 speech recognition...</span>
+          </div>
+        )}
+
+        {/* ─────────────────────────────────────────────────────────────
+            Bottom Floating Input Dock (Text + Voice Combined)
+            ───────────────────────────────────────────────────────────── */}
+        <div className="pt-2 space-y-2">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSend();
+            }}
+            className="p-3 bg-[#FBFAF4] border border-[#E1EAE3] rounded-3xl shadow-xs space-y-2 focus-within:border-[#91D5BE] focus-within:ring-2 focus-within:ring-[#91D5BE]/20 transition-all"
+          >
+            <textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSend();
+                }
+              }}
+              placeholder="Ask a clinical question, paste a chart excerpt, or speak your inquiry..."
+              disabled={isSubmitting || isRecording || isTranscribing}
+              rows={2}
+              className="w-full bg-transparent border-0 resize-none text-xs text-[#173F43] placeholder-[#A8B9B2] focus:outline-none focus:ring-0 leading-relaxed px-1"
+            />
+
+            {/* Dock Action Bar: Voice Controls + Mode + Send */}
+            <div className="flex items-center justify-between pt-1 border-t border-[#E1EAE3]">
+              {/* Left: Mode toggle & Audio language */}
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setStrictEvidenceMode((prev) => !prev)}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[11px] font-mono font-bold transition-all cursor-pointer ${
+                    strictEvidenceMode
+                      ? 'bg-[#E6F4ED] text-[#174F55] border border-[#91D5BE]'
+                      : 'bg-[#F0F5F2] text-[#829590] border border-[#CAD8D1]'
+                  }`}
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#4FA58D]" />
+                  <span>{strictEvidenceMode ? 'Evidence: ON' : 'Evidence: OFF'}</span>
+                </button>
+
+                {/* Voice Upload Button */}
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  title="Upload audio memo (.wav, .mp3, .m4a)"
+                  disabled={isRecording || isTranscribing}
+                  className="p-1.5 rounded-xl bg-[#FFFEFB] hover:bg-[#E6F4ED] text-[#657C78] hover:text-[#174F55] border border-[#E1EAE3] transition-all cursor-pointer"
+                >
+                  <UploadCloud className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              {/* Right: Microphone Button + Send Button */}
+              <div className="flex items-center gap-2">
+                {/* Unified Microphone Button */}
+                <button
+                  type="button"
+                  onClick={isRecording ? stopRecording : startRecording}
+                  disabled={isTranscribing || isSubmitting}
+                  className={`p-2 rounded-xl transition-all flex items-center gap-1.5 text-xs font-semibold cursor-pointer ${
+                    isRecording
+                      ? 'bg-[#D95C55] text-white shadow-xs animate-pulse'
+                      : 'bg-[#FFFEFB] hover:bg-[#E6F4ED] text-[#173F43] hover:text-[#174F55] border border-[#E1EAE3]'
+                  }`}
+                  title={isRecording ? 'Stop voice recording' : 'Speak clinical question (Sarvam Saaras v4)'}
+                >
+                  <Mic className={`w-4 h-4 ${isRecording ? 'text-white' : 'text-[#4FA58D]'}`} />
+                  <span className="hidden sm:inline text-[11px]">
+                    {isRecording ? 'Stop' : 'Voice'}
+                  </span>
+                </button>
+
+                <span className="hidden sm:inline-block text-[10px] font-mono text-[#829590]">
+                  ↵ to send
+                </span>
+
+                {/* Send Button */}
+                <button
+                  type="submit"
+                  disabled={!input.trim() || isSubmitting || isRecording}
+                  className="px-4 py-2 bg-[#173F43] hover:bg-[#205559] disabled:opacity-40 text-white text-xs font-bold rounded-xl transition-all shadow-2xs flex items-center gap-1.5 cursor-pointer"
+                >
+                  <span>Send</span>
+                  <Send className="w-3 h-3 text-[#8BD4A9]" />
+                </button>
+              </div>
+            </div>
+          </form>
+
+          {/* Legal Clinical Disclaimer */}
+          <p className="text-center text-[10px] text-[#829590] font-sans">
+            MedGraph is a clinical decision-support tool. Both chat and voice execute immutable hospital record verification.
+          </p>
+        </div>
+      </section>
+
+      {/* ─────────────────────────────────────────────────────────────
+          3. RIGHT SIDEBAR: Prompt Library & Model / Pipeline Controls
+          ───────────────────────────────────────────────────────────── */}
+      <aside className="w-full lg:w-72 xl:w-80 shrink-0 space-y-4">
+        {/* PROMPT LIBRARY CARD */}
+        <div className="bg-[#FFFEFB] border border-[#E1EAE3] rounded-3xl p-4 shadow-xs space-y-3">
+          <div className="flex items-center justify-between pb-2 border-b border-[#E1EAE3]">
+            <div className="flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-[#4FA58D]" />
+              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#173F43]">
+                Prompt Library
+              </h3>
+            </div>
+            <span className="text-[10px] font-mono text-[#829590]">
+              {filteredPrompts.length} templates
+            </span>
+          </div>
+
+          {/* Search Prompts */}
+          <div className="relative">
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#829590]" />
+            <input
+              type="text"
+              placeholder="Search prompts..."
+              value={promptSearch}
+              onChange={(e) => setPromptSearch(e.target.value)}
+              className="w-full pl-8 pr-3 py-1.5 bg-[#FBFAF4] border border-[#E1EAE3] text-xs rounded-xl text-[#173F43] placeholder-[#A8B9B2] focus:outline-none focus:ring-1 focus:ring-[#91D5BE]"
+            />
+          </div>
+
+          {/* Prompt List */}
+          <div className="space-y-1.5 max-h-56 overflow-y-auto pr-0.5">
+            {filteredPrompts.map((p, idx) => (
+              <button
+                key={idx}
+                onClick={() => handleSend(p.prompt)}
+                disabled={isSubmitting || isRecording}
+                className="w-full text-left p-2.5 rounded-2xl bg-[#FBFAF4] hover:bg-[#E6F4ED] border border-[#E1EAE3] hover:border-[#91D5BE] transition-all text-xs space-y-1 group cursor-pointer disabled:opacity-50"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-[#173F43] group-hover:text-[#174F55]">
+                    {p.title}
+                  </span>
+                  <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-[#E6F4ED] text-[#174F55] font-bold">
+                    {p.tag}
+                  </span>
+                </div>
+                <p className="text-[11px] text-[#657C78] line-clamp-2 leading-relaxed">
+                  "{p.prompt}"
+                </p>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* LANGGRAPH PIPELINE AUDIT CARD */}
+        <div className="bg-[#FFFEFB] border border-[#E1EAE3] rounded-3xl p-4 shadow-xs space-y-3">
+          <div className="flex items-center justify-between pb-2 border-b border-[#E1EAE3]">
+            <div className="flex items-center gap-2">
+              <Activity className="w-4 h-4 text-[#4FA58D]" />
+              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#173F43]">
+                LangGraph Pipeline
+              </h3>
+            </div>
+            <span className="text-[10px] font-mono text-[#4FA58D] font-bold">
+              {isSubmitting ? 'Running' : selectedResponse ? 'Completed' : 'Ready'}
+            </span>
+          </div>
+
+          <div className="space-y-1.5 text-xs">
+            {[
+              { stage: '1. Fast Entity & Temporal Planning' },
+              { stage: '2. Parallel Graph & Vector Retrieval' },
+              { stage: '3. Cross-Hospital Evidence Merger' },
+              { stage: '4. Temporal Trajectory Reasoning' },
+              { stage: '5. Atomic Claim Verification' },
+              { stage: '6. Sarvam-105B Clinical Synthesis' },
+            ].map((s, idx) => {
+              const status = isSubmitting
+                ? idx <= 2
+                  ? 'Running...'
+                  : 'Pending'
+                : selectedResponse
+                ? 'Completed'
+                : 'Ready';
+
+              return (
+                <div
+                  key={idx}
+                  className="flex items-center justify-between p-2 rounded-xl bg-[#FBFAF4] border border-[#E1EAE3]"
+                >
+                  <span className="font-medium text-[#173F43] text-[11px]">{s.stage}</span>
+                  <span
+                    className={`font-mono text-[9px] font-bold px-2 py-0.5 rounded ${
+                      status === 'Completed'
+                        ? 'bg-[#E6F4ED] text-[#1B4F3A] border border-[#8BD4A9]'
+                        : status === 'Running...'
+                        ? 'bg-[#FFF9EA] text-[#674617] border border-[#F5D47D] animate-pulse'
+                        : 'bg-[#F7F9F5] text-[#829590]'
+                    }`}
+                  >
+                    {status}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* SARVAM AI MODELS & VOICE CONTROLS */}
+        <div className="bg-[#FFFEFB] border border-[#E1EAE3] rounded-3xl p-4 shadow-xs space-y-3">
+          {/* Select Model */}
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between text-[10px] font-mono uppercase font-bold text-[#829590] tracking-wider">
+              <span>Primary LLM</span>
+              <span className="text-[#4FA58D]">Active</span>
+            </div>
+            <div className="w-full p-2.5 rounded-2xl bg-[#173F43] text-white text-xs font-semibold flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-3.5 h-3.5 text-[#8BD4A9]" />
+                <span>Sarvam-105B (Indic Flagship)</span>
+              </div>
+              <Check className="w-3.5 h-3.5 text-[#8BD4A9]" />
+            </div>
+          </div>
+
+          {/* Clinical TTS Voice Selection */}
+          <div className="space-y-1.5 pt-1">
+            <div className="flex items-center justify-between text-[10px] font-mono uppercase font-bold text-[#829590] tracking-wider">
+              <span>Clinical Speech Voice</span>
+              <span className="text-[#174F55]">Bulbul v4</span>
+            </div>
+            <select
+              value={selectedSpeaker}
+              onChange={(e) => setSelectedSpeaker(e.target.value as any)}
+              className="w-full p-2 rounded-xl bg-[#FBFAF4] border border-[#E1EAE3] text-xs font-semibold text-[#173F43] focus:outline-none focus:ring-1 focus:ring-[#91D5BE] cursor-pointer"
+            >
+              <option value="ishita_en_medical">Ishita (Medical Specialist - en)</option>
+              <option value="ritu_en_medical">Ritu (Clinical Assistant - en)</option>
+              <option value="shubh_en_narration">Shubh (Authoritative Narrator - en)</option>
+            </select>
+          </div>
+        </div>
+      </aside>
     </div>
   );
 };

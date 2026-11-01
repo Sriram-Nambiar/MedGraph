@@ -2,7 +2,7 @@
   "patient": {
     "id": "P001",
     "mrn": "MRN-847291",
-    "name": "Eleanor Vance",
+    "name": "Lakshmi Sundaram",
     "age": 68,
     "gender": "Female",
     "dateOfBirth": "1958-04-12",
@@ -172,7 +172,7 @@
       "noteType": "Discharge Summary",
       "title": "Cardiology Summary: Acute Heart Failure & ACE-Inhibitor Washout",
       "authorId": "DOC-102",
-      "text": "Cardiology Inpatient Summary: Patient Eleanor Vance admitted for acute decompensated heart failure (EF 32%) complicated by severe hyperkalemia (Potassium 5.7 mEq/L) on Lisinopril 20 mg. Lisinopril was abruptly discontinued. Following aggressive potassium normalization and a 36-hour washout period, initiated Sacubitril/Valsartan (Entresto) 24/26 mg BID. Condition stable at discharge.",
+      "text": "Cardiology Inpatient Summary: Patient Lakshmi Sundaram admitted for acute decompensated heart failure (EF 32%) complicated by severe hyperkalemia (Potassium 5.7 mEq/L) on Lisinopril 20 mg. Lisinopril was abruptly discontinued. Following aggressive potassium normalization and a 36-hour washout period, initiated Sacubitril/Valsartan (Entresto) 24/26 mg BID. Condition stable at discharge.",
       "sourceRecordId": "REC-P001-001"
     },
     {
@@ -183,7 +183,7 @@
       "noteType": "Consultation Note",
       "title": "Dermatology Clinic: Plaque Psoriasis Assessment",
       "authorId": "DOC-109",
-      "text": "Dermatology Clinic Outpatient Note: Patient Eleanor Vance evaluated by Dr. Maya Lin for extensive silvery erythematous plaques over bilateral elbows and knees consistent with plaque psoriasis. Prescribed Clobetasol Propionate 0.05% topical cream twice daily. Patient instructed on proper topical application and monitoring for skin atrophy.",
+      "text": "Dermatology Clinic Outpatient Note: Patient Lakshmi Sundaram evaluated by Dr. Maya Lin for extensive silvery erythematous plaques over bilateral elbows and knees consistent with plaque psoriasis. Prescribed Clobetasol Propionate 0.05% topical cream twice daily. Patient instructed on proper topical application and monitoring for skin atrophy.",
       "sourceRecordId": "REC-P001-002"
     }
   ]

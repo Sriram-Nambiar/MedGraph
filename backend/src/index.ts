@@ -8,6 +8,7 @@ import vectorRoutes from './routes/vector-routes.js';
 import admissionRoutes from './routes/admission-routes.js';
 import agentRoutes from './routes/agent-routes.js';
 import interopRoutes from './routes/interop-routes.js';
+import voiceRoutes from './routes/voice-routes.js';
 import { seedKnowledgeGraph } from './ingestion/seed.js';
 import { vectorStore } from './vector/vector-store.js';
 import { graphService } from './graph/graph-service.js';
@@ -20,7 +21,8 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({ origin: '*' }));
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Routes
 app.use('/api', healthRoutes);
@@ -30,6 +32,7 @@ app.use('/api/vector', vectorRoutes);
 app.use('/api/admissions', admissionRoutes);
 app.use('/api', agentRoutes);
 app.use('/api', interopRoutes);
+app.use('/api/voice', voiceRoutes);
 
 // Root greeting
 app.get('/', (req, res) => {

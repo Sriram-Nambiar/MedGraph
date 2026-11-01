@@ -2,7 +2,7 @@
   "patient": {
     "id": "P002",
     "mrn": "MRN-391824",
-    "name": "Marcus Thorne",
+    "name": "Rajesh Sharma",
     "age": 54,
     "gender": "Male",
     "dateOfBirth": "1972-08-25",
@@ -333,7 +333,7 @@
       "noteType": "Admission Note",
       "title": "Emergency H&P: Acute Popliteal DVT",
       "authorId": "DOC-101",
-      "text": "Marcus Thorne is a 54-year-old male presenting with painful swelling of the right calf and popliteal fossa following a 14-hour international flight.\nVenous Doppler ultrasound confirms extensive occlusive thrombus in the right popliteal and posterior tibial veins.\nBaseline labs: INR 1.0, Platelets 240k.\nStarted on Enoxaparin 1 mg/kg BID bridge and Warfarin 5 mg daily.",
+      "text": "Rajesh Sharma is a 54-year-old male presenting with painful swelling of the right calf and popliteal fossa following a 14-hour international flight.\nVenous Doppler ultrasound confirms extensive occlusive thrombus in the right popliteal and posterior tibial veins.\nBaseline labs: INR 1.0, Platelets 240k.\nStarted on Enoxaparin 1 mg/kg BID bridge and Warfarin 5 mg daily.",
       "sourceRecordId": "REC-P002-001"
     },
     {

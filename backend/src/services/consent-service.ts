@@ -11,7 +11,7 @@ export class ConsentService {
   }
 
   private seedDemoConsents(): void {
-    // Demo 1: P002 Marcus Thorne has an existing active consent grant from Apollo General Hospital to BCMC
+    // Demo 1: P002 Rajesh Sharma has an existing active consent grant from Apollo General Hospital to BCMC
     const p2ReqId = 'REQ-P002-INIT';
     const p2GrantId = 'GRANT-P002-ACTIVE';
     const now = new Date();
@@ -20,7 +20,7 @@ export class ConsentService {
     this.requests.set(p2ReqId, {
       request_id: p2ReqId,
       patient_id: 'P002',
-      patient_name: 'Marcus Thorne',
+      patient_name: 'Rajesh Sharma',
       requesting_hospital_id: 'HOSP002',
       requesting_hospital_name: 'Bengaluru City Medical Center',
       source_hospital_id: 'HOSP001',
@@ -43,12 +43,12 @@ export class ConsentService {
       status: 'ACTIVE',
     });
 
-    // Demo 2: P001 Eleanor Vance starts with a pending consent request so the user can demonstrate live approval!
+    // Demo 2: P001 Lakshmi Sundaram starts with a pending consent request so the user can demonstrate live approval!
     const p1ReqId = 'REQ-P001-PENDING';
     this.requests.set(p1ReqId, {
       request_id: p1ReqId,
       patient_id: 'P001',
-      patient_name: 'Eleanor Vance',
+      patient_name: 'Lakshmi Sundaram',
       requesting_hospital_id: 'HOSP002',
       requesting_hospital_name: 'Bengaluru City Medical Center',
       source_hospital_id: 'HOSP001',

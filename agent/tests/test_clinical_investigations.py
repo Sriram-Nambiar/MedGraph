@@ -137,7 +137,7 @@ async def test_08_unsupported_causal_explanations():
 @pytest.mark.asyncio
 async def test_09_patient_isolation_threads():
     # Run thread for P001
-    res1 = await run_investigation(patient_id="P001", user_question="Medications for Eleanor?", thread_id="thread_p1_secure")
+    res1 = await run_investigation(patient_id="P001", user_question="Medications for Lakshmi?", thread_id="thread_p1_secure")
     assert all("P2" not in r for r in res1.source_record_ids)
 
     # Run thread for P002

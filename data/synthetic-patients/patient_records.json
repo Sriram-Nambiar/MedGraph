@@ -3,7 +3,7 @@
     "patient": {
       "id": "P001",
       "mrn": "MRN-847291",
-      "name": "Eleanor Vance",
+      "name": "Lakshmi Sundaram",
       "age": 68,
       "gender": "Female",
       "dateOfBirth": "1958-04-12",
@@ -457,7 +457,7 @@
         "noteType": "Admission Note",
         "title": "H&P: Acute Decompensated Heart Failure Exacerbation",
         "authorId": "DOC-102",
-        "text": "HISTORY OF PRESENT ILLNESS:\nMrs. Eleanor Vance is a 68-year-old female with known history of HFrEF (ejection fraction 32%), hypertension, and CKD Stage 3a who presents with a 5-day history of progressively worsening shortness of breath, 2-pillow orthopnea, and 3+ bilateral pitting pedal edema up to mid-shin. She admits to dietary indiscretion with high sodium intake over the holiday weekend.\n\nPHYSICAL EXAMINATION:\nVitals: BP 152/88 mmHg, HR 88 bpm, RR 22 bpm, SpO2 93% on room air.\nCardiovascular: Tachycardic, regular rhythm, S3 gallop audible at apex, JVD 8 cm above sternal angle.\nPulmonary: Bibasilar crackles extending to mid-lung fields.\nExtremities: 3+ pitting edema bilaterally to mid-calf.\n\nASSESSMENT & PLAN:\n1. Acute Decompensated Heart Failure (HFrEF): Volume overload secondary to dietary indiscretion.\n   - IV Furosemide 40 mg BID for aggressive diuresis.\n   - Initiate oral Lisinopril 20 mg daily for afterload reduction.\n   - Monitor daily weights, strict ins and outs, daily basic metabolic panel.\n2. Chronic Kidney Disease Stage 3a: Baseline creatinine 1.2 mg/dL, eGFR 58 mL/min.\n3. Diabetes Mellitus Type 2: Continue Metformin 500 mg BID.",
+        "text": "HISTORY OF PRESENT ILLNESS:\nMrs. Lakshmi Sundaram is a 68-year-old female with known history of HFrEF (ejection fraction 32%), hypertension, and CKD Stage 3a who presents with a 5-day history of progressively worsening shortness of breath, 2-pillow orthopnea, and 3+ bilateral pitting pedal edema up to mid-shin. She admits to dietary indiscretion with high sodium intake over the holiday weekend.\n\nPHYSICAL EXAMINATION:\nVitals: BP 152/88 mmHg, HR 88 bpm, RR 22 bpm, SpO2 93% on room air.\nCardiovascular: Tachycardic, regular rhythm, S3 gallop audible at apex, JVD 8 cm above sternal angle.\nPulmonary: Bibasilar crackles extending to mid-lung fields.\nExtremities: 3+ pitting edema bilaterally to mid-calf.\n\nASSESSMENT & PLAN:\n1. Acute Decompensated Heart Failure (HFrEF): Volume overload secondary to dietary indiscretion.\n   - IV Furosemide 40 mg BID for aggressive diuresis.\n   - Initiate oral Lisinopril 20 mg daily for afterload reduction.\n   - Monitor daily weights, strict ins and outs, daily basic metabolic panel.\n2. Chronic Kidney Disease Stage 3a: Baseline creatinine 1.2 mg/dL, eGFR 58 mL/min.\n3. Diabetes Mellitus Type 2: Continue Metformin 500 mg BID.",
         "sourceRecordId": "REC-P001-001"
       },
       {
@@ -567,7 +567,7 @@
     "patient": {
       "id": "P002",
       "mrn": "MRN-391824",
-      "name": "Marcus Thorne",
+      "name": "Rajesh Sharma",
       "age": 54,
       "gender": "Male",
       "dateOfBirth": "1972-08-25",
@@ -898,7 +898,7 @@
         "noteType": "Admission Note",
         "title": "Emergency H&P: Acute Popliteal DVT",
         "authorId": "DOC-101",
-        "text": "Marcus Thorne is a 54-year-old male presenting with painful swelling of the right calf and popliteal fossa following a 14-hour international flight.\nVenous Doppler ultrasound confirms extensive occlusive thrombus in the right popliteal and posterior tibial veins.\nBaseline labs: INR 1.0, Platelets 240k.\nStarted on Enoxaparin 1 mg/kg BID bridge and Warfarin 5 mg daily.",
+        "text": "Rajesh Sharma is a 54-year-old male presenting with painful swelling of the right calf and popliteal fossa following a 14-hour international flight.\nVenous Doppler ultrasound confirms extensive occlusive thrombus in the right popliteal and posterior tibial veins.\nBaseline labs: INR 1.0, Platelets 240k.\nStarted on Enoxaparin 1 mg/kg BID bridge and Warfarin 5 mg daily.",
         "sourceRecordId": "REC-P002-001"
       },
       {
@@ -1004,7 +1004,7 @@
     "patient": {
       "id": "P003",
       "mrn": "MRN-582109",
-      "name": "Sarah Chen",
+      "name": "Priya Nambiar",
       "age": 42,
       "gender": "Female",
       "dateOfBirth": "1984-11-03",
@@ -1266,7 +1266,7 @@
         "noteType": "Consultation Note",
         "title": "Neuroimmunology Semi-Annual MS Review",
         "authorId": "DOC-104",
-        "text": "Sarah Chen is a 42-year-old female with RRMS diagnosed in 2019. EDSS score is stable at 2.5.\nCurrently receiving Ocrelizumab 600 mg IV every 6 months, next infusion scheduled for late October 2025.\nTaking Baclofen 10 mg TID for spasticity. Uses intermittent self-catheterization for neurogenic bladder.",
+        "text": "Priya Nambiar is a 42-year-old female with RRMS diagnosed in 2019. EDSS score is stable at 2.5.\nCurrently receiving Ocrelizumab 600 mg IV every 6 months, next infusion scheduled for late October 2025.\nTaking Baclofen 10 mg TID for spasticity. Uses intermittent self-catheterization for neurogenic bladder.",
         "sourceRecordId": "REC-P003-001"
       },
       {
@@ -1351,7 +1351,7 @@
     "patient": {
       "id": "P004",
       "mrn": "MRN-204918",
-      "name": "James Rodriguez",
+      "name": "Ramesh Patel",
       "age": 71,
       "gender": "Male",
       "dateOfBirth": "1955-01-19",
@@ -1689,7 +1689,7 @@
     "patient": {
       "id": "P005",
       "mrn": "MRN-773012",
-      "name": "Beatrice Kim",
+      "name": "Sunita Deshmukh",
       "age": 80,
       "gender": "Female",
       "dateOfBirth": "1946-06-30",

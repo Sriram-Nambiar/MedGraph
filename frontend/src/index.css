@@ -1,270 +1,183 @@
 @import "tailwindcss";
 @import "@xyflow/react/dist/style.css";
 
+@theme {
+  /* Primary Mint */
+  --color-mint-50: #F2FBF7;
+  --color-mint-100: #E6F4ED;
+  --color-mint-200: #D1EEE3;
+  --color-mint-300: #B5E4D3;
+  --color-mint-400: #91D5BE;
+  --color-mint-500: #6CC2A5;
+  --color-mint-600: #4FA58D;
+  --color-mint-700: #378576;
+  --color-mint-800: #24665F;
+  --color-mint-900: #174F55;
+
+  /* Secondary Teal */
+  --color-teal-50: #F0FAF9;
+  --color-teal-100: #DDF3F1;
+  --color-teal-200: #BCE5E1;
+  --color-teal-300: #91D2D0;
+  --color-teal-400: #68B9B7;
+  --color-teal-500: #3D9698;
+  --color-teal-600: #287B80;
+  --color-teal-700: #21666C;
+  --color-teal-800: #1C535A;
+  --color-teal-900: #173F43;
+
+  /* Accent Coral */
+  --color-coral-50: #FFF4F0;
+  --color-coral-100: #FDE4DA;
+  --color-coral-200: #FBC9BB;
+  --color-coral-300: #F6AC99;
+  --color-coral-400: #F28D79;
+  --color-coral-500: #E77763;
+  --color-coral-600: #CA604F;
+  --color-coral-700: #A94B40;
+  --color-coral-800: #873D37;
+  --color-coral-900: #63312F;
+
+  /* Success */
+  --color-success-50: #F0FBF5;
+  --color-success-100: #D8F3E4;
+  --color-success-300: #8BD4A9;
+  --color-success-500: #4EA77B;
+  --color-success-700: #287653;
+  --color-success-900: #1B4F3A;
+
+  /* Warning */
+  --color-warning-50: #FFF9EA;
+  --color-warning-100: #FFF0C7;
+  --color-warning-300: #F5D47D;
+  --color-warning-500: #D99E32;
+  --color-warning-700: #996B1F;
+  --color-warning-900: #674617;
+
+  /* Error */
+  --color-error-50: #FFF3F2;
+  --color-error-100: #FDD9D5;
+  --color-error-300: #F39B91;
+  --color-error-500: #D95C55;
+  --color-error-700: #A83D3A;
+  --color-error-900: #702D2D;
+
+  /* Neutral */
+  --color-cream: #FBFAF4;
+  --color-surface: #FFFEFB;
+  --color-neutral-50: #F7F9F5;
+  --color-neutral-100: #EEF3EE;
+  --color-neutral-200: #E1EAE3;
+  --color-neutral-300: #CAD8D1;
+  --color-neutral-400: #A8B9B2;
+  --color-neutral-500: #829590;
+  --color-neutral-600: #657C78;
+  --color-neutral-700: #4C6865;
+  --color-neutral-800: #31514F;
+  --color-neutral-900: #173F43;
+
+  /* Typography */
+  --font-sans: 'Nunito Sans', 'Plus Jakarta Sans', Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-heading: 'Outfit', 'Nunito Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
 @layer base {
   :root {
-    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --bg-page: #FBFAF4;
+    --bg-card: #FFFEFB;
+    --text-primary: #173F43;
+    --text-secondary: #657C78;
+    --border-color: #E1EAE3;
   }
 
   body {
     font-family: var(--font-sans);
+    background-color: #FBFAF4;
+    color: #173F43;
+    line-height: 1.5;
     margin: 0;
     padding: 0;
     overflow-x: hidden;
-    transition: background-color 0.25s ease, color 0.25s ease;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: #173F43;
+    letter-spacing: -0.015em;
   }
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
-   1. BLUE THEME FOR LIGHT MODE
-   Cohesive medical sapphire & royal blue theme across the whole website
+   React Flow Custom Styling
    ───────────────────────────────────────────────────────────────────────── */
-.theme-clinical {
-  --bg-app: #edf4fc;
-  --bg-card: #ffffff;
-  --border-subtle: #bfdbfe;
-  --text-heading: #0f172a;
-  --text-body: #1e293b;
-  --text-muted: #64748b;
-  --color-brand: #1e3a8a;
-  --color-brand-accent: #2563eb;
-  --color-periwinkle: #bfdbfe;
-  
-  background-color: #edf4fc !important;
-  color: #0f172a !important;
+.react-flow__renderer {
+  background-color: #FBFAF4 !important;
 }
 
-/* React Flow styling in Blue Theme */
-.theme-clinical .react-flow__renderer {
-  background-color: #f0f6ff !important;
+.react-flow__controls button {
+  background: #FFFEFB !important;
+  border-bottom: 1px solid #E1EAE3 !important;
+  color: #173F43 !important;
+  fill: #173F43 !important;
+  border-radius: 6px;
 }
 
-.theme-clinical .react-flow__controls button {
-  background: #ffffff !important;
-  border-bottom: 1px solid #bfdbfe !important;
-  color: #1e3a8a !important;
-  fill: #1e3a8a !important;
+.react-flow__controls button:hover {
+  background: #E6F4ED !important;
+  color: #174F55 !important;
 }
 
-.theme-clinical .react-flow__controls button:hover {
-  background: #eff6ff !important;
-  color: #2563eb !important;
+.react-flow__edge-path {
+  stroke: #4FA58D !important;
+  stroke-width: 2 !important;
 }
 
-/* 2D Knowledge Graph: HIGHLY VISIBLE ROYAL BLUE CONNECTIONS */
-.theme-clinical .react-flow__edge-path {
-  stroke: #2563eb !important;
-  stroke-width: 2.5 !important;
-  filter: drop-shadow(0 1px 2px rgba(37, 99, 235, 0.2));
-}
-
-.theme-clinical .react-flow__edge-textbg {
-  fill: #ffffff !important;
+.react-flow__edge-textbg {
+  fill: #FFFEFB !important;
   fill-opacity: 0.95 !important;
-  stroke: #bfdbfe !important;
+  stroke: #E1EAE3 !important;
   stroke-width: 1px !important;
-  rx: 4px;
-  ry: 4px;
+  rx: 6px;
+  ry: 6px;
 }
 
-.theme-clinical .react-flow__edge-text {
-  fill: #1e3a8a !important;
+.react-flow__edge-text {
+  fill: #174F55 !important;
   font-weight: 700 !important;
   font-family: monospace !important;
   font-size: 10px !important;
 }
 
-/* Comprehensive component skinning for Blue Theme */
-.theme-clinical .bg-\[\#09090b\] {
-  background-color: #edf4fc !important;
-}
-
-.theme-clinical .bg-\[\#0a0a0c\] {
-  background-color: #ffffff !important;
-  border-color: #bfdbfe !important;
-}
-
-.theme-clinical .bg-zinc-950,
-.theme-clinical .bg-zinc-950\/95,
-.theme-clinical .bg-zinc-950\/90,
-.theme-clinical .bg-zinc-950\/80,
-.theme-clinical .bg-zinc-950\/70,
-.theme-clinical .bg-zinc-950\/60,
-.theme-clinical .bg-zinc-950\/40 {
-  background-color: #ffffff !important;
-  color: #0f172a !important;
-  border-color: #bfdbfe !important;
-}
-
-.theme-clinical .bg-zinc-900,
-.theme-clinical .bg-zinc-900\/90,
-.theme-clinical .bg-zinc-900\/80,
-.theme-clinical .bg-zinc-900\/70,
-.theme-clinical .bg-zinc-900\/60,
-.theme-clinical .bg-zinc-900\/50,
-.theme-clinical .bg-zinc-900\/40,
-.theme-clinical .bg-zinc-900\/30 {
-  background-color: #f8faff !important;
-  border-color: #bfdbfe !important;
-  color: #0f172a !important;
-  box-shadow: 0 4px 20px -2px rgba(30, 58, 138, 0.06);
-}
-
-.theme-clinical .bg-zinc-850,
-.theme-clinical .bg-zinc-850\/30 {
-  background-color: #f0f6ff !important;
-  border-color: #bfdbfe !important;
-}
-
-.theme-clinical .bg-zinc-800,
-.theme-clinical .bg-zinc-800\/80,
-.theme-clinical .bg-zinc-800\/90 {
-  background-color: #eff6ff !important;
-  color: #1e3a8a !important;
-  border-color: #bfdbfe !important;
-}
-
-.theme-clinical .border-zinc-800,
-.theme-clinical .border-zinc-800\/80,
-.theme-clinical .border-zinc-800\/90,
-.theme-clinical .border-zinc-800\/60,
-.theme-clinical .border-zinc-850,
-.theme-clinical .border-zinc-750,
-.theme-clinical .border-zinc-700,
-.theme-clinical .border-zinc-700\/80 {
-  border-color: #bfdbfe !important;
-}
-
-.theme-clinical .text-zinc-100,
-.theme-clinical .text-zinc-200,
-.theme-clinical .text-white {
-  color: #0f172a !important;
-}
-
-.theme-clinical .text-zinc-300,
-.theme-clinical .text-zinc-400 {
-  color: #334155 !important;
-}
-
-.theme-clinical .text-zinc-500 {
-  color: #64748b !important;
-}
-
-/* User chat bubble in Blue Theme stays deep navy blue with crisp white text */
-.theme-clinical div.bg-zinc-800,
-.theme-clinical .max-w-xl.bg-zinc-800 {
-  background-color: #1e3a8a !important;
-  color: #ffffff !important;
-  border-color: #1e3a8a !important;
-}
-.theme-clinical div.bg-zinc-800 *,
-.theme-clinical .max-w-xl.bg-zinc-800 * {
-  color: #ffffff !important;
-}
-.theme-clinical div.bg-zinc-800 .text-zinc-400,
-.theme-clinical .max-w-xl.bg-zinc-800 .text-zinc-400 {
-  color: #bfdbfe !important;
-}
-
-/* Primary buttons in Blue Theme */
-.theme-clinical button.bg-zinc-100 {
-  background-color: #1e3a8a !important;
-  color: #ffffff !important;
-}
-.theme-clinical button.bg-zinc-100:hover {
-  background-color: #152347 !important;
-  color: #ffffff !important;
-}
-
-/* Input fields & Textareas in Blue Theme */
-.theme-clinical textarea,
-.theme-clinical input[type="text"] {
-  background-color: #ffffff !important;
-  color: #0f172a !important;
-  border-color: #bfdbfe !important;
-}
-.theme-clinical textarea::placeholder,
-.theme-clinical input::placeholder {
-  color: #94a3b8 !important;
-}
-
-/* Custom scrollbars for Blue Theme */
-.theme-clinical ::-webkit-scrollbar-track {
-  background: #edf4fc;
-}
-
-.theme-clinical ::-webkit-scrollbar-thumb {
-  background: #bfdbfe;
-  border-radius: 4px;
-}
-
-.theme-clinical ::-webkit-scrollbar-thumb:hover {
-  background: #93c5fd;
-}
-
 /* ─────────────────────────────────────────────────────────────────────────
-   2. MIDNIGHT OBSIDIAN THEME (Dark Mode with Periwinkle Highlights)
+   Custom Scrollbars
    ───────────────────────────────────────────────────────────────────────── */
-.theme-dark {
-  background-color: #090a0f;
-  color: #e2e8f0;
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
 }
 
-.theme-dark .react-flow__renderer {
-  background-color: #0b0d14 !important;
+::-webkit-scrollbar-track {
+  background: #FBFAF4;
 }
 
-.theme-dark .react-flow__node {
+::-webkit-scrollbar-thumb {
+  background: #CAD8D1;
   border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
 }
 
-.theme-dark .react-flow__node:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+::-webkit-scrollbar-thumb:hover {
+  background: #A8B9B2;
 }
 
-.theme-dark .react-flow__handle {
-  width: 8px;
-  height: 8px;
-  background-color: #64748b;
-  border: 2px solid #0f172a;
-}
-
-.theme-dark .react-flow__edge-path {
-  stroke: #475569 !important;
-  stroke-width: 1.5;
-}
-
-.theme-dark .react-flow__controls button {
-  background: #1e293b !important;
-  border-bottom: 1px solid #334155 !important;
-  color: #94a3b8 !important;
-  fill: #94a3b8 !important;
-}
-
-.theme-dark .react-flow__controls button:hover {
-  background: #334155 !important;
-  color: #f8fafc !important;
-  fill: #f8fafc !important;
-}
-
-.theme-dark ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-.theme-dark ::-webkit-scrollbar-track {
-  background: #0f172a;
-}
-
-.theme-dark ::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: 3px;
-}
-
-.theme-dark ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+/* Accessibility: respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

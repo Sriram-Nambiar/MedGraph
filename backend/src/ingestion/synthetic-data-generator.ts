@@ -78,7 +78,7 @@ export function generateSyntheticDataset() {
     {
       id: 'P001',
       mrn: 'MRN-847291',
-      name: 'Eleanor Vance',
+      name: 'Lakshmi Sundaram',
       age: 68,
       gender: 'Female',
       dateOfBirth: '1958-04-12',
@@ -89,7 +89,7 @@ export function generateSyntheticDataset() {
     {
       id: 'P002',
       mrn: 'MRN-391824',
-      name: 'Marcus Thorne',
+      name: 'Rajesh Sharma',
       age: 54,
       gender: 'Male',
       dateOfBirth: '1972-08-25',
@@ -100,7 +100,7 @@ export function generateSyntheticDataset() {
     {
       id: 'P003',
       mrn: 'MRN-582109',
-      name: 'Sarah Chen',
+      name: 'Priya Nambiar',
       age: 42,
       gender: 'Female',
       dateOfBirth: '1984-11-03',
@@ -111,7 +111,7 @@ export function generateSyntheticDataset() {
     {
       id: 'P004',
       mrn: 'MRN-204918',
-      name: 'James Rodriguez',
+      name: 'Ramesh Patel',
       age: 71,
       gender: 'Male',
       dateOfBirth: '1955-01-19',
@@ -122,7 +122,7 @@ export function generateSyntheticDataset() {
     {
       id: 'P005',
       mrn: 'MRN-773012',
-      name: 'Beatrice Kim',
+      name: 'Sunita Deshmukh',
       age: 80,
       gender: 'Female',
       dateOfBirth: '1946-06-30',
@@ -877,7 +877,7 @@ export function generateSyntheticDataset() {
       title: 'H&P: Acute Decompensated Heart Failure Exacerbation',
       authorId: 'DOC-102',
       text: `HISTORY OF PRESENT ILLNESS:
-Mrs. Eleanor Vance is a 68-year-old female with known history of HFrEF (ejection fraction 32%), hypertension, and CKD Stage 3a who presents with a 5-day history of progressively worsening shortness of breath, 2-pillow orthopnea, and 3+ bilateral pitting pedal edema up to mid-shin. She admits to dietary indiscretion with high sodium intake over the holiday weekend.
+Mrs. Lakshmi Sundaram is a 68-year-old female with known history of HFrEF (ejection fraction 32%), hypertension, and CKD Stage 3a who presents with a 5-day history of progressively worsening shortness of breath, 2-pillow orthopnea, and 3+ bilateral pitting pedal edema up to mid-shin. She admits to dietary indiscretion with high sodium intake over the holiday weekend.
 
 PHYSICAL EXAMINATION:
 Vitals: BP 152/88 mmHg, HR 88 bpm, RR 22 bpm, SpO2 93% on room air.
@@ -1043,7 +1043,7 @@ Discharge labs: Creatinine 1.6 mg/dL, Potassium 4.4 mEq/L, BNP 890 pg/mL.`,
       sourceRecordId: 'REC-P001-009',
     },
 
-    // P002 Notes (Marcus Thorne - DVT / PE / Warfarin to Eliquis / Contradictory INR)
+    // P002 Notes (Rajesh Sharma - DVT / PE / Warfarin to Eliquis / Contradictory INR)
     {
       id: 'NOTE-201',
       patientId: 'P002',
@@ -1053,7 +1053,7 @@ Discharge labs: Creatinine 1.6 mg/dL, Potassium 4.4 mEq/L, BNP 890 pg/mL.`,
       noteType: 'Admission Note',
       title: 'Emergency H&P: Acute Popliteal DVT',
       authorId: 'DOC-101',
-      text: `Marcus Thorne is a 54-year-old male presenting with painful swelling of the right calf and popliteal fossa following a 14-hour international flight.
+      text: `Rajesh Sharma is a 54-year-old male presenting with painful swelling of the right calf and popliteal fossa following a 14-hour international flight.
 Venous Doppler ultrasound confirms extensive occlusive thrombus in the right popliteal and posterior tibial veins.
 Baseline labs: INR 1.0, Platelets 240k.
 Started on Enoxaparin 1 mg/kg BID bridge and Warfarin 5 mg daily.`,
@@ -1170,7 +1170,7 @@ Given unprovoked PE history 8 months ago, anticoagulation cannot be completely s
       metaAnnotation: 'Explains dose reduction of Apixaban from 5mg BID to 2.5mg BID.',
     },
 
-    // P003 Notes (Sarah Chen - Multiple Sclerosis / Urosepsis / Held Ocrelizumab / Fever Contradiction)
+    // P003 Notes (Priya Nambiar - Multiple Sclerosis / Urosepsis / Held Ocrelizumab / Fever Contradiction)
     {
       id: 'NOTE-301',
       patientId: 'P003',
@@ -1179,7 +1179,7 @@ Given unprovoked PE history 8 months ago, anticoagulation cannot be completely s
       noteType: 'Consultation Note',
       title: 'Neuroimmunology Semi-Annual MS Review',
       authorId: 'DOC-104',
-      text: `Sarah Chen is a 42-year-old female with RRMS diagnosed in 2019. EDSS score is stable at 2.5.
+      text: `Priya Nambiar is a 42-year-old female with RRMS diagnosed in 2019. EDSS score is stable at 2.5.
 Currently receiving Ocrelizumab 600 mg IV every 6 months, next infusion scheduled for late October 2025.
 Taking Baclofen 10 mg TID for spasticity. Uses intermittent self-catheterization for neurogenic bladder.`,
       sourceRecordId: 'REC-P003-001',
@@ -1277,7 +1277,7 @@ Plan: IV Methylprednisolone (Solu-Medrol) 1000 mg daily x 3 days followed by ora
       sourceRecordId: 'REC-P003-007',
     },
 
-    // P004 Notes (James Rodriguez - COPD / Amiodarone Thyrotoxicosis / Missing ADM-401 Discharge Summary)
+    // P004 Notes (Ramesh Patel - COPD / Amiodarone Thyrotoxicosis / Missing ADM-401 Discharge Summary)
     {
       id: 'NOTE-401',
       patientId: 'P004',
@@ -1386,7 +1386,7 @@ Continue Prednisone taper over 6 weeks. Trelegy Ellipta continued for COPD.`,
       sourceRecordId: 'REC-P004-007',
     },
 
-    // P005 Notes (Beatrice Kim - Hip Fracture / Delirium / Opioid Change / Benadryl Toxicity)
+    // P005 Notes (Sunita Deshmukh - Hip Fracture / Delirium / Opioid Change / Benadryl Toxicity)
     {
       id: 'NOTE-501',
       patientId: 'P005',

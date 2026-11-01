@@ -32,18 +32,25 @@ class Settings(BaseSettings):
     vector_search_endpoint: str = "/api/vector/search"
     admission_endpoint: str = "/api/patients/{patient_id}/admissions"
 
-    # LLM configuration
-    llm_provider: Literal["mock", "openai", "google_genai", "anthropic", "nvidia"] = "mock"
+    # LLM configuration (Primary: Sarvam AI 105B; Fallback: NVIDIA)
+    llm_provider: Literal["sarvam", "mock", "openai", "google_genai", "anthropic", "nvidia"] = "sarvam"
+    sarvam_api_key: Optional[str] = None
+    sarvam_base_url: str = "https://api.sarvam.ai/v2"
+    sarvam_model: str = "sarvam-105b"
+    sarvam_stt_model: str = "saaras:v4"
+    sarvam_tts_model: str = "bulbul:v4-flash"
+
     nvidia_api_key: Optional[str] = None
     nvidia_base_url: str = "https://integrate.api.nvidia.com/v1"
     nvidia_model: str = "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning"
+
     openai_api_key: Optional[str] = None
     openai_model: str = "gpt-4o"
     google_api_key: Optional[str] = None
     google_model: str = "gemini-2.0-flash"
     anthropic_api_key: Optional[str] = None
     anthropic_model: str = "claude-3-5-sonnet-20241022"
-    temperature: float = 0.0
+    temperature: float = 0.1
 
     # Agent / Workflow Settings
     max_retries: int = 2
@@ -68,20 +75,21 @@ class Settings(BaseSettings):
         return "mock"
 
     def resolve_provider(self) -> str:
-        """Resolve LLM provider, respecting explicit 'mock' or configured provider."""
+        """Resolve LLM provider, respecting explicit provider selection and keys."""
         env_provider = os.getenv("LLM_PROVIDER")
         if env_provider:
             return env_provider.lower().strip()
-        if self.llm_provider:
-            return self.llm_provider
-        return "mock"
+        if self.sarvam_api_key or os.getenv("SARVAM_API_KEY"):
+            return "sarvam"
+        if self.nvidia_api_key or os.getenv("NVIDIA_API_KEY"):
+            return "nvidia"
         if self.openai_api_key or os.getenv("OPENAI_API_KEY"):
             return "openai"
         if self.google_api_key or os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY"):
             return "google_genai"
         if self.anthropic_api_key or os.getenv("ANTHROPIC_API_KEY"):
             return "anthropic"
-        return "mock"
+        return self.llm_provider or "mock"
 
 
 settings = Settings()

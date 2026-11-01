@@ -47,7 +47,7 @@ export const VoxelHeartbeatStudio: React.FC<VoxelHeartbeatStudioProps> = ({
       co: '5.2 L/min',
     },
     {
-      name: 'Eleanor Vance (P001)',
+      name: 'Lakshmi Sundaram (P001)',
       label: 'HFrEF & Renal Decline',
       bpm: 88,
       rhythm: 'normal' as const,
@@ -426,7 +426,7 @@ export const VoxelHeartbeatStudio: React.FC<VoxelHeartbeatStudioProps> = ({
               <span>Linked Clinical Investigation</span>
             </div>
             <p className="text-[11px] text-slate-400 leading-relaxed mb-3">
-              Eleanor Vance's systolic heart failure (P001) maps Lisinopril to Sacubitril/Valsartan conversion with longitudinal ejection fraction shifts.
+              Lakshmi Sundaram's systolic heart failure (P001) maps Lisinopril to Sacubitril/Valsartan conversion with longitudinal ejection fraction shifts.
             </p>
             <button
               onClick={() => onNavigateToPatient?.('P001')}

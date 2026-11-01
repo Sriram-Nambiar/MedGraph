@@ -23,8 +23,12 @@ class InvestigationPlanner:
 
     @classmethod
     async def create_plan(cls, patient_id: str, question: str) -> InvestigationPlan:
-        llm = get_configured_llm()
+        # Performance Fast-Path: Deterministic entity & temporal extraction in < 1ms
+        deterministic_plan = cls._create_deterministic_plan(patient_id, question)
+        if deterministic_plan and len(deterministic_plan.planned_steps) > 0:
+            return deterministic_plan
 
+        llm = get_configured_llm()
         if llm:
             try:
                 structured_llm = llm.with_structured_output(InvestigationPlan)
@@ -38,11 +42,9 @@ class InvestigationPlanner:
                 if isinstance(result, InvestigationPlan):
                     return result
             except Exception:
-                # Fallback to deterministic parser if LLM call fails
                 pass
 
-        # Deterministic Clinical Parser Fallback
-        return cls._create_deterministic_plan(patient_id, question)
+        return deterministic_plan
 
     @classmethod
     def _create_deterministic_plan(cls, patient_id: str, question: str) -> InvestigationPlan:

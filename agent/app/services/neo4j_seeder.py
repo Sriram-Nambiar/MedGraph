@@ -41,7 +41,7 @@ def seed_neo4j_database() -> int:
                 logger.debug(f"Constraint creation notice: {e}")
 
         cohorts = [
-            ("P001", "Eleanor Vance", P001_ADMISSIONS, P001_GRAPH_RECORDS),
+            ("P001", "Lakshmi Sundaram", P001_ADMISSIONS, P001_GRAPH_RECORDS),
             ("P002", "Elena Rostova", P002_ADMISSIONS, P002_GRAPH_RECORDS),
             ("P003", "David Kim", P003_ADMISSIONS, P003_GRAPH_RECORDS),
             ("P004", "Sarah Jenkins", P004_ADMISSIONS, P004_GRAPH_RECORDS),

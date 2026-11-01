@@ -12,7 +12,7 @@ export class AuditService {
       action: 'RECORDS_ACCESSED',
       patient_id: 'P001',
       source_hospital_id: 'HOSP002',
-      details: 'Accessed local BCMC outpatient encounter records for Eleanor Vance',
+      details: 'Accessed local BCMC outpatient encounter records for Lakshmi Sundaram',
       status: 'SUCCESS',
     });
   }

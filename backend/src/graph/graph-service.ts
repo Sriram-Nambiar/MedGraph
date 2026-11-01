@@ -30,7 +30,7 @@ export class GraphService {
             OPTIONAL MATCH (p)-[r1:HAS_ADMISSION]->(a:Admission)
             OPTIONAL MATCH (p)-[r2:HAS_ENCOUNTER]->(e:Encounter)
             OPTIONAL MATCH (e)-[r3:HAS_PRESCRIPTION]->(rx:Prescription)-[r4:PRESCRIBES]->(m:Medication)
-            OPTIONAL MATCH (e)-[r5:DOCUMENTS]->(c:Condition)
+            OPTIONAL MATCH (p)-[r5:HAS_CONDITION]->(c:Condition)
             OPTIONAL MATCH (e)-[r6:HAS_LAB_RESULT]->(lr:LabResult)-[r7:OF_TEST]->(lt:LabTest)
             OPTIONAL MATCH (e)-[r8:HAS_NOTE]->(cn:ClinicalNote)
             OPTIONAL MATCH (e)-[r9:ATTENDED_BY]->(d:Doctor)

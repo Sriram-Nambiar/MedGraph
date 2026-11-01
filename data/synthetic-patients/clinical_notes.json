@@ -8,7 +8,7 @@
     "noteType": "Discharge Summary",
     "title": "Cardiology Summary: Acute Heart Failure & ACE-Inhibitor Washout",
     "authorId": "DOC-102",
-    "text": "Cardiology Inpatient Summary: Patient Eleanor Vance admitted for acute decompensated heart failure (EF 32%) complicated by severe hyperkalemia (Potassium 5.7 mEq/L) on Lisinopril 20 mg. Lisinopril was abruptly discontinued. Following aggressive potassium normalization and a 36-hour washout period, initiated Sacubitril/Valsartan (Entresto) 24/26 mg BID. Condition stable at discharge.",
+    "text": "Cardiology Inpatient Summary: Patient Lakshmi Sundaram admitted for acute decompensated heart failure (EF 32%) complicated by severe hyperkalemia (Potassium 5.7 mEq/L) on Lisinopril 20 mg. Lisinopril was abruptly discontinued. Following aggressive potassium normalization and a 36-hour washout period, initiated Sacubitril/Valsartan (Entresto) 24/26 mg BID. Condition stable at discharge.",
     "sourceRecordId": "REC-P001-001",
     "hospitalId": "HOSP001",
     "hospitalName": "Apollo General Hospital"
@@ -21,7 +21,7 @@
     "noteType": "Consultation Note",
     "title": "Dermatology Clinic: Plaque Psoriasis Assessment",
     "authorId": "DOC-109",
-    "text": "Dermatology Clinic Outpatient Note: Patient Eleanor Vance evaluated by Dr. Maya Lin for extensive silvery erythematous plaques over bilateral elbows and knees consistent with plaque psoriasis. Prescribed Clobetasol Propionate 0.05% topical cream twice daily. Patient instructed on proper topical application and monitoring for skin atrophy.",
+    "text": "Dermatology Clinic Outpatient Note: Patient Lakshmi Sundaram evaluated by Dr. Maya Lin for extensive silvery erythematous plaques over bilateral elbows and knees consistent with plaque psoriasis. Prescribed Clobetasol Propionate 0.05% topical cream twice daily. Patient instructed on proper topical application and monitoring for skin atrophy.",
     "sourceRecordId": "REC-P001-002",
     "hospitalId": "HOSP001",
     "hospitalName": "Apollo General Hospital"
@@ -35,7 +35,7 @@
     "noteType": "Admission Note",
     "title": "Emergency H&P: Acute Popliteal DVT",
     "authorId": "DOC-101",
-    "text": "Marcus Thorne is a 54-year-old male presenting with painful swelling of the right calf and popliteal fossa following a 14-hour international flight.\nVenous Doppler ultrasound confirms extensive occlusive thrombus in the right popliteal and posterior tibial veins.\nBaseline labs: INR 1.0, Platelets 240k.\nStarted on Enoxaparin 1 mg/kg BID bridge and Warfarin 5 mg daily.",
+    "text": "Rajesh Sharma is a 54-year-old male presenting with painful swelling of the right calf and popliteal fossa following a 14-hour international flight.\nVenous Doppler ultrasound confirms extensive occlusive thrombus in the right popliteal and posterior tibial veins.\nBaseline labs: INR 1.0, Platelets 240k.\nStarted on Enoxaparin 1 mg/kg BID bridge and Warfarin 5 mg daily.",
     "sourceRecordId": "REC-P002-001",
     "hospitalId": "HOSP001",
     "hospitalName": "Apollo General Hospital"
@@ -163,7 +163,7 @@
     "noteType": "Consultation Note",
     "title": "Neuroimmunology Semi-Annual MS Review",
     "authorId": "DOC-104",
-    "text": "Sarah Chen is a 42-year-old female with RRMS diagnosed in 2019. EDSS score is stable at 2.5.\nCurrently receiving Ocrelizumab 600 mg IV every 6 months, next infusion scheduled for late October 2025.\nTaking Baclofen 10 mg TID for spasticity. Uses intermittent self-catheterization for neurogenic bladder.",
+    "text": "Priya Nambiar is a 42-year-old female with RRMS diagnosed in 2019. EDSS score is stable at 2.5.\nCurrently receiving Ocrelizumab 600 mg IV every 6 months, next infusion scheduled for late October 2025.\nTaking Baclofen 10 mg TID for spasticity. Uses intermittent self-catheterization for neurogenic bladder.",
     "sourceRecordId": "REC-P003-001",
     "hospitalId": "HOSP001",
     "hospitalName": "Apollo General Hospital"
@@ -501,7 +501,7 @@
     "hospitalId": "HOSP002",
     "hospitalName": "Bengaluru City Medical Center",
     "source": "BCMC Clinical Information System",
-    "text": "PATIENT: Eleanor Vance (68y F) | MRN-847291 | CLINIC: Bengaluru City Medical Center Cardiology\nSUBJECTIVE: Patient recently relocated from Hyderabad to Bengaluru to stay closer to her family. She established outpatient cardiovascular care here at Bengaluru City Medical Center today. She reports feeling clinically stable on Sacubitril/Valsartan (Entresto) 24/26 mg BID with improved exertional tolerance and no orthopnea. Denies dry cough, angioedema, chest pressure, or lightheadedness.\nOBJECTIVE: BP 124/78 mmHg, HR 68 bpm regular, O2 Sat 98% on room air. Lungs: Clear to auscultation bilaterally. Heart: Regular rate and rhythm, no S3 gallop. Extremities: Trace pretibial edema (improved from previous 2+ bilateral edema). LABS (Today at BCMC Central Lab): Serum Potassium: 4.6 mEq/L (Normal, 3.5-5.1 mEq/L), Creatinine: 1.3 mg/dL, eGFR: 58 mL/min/1.73m2, BNP: 380 pg/mL (significantly improved from prior 1420 pg/mL at Apollo General Hospital).\nASSESSMENT & PLAN: Chronic systolic heart failure (HFrEF, EF 32%), clinically compensated. Potassium has completely normalized at 4.6 mEq/L following the Lisinopril discontinuation and Entresto transition managed at Apollo General Hospital. Maintained Sacubitril/Valsartan (Entresto) 24/26 mg BID oral. Requested cross-hospital electronic records transfer from Apollo General Hospital (HOSP001) through the MedGraph interoperability gateway to verify historical ACE-inhibitor hyperkalemia timeline.",
+    "text": "PATIENT: Lakshmi Sundaram (68y F) | MRN-847291 | CLINIC: Bengaluru City Medical Center Cardiology\nSUBJECTIVE: Patient recently relocated from Hyderabad to Bengaluru to stay closer to her family. She established outpatient cardiovascular care here at Bengaluru City Medical Center today. She reports feeling clinically stable on Sacubitril/Valsartan (Entresto) 24/26 mg BID with improved exertional tolerance and no orthopnea. Denies dry cough, angioedema, chest pressure, or lightheadedness.\nOBJECTIVE: BP 124/78 mmHg, HR 68 bpm regular, O2 Sat 98% on room air. Lungs: Clear to auscultation bilaterally. Heart: Regular rate and rhythm, no S3 gallop. Extremities: Trace pretibial edema (improved from previous 2+ bilateral edema). LABS (Today at BCMC Central Lab): Serum Potassium: 4.6 mEq/L (Normal, 3.5-5.1 mEq/L), Creatinine: 1.3 mg/dL, eGFR: 58 mL/min/1.73m2, BNP: 380 pg/mL (significantly improved from prior 1420 pg/mL at Apollo General Hospital).\nASSESSMENT & PLAN: Chronic systolic heart failure (HFrEF, EF 32%), clinically compensated. Potassium has completely normalized at 4.6 mEq/L following the Lisinopril discontinuation and Entresto transition managed at Apollo General Hospital. Maintained Sacubitril/Valsartan (Entresto) 24/26 mg BID oral. Requested cross-hospital electronic records transfer from Apollo General Hospital (HOSP001) through the MedGraph interoperability gateway to verify historical ACE-inhibitor hyperkalemia timeline.",
     "sourceRecordId": "NOTE-104-B"
   }
 ]

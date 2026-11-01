@@ -7,10 +7,43 @@ logger = logging.getLogger(__name__)
 
 
 def get_configured_llm():
-    """Factory creating the appropriate BaseChatModel or None for mock mode."""
+    """Factory creating the appropriate BaseChatModel or None for mock mode.
+    Primary flagship provider: Sarvam AI (sarvam-105b).
+    Fallback providers: NVIDIA, OpenAI, Google GenAI, Anthropic.
+    """
     provider = settings.resolve_provider()
 
-    if provider == "nvidia":
+    if provider == "sarvam":
+        api_key = settings.sarvam_api_key or os.getenv("SARVAM_API_KEY")
+        if not api_key:
+            logger.warning("Sarvam provider selected but SARVAM_API_KEY is not set. Checking fallback providers.")
+            # Fall back to NVIDIA if available
+            nv_key = settings.nvidia_api_key or os.getenv("NVIDIA_API_KEY")
+            if nv_key:
+                logger.info("Falling back to NVIDIA provider.")
+                from langchain_openai import ChatOpenAI
+                return ChatOpenAI(
+                    model=settings.nvidia_model,
+                    base_url=settings.nvidia_base_url,
+                    api_key=nv_key,
+                    temperature=settings.temperature,
+                    timeout=10.0,
+                    max_retries=0
+                )
+            return None
+
+        from langchain_openai import ChatOpenAI
+        return ChatOpenAI(
+            model=settings.sarvam_model or "sarvam-105b",
+            base_url=settings.sarvam_base_url or "https://api.sarvam.ai/v2",
+            api_key=api_key,
+            temperature=settings.temperature,
+            timeout=20.0,
+            max_retries=1,
+            default_headers={"api-subscription-key": api_key}
+        )
+
+    elif provider == "nvidia":
         api_key = settings.nvidia_api_key or os.getenv("NVIDIA_API_KEY")
         if not api_key:
             logger.warning("NVIDIA provider selected but NVIDIA_API_KEY is not set.")
@@ -21,7 +54,7 @@ def get_configured_llm():
             base_url=settings.nvidia_base_url,
             api_key=api_key,
             temperature=settings.temperature,
-            timeout=6.0,
+            timeout=10.0,
             max_retries=0
         )
 

@@ -2,7 +2,7 @@
   "patient": {
     "id": "P003",
     "mrn": "MRN-582109",
-    "name": "Sarah Chen",
+    "name": "Priya Nambiar",
     "age": 42,
     "gender": "Female",
     "dateOfBirth": "1984-11-03",
@@ -264,7 +264,7 @@
       "noteType": "Consultation Note",
       "title": "Neuroimmunology Semi-Annual MS Review",
       "authorId": "DOC-104",
-      "text": "Sarah Chen is a 42-year-old female with RRMS diagnosed in 2019. EDSS score is stable at 2.5.\nCurrently receiving Ocrelizumab 600 mg IV every 6 months, next infusion scheduled for late October 2025.\nTaking Baclofen 10 mg TID for spasticity. Uses intermittent self-catheterization for neurogenic bladder.",
+      "text": "Priya Nambiar is a 42-year-old female with RRMS diagnosed in 2019. EDSS score is stable at 2.5.\nCurrently receiving Ocrelizumab 600 mg IV every 6 months, next infusion scheduled for late October 2025.\nTaking Baclofen 10 mg TID for spasticity. Uses intermittent self-catheterization for neurogenic bladder.",
       "sourceRecordId": "REC-P003-001"
     },
     {

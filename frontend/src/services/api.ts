@@ -262,3 +262,56 @@ export async function fetchAuditLogs(filter?: {
   const data = await res.json();
   return data.logs || [];
 }
+
+/**
+ * Transcribes doctor voice message via Sarvam Saaras v4
+ */
+export async function transcribeAudio(
+  audioBlob: Blob,
+  languageCode: string = 'unknown',
+  mode: string = 'transcribe'
+): Promise<{ transcript: string; language_code: string; success: boolean }> {
+  const formData = new FormData();
+  formData.append('file', audioBlob, 'clinical_recording.wav');
+  if (languageCode && languageCode !== 'unknown') {
+    formData.append('language_code', languageCode);
+  }
+  if (mode) {
+    formData.append('mode', mode);
+  }
+
+  const res = await fetch(`${API_BASE}/voice/transcribe`, {
+    method: 'POST',
+    body: formData,
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `Voice transcription failed (${res.status})`);
+  }
+  return res.json();
+}
+
+/**
+ * Synthesizes clinical written answer to speech via Sarvam Bulbul v4 Flash
+ */
+export async function synthesizeSpeech(
+  text: string,
+  targetLanguageCode: string = 'en-IN',
+  speaker: string = 'ishita_en_medical'
+): Promise<{ audio: string; audios: string[]; speaker: string; language_code: string; success: boolean }> {
+  const res = await fetch(`${API_BASE}/voice/synthesize`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      text,
+      target_language_code: targetLanguageCode,
+      speaker,
+    }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `Voice synthesis failed (${res.status})`);
+  }
+  return res.json();
+}
+

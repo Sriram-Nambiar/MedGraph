@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { TopBar, NavigationTab } from './components/TopBar';
 import { LandingPage } from './components/landing/LandingPage';
-import { PatientOverview } from './components/overview/PatientOverview';
-import { LabTrendsChart } from './components/overview/LabTrendsChart';
 import { ClinicalTimeline } from './components/timeline/ClinicalTimeline';
 import { KnowledgeGraphView } from './components/graph/KnowledgeGraphView';
 import { ThreeDGraphView } from './components/graph/ThreeDGraphView';
@@ -19,7 +17,6 @@ import {
 import {
   fetchHealth,
   fetchPatients,
-  fetchPatientDetails,
   fetchPatientTimeline,
   fetchPatientGraph,
 } from './services/api';
@@ -29,7 +26,7 @@ const FALLBACK_PATIENTS: Patient[] = [
   {
     id: "P001",
     mrn: "MRN-847291",
-    name: "Eleanor Vance",
+    name: "Lakshmi Sundaram",
     age: 68,
     gender: "Female",
     dateOfBirth: "1958-04-12",
@@ -40,7 +37,7 @@ const FALLBACK_PATIENTS: Patient[] = [
   {
     id: "P002",
     mrn: "MRN-391824",
-    name: "Marcus Thorne",
+    name: "Rajesh Sharma",
     age: 54,
     gender: "Male",
     dateOfBirth: "1972-08-25",
@@ -51,7 +48,7 @@ const FALLBACK_PATIENTS: Patient[] = [
   {
     id: "P003",
     mrn: "MRN-582109",
-    name: "Sarah Chen",
+    name: "Priya Nambiar",
     age: 42,
     gender: "Female",
     dateOfBirth: "1984-11-03",
@@ -62,7 +59,7 @@ const FALLBACK_PATIENTS: Patient[] = [
   {
     id: "P004",
     mrn: "MRN-204918",
-    name: "James Rodriguez",
+    name: "Ramesh Patel",
     age: 71,
     gender: "Male",
     dateOfBirth: "1955-01-19",
@@ -73,7 +70,7 @@ const FALLBACK_PATIENTS: Patient[] = [
   {
     id: "P005",
     mrn: "MRN-918273",
-    name: "Beatrice Kim",
+    name: "Sunita Deshmukh",
     age: 82,
     gender: "Female",
     dateOfBirth: "1944-06-30",
@@ -110,19 +107,19 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   render() {
     if (this.state.hasError) {
       return (
-        <div className="p-8 text-center bg-white dark:bg-zinc-900 border-2 border-rose-300 dark:border-rose-900/60 rounded-2xl max-w-lg mx-auto my-12 shadow-xl space-y-4">
-          <div className="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto font-bold text-xl">
+        <div className="p-8 text-center bg-[#FFFEFB] border border-[#FDD9D5] rounded-3xl max-w-lg mx-auto my-12 shadow-md space-y-4">
+          <div className="w-12 h-12 rounded-full bg-[#FFF3F2] text-[#D95C55] flex items-center justify-center mx-auto font-bold text-xl">
             !
           </div>
-          <h3 className="text-base font-black text-[#0f172a] dark:text-white font-['Outfit']">
+          <h3 className="text-base font-bold text-[#173F43] font-['Outfit']">
             {this.props.fallbackLabel || 'View encountered an error'}
           </h3>
-          <p className="text-xs text-slate-600 dark:text-zinc-400 font-mono">
+          <p className="text-xs text-[#657C78] font-mono">
             {this.state.error?.message || 'Unexpected rendering exception'}
           </p>
           <button
             onClick={() => this.setState({ hasError: false, error: null })}
-            className="px-4 py-2 bg-[#1e3a8a] hover:bg-[#152347] text-white text-xs font-bold rounded-xl transition-colors shadow-sm"
+            className="px-4 py-2 bg-[#173F43] hover:bg-[#24665F] text-white text-xs font-bold rounded-xl transition-colors shadow-2xs cursor-pointer"
           >
             Reload View
           </button>
@@ -139,13 +136,6 @@ export function App() {
   const [activeTab, setActiveTab] = useState<NavigationTab>('landing');
   const [health, setHealth] = useState<SystemHealth | null>(null);
 
-  // Theme: 'clinical' (World Health Day Periwinkle/Slate Blue) or 'dark' (Midnight Obsidian)
-  const [theme, setTheme] = useState<'clinical' | 'dark'>(() => {
-    const saved = localStorage.getItem('medgraph-theme');
-    return saved === 'dark' ? 'dark' : 'clinical';
-  });
-
-  const [patientDetails, setPatientDetails] = useState<any>(null);
   const [timeline, setTimeline] = useState<TimelineEvent[]>([]);
   const [graphData, setGraphData] = useState<{ nodes: GraphNode[]; relationships: GraphRelationship[] }>({
     nodes: [],
@@ -155,16 +145,6 @@ export function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeEvidenceRecordId, setActiveEvidenceRecordId] = useState<string | null>(null);
   const [investigationQuestion, setInvestigationQuestion] = useState<string>('');
-
-  // Sync theme to root HTML element
-  useEffect(() => {
-    document.documentElement.className = theme === 'clinical' ? 'theme-clinical' : 'theme-dark dark';
-    localStorage.setItem('medgraph-theme', theme);
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme(prev => (prev === 'clinical' ? 'dark' : 'clinical'));
-  };
 
   useEffect(() => {
     async function init() {
@@ -194,14 +174,12 @@ export function App() {
     let isMounted = true;
     async function loadPatientData() {
       try {
-        const [details, tl, gr] = await Promise.all([
-          fetchPatientDetails(selectedPatient!.id),
+        const [tl, gr] = await Promise.all([
           fetchPatientTimeline(selectedPatient!.id),
           fetchPatientGraph(selectedPatient!.id),
         ]);
 
         if (isMounted) {
-          setPatientDetails(details.summary || details);
           setTimeline(tl);
           setGraphData(gr);
         }
@@ -230,16 +208,18 @@ export function App() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#394d88] flex flex-col items-center justify-center text-white gap-3 font-mono text-xs">
-        <Loader2 className="w-6 h-6 text-white animate-spin" />
-        <span className="font-sans font-semibold">Loading MedGraph Clinical Intelligence Platform...</span>
+      <div className="min-h-screen bg-[#FBFAF4] flex flex-col items-center justify-center text-[#173F43] gap-3 font-mono text-xs">
+        <Loader2 className="w-6 h-6 text-[#4FA58D] animate-spin" />
+        <span className="font-sans font-semibold text-sm">
+          Loading MedGraph Longitudinal Clinical Knowledge Platform...
+        </span>
       </div>
     );
   }
 
   return (
-    <div className={`min-h-screen flex flex-col font-sans transition-colors duration-200 ${theme === 'clinical' ? 'theme-clinical bg-[#edf4fc] text-[#0f172a]' : 'theme-dark bg-[#09090b] text-zinc-200'}`}>
-      {/* Sleek TopBar */}
+    <div className="min-h-screen flex flex-col font-sans bg-[#FBFAF4] text-[#173F43] selection:bg-[#D1EEE3]">
+      {/* Sticky Clean Application Header */}
       <TopBar
         patients={patients}
         selectedPatient={selectedPatient}
@@ -247,8 +227,6 @@ export function App() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         health={health}
-        theme={theme}
-        onToggleTheme={toggleTheme}
       />
 
       {/* Main Viewport */}
@@ -261,77 +239,27 @@ export function App() {
           health={health}
         />
       ) : (
-        <main className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6">
+        <main className="flex-1 max-w-[1360px] w-full mx-auto p-4 sm:p-6 lg:p-8">
           {selectedPatient ? (
             <>
-              {activeTab === 'investigation' && (
-                <ErrorBoundary fallbackLabel="Investigation View Error">
-                  <InvestigationView
-                    patient={selectedPatient}
-                    onOpenEvidence={handleOpenEvidence}
-                    initialQuestion={investigationQuestion}
-                  />
-                </ErrorBoundary>
-              )}
-
-              {activeTab === 'hospital-network' && (
-                <ErrorBoundary fallbackLabel="Hospital Interoperability Error">
-                  <HospitalNetworkView
-                    selectedPatient={selectedPatient}
-                    theme={theme}
-                  />
-                </ErrorBoundary>
-              )}
-
-              {activeTab === 'overview' && patientDetails && (
-                <ErrorBoundary fallbackLabel="Overview View Error">
-                  <div className="space-y-6 max-w-5xl mx-auto">
-                    <PatientOverview
-                      patient={selectedPatient}
-                      conditions={patientDetails.conditions || []}
-                      admissions={patientDetails.admissions || []}
-                      medications={patientDetails.medications || []}
-                      labResults={patientDetails.labResults || []}
+              {/* Longitudinal Timeline Tab */}
+              {activeTab === 'timeline' && (
+                <ErrorBoundary fallbackLabel="Clinical Timeline Error">
+                  <div className="max-w-5xl mx-auto">
+                    <ClinicalTimeline
+                      timeline={timeline}
                       onOpenEvidence={handleOpenEvidence}
-                      onNavigateToInvestigate={(q) => handleNavigateTab('investigation', q)}
-                    />
-                    <LabTrendsChart
-                      labResults={
-                        patientDetails.labResults?.map((l: any) => l.result || l) || []
-                      }
-                      onOpenEvidence={handleOpenEvidence}
+                      patientName={selectedPatient?.name}
+                      patientId={selectedPatient?.id}
                     />
                   </div>
                 </ErrorBoundary>
               )}
 
-              {activeTab === 'timeline' && (
-                <ErrorBoundary fallbackLabel="Clinical Timeline Error">
-                  <ClinicalTimeline
-                    timeline={timeline}
-                    onOpenEvidence={handleOpenEvidence}
-                    patientName={selectedPatient?.name}
-                    patientId={selectedPatient?.id}
-                  />
-                </ErrorBoundary>
-              )}
-
+              {/* 2D Knowledge Graph Tab */}
               {activeTab === 'graph' && (
                 <ErrorBoundary fallbackLabel="2D Knowledge Graph Error">
-                  <div className="space-y-3 max-w-5xl mx-auto">
-                    <div className="flex items-center justify-between text-xs">
-                      <div>
-                        <h2 className="font-bold text-[#0f172a] dark:text-white text-base">2D Knowledge Graph</h2>
-                        <p className="text-slate-500 dark:text-zinc-500 font-mono text-[11px]">
-                          Connected medical entities for {selectedPatient.name} ({selectedPatient.id})
-                        </p>
-                      </div>
-                      <div className="font-mono text-[11px] text-slate-500 dark:text-zinc-500 flex items-center gap-3">
-                        <span>Nodes: {graphData.nodes.length}</span>
-                        <span>Relationships: {graphData.relationships.length}</span>
-                      </div>
-                    </div>
-
+                  <div className="max-w-6xl mx-auto">
                     <KnowledgeGraphView
                       nodes={graphData.nodes}
                       relationships={graphData.relationships}
@@ -341,27 +269,10 @@ export function App() {
                 </ErrorBoundary>
               )}
 
+              {/* 3D Knowledge Graph Tab */}
               {activeTab === '3d-graph' && (
-                <ErrorBoundary fallbackLabel="3D Cosmos Knowledge Network Error">
-                  <div className="space-y-3 max-w-7xl mx-auto">
-                    <div className="flex items-center justify-between text-xs px-1">
-                      <div>
-                        <h2 className="font-bold text-[#0f172a] dark:text-white text-base flex items-center gap-2">
-                          <span>3D Cosmos Knowledge Network</span>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-100 text-[#1e3a8a] border border-[#bfdbfe] font-bold">
-                            Three.js WebGL
-                          </span>
-                        </h2>
-                        <p className="text-slate-500 dark:text-zinc-500 font-mono text-[11px]">
-                          Orbital 3D connections, animated signal pulses, and interactive inspection for {selectedPatient.name} ({selectedPatient.id})
-                        </p>
-                      </div>
-                      <div className="font-mono text-[11px] text-slate-500 dark:text-zinc-500 flex items-center gap-3">
-                        <span>Nodes: {graphData.nodes.length}</span>
-                        <span>Links: {graphData.relationships.length}</span>
-                      </div>
-                    </div>
-
+                <ErrorBoundary fallbackLabel="3D Knowledge Network Error">
+                  <div className="max-w-7xl mx-auto">
                     <ThreeDGraphView
                       nodes={graphData.nodes}
                       relationships={graphData.relationships}
@@ -372,9 +283,33 @@ export function App() {
                   </div>
                 </ErrorBoundary>
               )}
+
+              {/* Investigation Console Tab */}
+              {activeTab === 'investigation' && (
+                <ErrorBoundary fallbackLabel="Investigation View Error">
+                  <div className="max-w-7xl mx-auto">
+                    <InvestigationView
+                      patient={selectedPatient}
+                      onOpenEvidence={handleOpenEvidence}
+                      initialQuestion={investigationQuestion}
+                    />
+                  </div>
+                </ErrorBoundary>
+              )}
+
+              {/* Cross-Hospital Interoperability Tab */}
+              {activeTab === 'hospital-network' && (
+                <ErrorBoundary fallbackLabel="Hospital Interoperability Error">
+                  <div className="max-w-7xl mx-auto">
+                    <HospitalNetworkView
+                      selectedPatient={selectedPatient}
+                    />
+                  </div>
+                </ErrorBoundary>
+              )}
             </>
           ) : (
-            <div className="text-center py-20 text-slate-500 dark:text-zinc-500 font-mono text-xs">
+            <div className="text-center py-20 text-[#829590] font-mono text-xs">
               No patient selected.
             </div>
           )}

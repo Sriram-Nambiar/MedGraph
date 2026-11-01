@@ -2,7 +2,7 @@
   {
     "id": "P001",
     "mrn": "MRN-847291",
-    "name": "Eleanor Vance",
+    "name": "Lakshmi Sundaram",
     "age": 68,
     "gender": "Female",
     "dateOfBirth": "1958-04-12",
@@ -15,7 +15,7 @@
   {
     "id": "P002",
     "mrn": "MRN-391824",
-    "name": "Marcus Thorne",
+    "name": "Rajesh Sharma",
     "age": 54,
     "gender": "Male",
     "dateOfBirth": "1972-08-25",
@@ -28,7 +28,7 @@
   {
     "id": "P003",
     "mrn": "MRN-582109",
-    "name": "Sarah Chen",
+    "name": "Priya Nambiar",
     "age": 42,
     "gender": "Female",
     "dateOfBirth": "1984-11-03",
@@ -41,7 +41,7 @@
   {
     "id": "P004",
     "mrn": "MRN-204918",
-    "name": "James Rodriguez",
+    "name": "Ramesh Patel",
     "age": 71,
     "gender": "Male",
     "dateOfBirth": "1955-01-19",
@@ -54,7 +54,7 @@
   {
     "id": "P005",
     "mrn": "MRN-773012",
-    "name": "Beatrice Kim",
+    "name": "Sunita Deshmukh",
     "age": 80,
     "gender": "Female",
     "dateOfBirth": "1946-06-30",
